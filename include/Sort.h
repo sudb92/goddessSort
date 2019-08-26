@@ -1,5 +1,5 @@
-#ifndef Sort_h
-#define Sort_h
+#ifndef SORT_H
+#define SORT_H
 
 #include "BB10det.h"
 #include "IChit.h"
@@ -10,7 +10,7 @@
 #include "SX3det.h"
 #include "TDChit.h"
 #include "TypeDef.h"
-#include "Utility.h"
+#include "Utilities.h"
 
 #include <bitset>
 #include <ctime>

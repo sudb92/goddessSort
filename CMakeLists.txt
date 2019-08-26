@@ -29,6 +29,26 @@ add_executable(goddessSort ${sources} ${headers})
 target_link_libraries(goddessSort ${ROOT_LIBRARIES})
 
 #
+# Copy over files to the build directory
+#
+set(_SCRIPTS
+        QQQ5Angles.dat
+        QQQ5DownCalibrations.dat
+        QQQ5DownPedestals.dat
+        QQQ5UpCalibrations.dat
+        QQQ5UpPedestals.dat
+        SuperX3UpCalibrations.dat
+        SuperX3UpPedestals.dat
+        )
+foreach(_script ${_SCRIPTS})
+    configure_file(
+            ${PROJECT_SOURCE_DIR}/${_script}
+            ${PROJECT_BINARY_DIR}/${_script}
+            COPYONLY
+    )
+endforeach()
+
+#
 #----------------------------------------------------------------------------
 # Add program to the project targets
 # (this avoids the need of typing the program name after make)

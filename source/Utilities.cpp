@@ -1,15 +1,4 @@
-#include <fstream>
-#include <iostream>
-#include <cstdlib>
-#include <ctime>
-#include <string>
-#include <cstdlib>
-
-#include<string>
-#include<vector>
-
-//My Includes
-#include "Utility.h"
+#include "Utilities.h"
 #include "Sort.h"
 
 unsigned int ExtractBits(unsigned int Source, int Begin, int Length){
@@ -17,7 +6,6 @@ unsigned int ExtractBits(unsigned int Source, int Begin, int Length){
 }
 
 void ResetInStructs(){
-
 	//Upstream QQQ5
 	for(int k=0; k<4; k++){
 	 	for(int i=0; i<32; i++){
@@ -96,19 +84,19 @@ void ResetInStructs(){
 
 	int ColorCode = 0;
 
-	if(Color.compare("red")==0){
+	if(Color.compare("red") == 0){
 		ColorCode = 31;
-	}else if(Color.compare("green")==0){
+	} else if(Color.compare("green") == 0){
 		ColorCode = 32;
-	}else if(Color.compare("yellow")==0){
+	} else if(Color.compare("yellow") == 0){
 		ColorCode = 33;
-	}else if(Color.compare("blue")==0){
+	} else if(Color.compare("blue") == 0){
 		ColorCode = 34;
-	}else{
-		std::cout << Form("Output Color not recognized : %s",Color.c_str()) << std::endl;
-		return Form("%s",Output.c_str());
+	} else {
+		std::cout << Form("Output Color not recognized : %s", Color.c_str()) << std::endl;
+		return Form("%s", Output.c_str());
 	}
 
-	return Form("\033[1;%dm%s\033[0m",ColorCode,Output.c_str());
+	return Form("\033[1;%dm%s\033[0m", ColorCode, Output.c_str());
 
 }

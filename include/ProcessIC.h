@@ -1,5 +1,5 @@
-#ifndef ProcessIC_h
-#define ProcessIC_h
+#ifndef PROCESSIC_H
+#define PROCESSIC_H
 
 #include "IChit.h"
 

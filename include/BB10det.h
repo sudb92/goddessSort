@@ -1,5 +1,5 @@
-#ifndef BB10det_h
-#define BB10det_h
+#ifndef BB10DET_H
+#define BB10DET_H
 
 #include <vector>
 

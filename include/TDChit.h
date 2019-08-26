@@ -1,5 +1,5 @@
-#ifndef TDChit_h
-#define TDChit_h
+#ifndef TDCHIT_H
+#define TDCHIT_H
 
 class TDChit {
 

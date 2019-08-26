@@ -1,5 +1,5 @@
-#ifndef SX3det_h
-#define SX3det_h
+#ifndef SX3DET_H
+#define SX3DET_H
 
 #include <vector>
 

@@ -1,5 +1,15 @@
-#ifndef TypeDef_h
-#define TypeDef_h
+#ifndef TYPEDEF_H
+#define TYPEDEF_H
+
+#include <cassert>
+
+#define ASSERT_WITH_MESSAGE(condition, message)                                \
+    do {                                                                       \
+        if(!(condition)) {                                                     \
+            std::cout << PrintOutput(message, "red") << std::endl;             \
+        }                                                                      \
+        assert((condition));                                                   \
+    } while(false)
 
 struct QQQ5RingIn{
 	//All values read in

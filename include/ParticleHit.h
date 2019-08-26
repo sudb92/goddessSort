@@ -1,5 +1,5 @@
-#ifndef ParticleHit_h
-#define ParticleHit_h
+#ifndef PARTICLEHIT_H
+#define PARTICLEHIT_H
 
 #include <vector>
 

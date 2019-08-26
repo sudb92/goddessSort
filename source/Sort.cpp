@@ -105,30 +105,13 @@ std::vector<int> ReadValue;
 int main(int argc, char *argv[]){
 
 	int StartClock = clock();
-	std::cout << PrintOutput("Running GODDESS sort","yellow") << std::endl;
-	std::cout << PrintOutput("Creating shared root libraries...","yellow") << std::endl;
+	std::cout << PrintOutput("Running GODDESS sort", "yellow") << std::endl;
+	std::cout << PrintOutput("Creating shared root libraries...", "yellow") << std::endl;
 
-//	//Create shared libraries in ROOT for adding custom class to tree
-//	gROOT->ProcessLine(".L include/ParticleHit.h++"); //Should create separately for QQQ5 downstreams, if QQQ5d are not in ParticleHit
-//	gSystem->Load("include/ParticleHit_h.so");		  //................................................................
-//
-//	gROOT->ProcessLine(".L include/IChit.h++");
-//	gSystem->Load("include/IChit_h.so");
-//
-//	gROOT->ProcessLine(".L include/TDChit.h++");
-//	gSystem->Load("include/TDChit_h.so");
-//
-//	gROOT->ProcessLine(".L include/SX3det.h++");
-//	gSystem->Load("include/SX3det_h.so");
-//
-//	gROOT->ProcessLine(".L include/BB10det.h++");
-//	gSystem->Load("include/BB10det_h.so");
+	std::string DataFileName, RootFileName;
 
-	std::string DataFileName;
-	std::string RootFileName;
-
-	std::cout << PrintOutput("Number of files to be sort = ","yellow")<<RunList.size()<<std::endl;
-	std::cout << PrintOutput("Begin data processing loop","yellow")<<std::endl;
+	std::cout << PrintOutput("Number of files to be sort = ", "yellow") << RunList.size() << std::endl;
+	std::cout << PrintOutput("Begin data processing loop", "yellow") << std::endl;
 
 	int rn;
 
@@ -154,21 +137,11 @@ int main(int argc, char *argv[]){
 
 		// Open the file. Check whether file opened successfully.
 		std::ifstream file(DataFileName.c_str(), std::ios::binary);
-		if (!file.is_open()){
-			std::cout << PrintOutput("************************************************","yellow")<<std::endl;
-			std::cout << PrintOutput("File not found:  ","red") << DataFileName << std::endl;
-			//continue;
-			//exit(1);
-		}
+		ASSERT_WITH_MESSAGE(file.is_open(), Form("File not found: %s", DataFileName.c_str()));
 
 		//Create and Open Root file to store data in. Check for success.
 		TFile *RootFile = new TFile(RootFileName.c_str(),"RECREATE");
-		if(!RootFile->IsOpen()){
-			printf("Root File did not open!");
-			std::cout << PrintOutput("Root File did not open : ","red") << RootFileName << std::endl;
-			//continue;
-			//exit(1);
-		}
+		ASSERT_WITH_MESSAGE(RootFile->IsOpen(), Form("Root File did not open: %s", RootFileName.c_str()));
 
 		std::cout << PrintOutput("************************************************","yellow")<<std::endl;
 		std::cout << PrintOutput("Sorting data file : ","green")<< DataFileName<<"\t["<<rn+1<<"/"<<RunList.size()<<"]"<< std::endl;
@@ -189,16 +162,30 @@ int main(int argc, char *argv[]){
 		//Declare detectors
 
 		//Upstream QQQQ5
-		ParticleHit *Qu1 = new ParticleHit();
-		ParticleHit *Qu2 = new ParticleHit();
-		ParticleHit *Qu3 = new ParticleHit();
-		ParticleHit *Qu4 = new ParticleHit();
+		ParticleHit *Qu[4];
+		for(int i = 0; i < 4; i++) {
+		    Qu[i] = new ParticleHit();
+		}
+
+		//Downstream QQQ5
+		ParticleHit *Qd[3];
+		for(int i = 0; i < 3; i++) {
+		    Qd[i] = new ParticleHit();
+		}
 
 		//IC
 		IChit *IC = new IChit();
 
 		//TDC
 		TDChit *TDC = new TDChit();
+
+		// Upstream and Downstream SX3
+        SX3det *SX3d[12];
+		SX3det *SX3u[12];
+        for(int i = 0; i < 12; i++) {
+            SX3d[i] = new SX3det();
+            SX3u[i] = new SX3det();
+        }
 
 		//Upstream SX3
 		SX3det *SX3u1 = new SX3det();
@@ -214,7 +201,7 @@ int main(int argc, char *argv[]){
 		SX3det *SX3u11 = new SX3det();
 		SX3det *SX3u12 = new SX3det();
 
-		//Downstream Sx3
+		//Downstream SX3
 		SX3det *SX3d1 = new SX3det();
 		SX3det *SX3d2 = new SX3det();
 		SX3det *SX3d3 = new SX3det();
@@ -229,6 +216,10 @@ int main(int argc, char *argv[]){
 		SX3det *SX3d12 = new SX3det();
 
 		//BB10
+		BB10det *BB10[8];
+		for(int i = 0; i < 8; i++) {
+		    BB10[i] = new BB10det();
+		}
 		BB10det *BB10_1 = new BB10det();
 		BB10det *BB10_2 = new BB10det();
 		BB10det *BB10_3 = new BB10det();
@@ -238,22 +229,14 @@ int main(int argc, char *argv[]){
 		BB10det *BB10_7 = new BB10det();
 		BB10det *BB10_8 = new BB10det();
 
-		//Downstream QQQ5-------------->Should it be different than ParticleHit?
-		ParticleHit *Qd1 = new ParticleHit();
-		ParticleHit *Qd2 = new ParticleHit();
-		ParticleHit *Qd3 = new ParticleHit();
-
-
-
 		//Setup Tree
 		TTree *Tree = new TTree("Tree","Data Tree");
 
 		//Declaring Branches for different detectors
 		//Upstream QQQ5
-		Tree->Branch("Qu1", &Qu1);
-		Tree->Branch("Qu2", &Qu2);
-		Tree->Branch("Qu3", &Qu3);
-		Tree->Branch("Qu4", &Qu4);
+		for(int i = 0; i < 4; i++) {
+		    Tree->Branch(Form("Qu%d", i), &Qu[i]);
+		}
 
 		//IC
 		Tree->Branch("IC", &IC);
@@ -300,9 +283,9 @@ int main(int argc, char *argv[]){
 		Tree->Branch("BB10_8",&BB10_8);
 
 		//Downstream QQQ5
-		Tree->Branch("Qd1",&Qd1);
-		Tree->Branch("Qd2",&Qd2);
-		Tree->Branch("Qd3",&Qd3);
+        for(int i = 0; i < 3; i++) {
+            Tree->Branch(Form("Qd%d", i), &Qd[i]);
+        }
 
 		//This is the main loop over the file
 		while(!file.eof()){
@@ -796,14 +779,12 @@ int main(int argc, char *argv[]){
 						}//End of Sub-event loop
 
 						//Reset Detector values
-						Qu1->ResetAll();
-						Qu2->ResetAll();
-						Qu3->ResetAll();
-						Qu4->ResetAll();
-
-						Qd1->ResetAll();
-						Qd2->ResetAll();
-						Qd3->ResetAll();
+						for(int i = 0; i < 4; i++) {
+						    Qu[i]->ResetAll();
+						}
+						for(int i = 0; i < 3; i++) {
+						    Qd[i]->ResetAll();
+						}
 
 						IC->ResetAll();
 						TDC->ResetAll();
@@ -814,7 +795,7 @@ int main(int argc, char *argv[]){
 						SX3check=false;
 
 						//Call Detector Processors
-						Success = ProcessQQQ5(*Qu1,*Qu2,*Qu3,*Qu4,*Qd1,*Qd2,*Qd3);//Added the downstream
+						Success = ProcessQQQ5(Qu, Qd, QuIn, QdIn);//Added the downstream
 						ICyeah = ProcessIC(*IC, ICdEin, ICEin);
 
 

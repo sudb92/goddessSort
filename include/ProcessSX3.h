@@ -1,8 +1,8 @@
-#ifndef ProcessSX3_h
-#define ProcessSX3_h
+#ifndef PROCESSSX3_H
+#define PROCESSSX3_H
 
+#include "Calibrations.h"
 #include "SX3det.h"
-#include "SX3gains.h"
 
 #include <iostream>
 

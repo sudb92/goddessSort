@@ -1,5 +1,5 @@
-#ifndef IChit_h
-#define IChit_h
+#ifndef ICHIT_H
+#define ICHIT_H
 
 #include <TObject.h>
 
