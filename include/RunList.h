@@ -1,6 +1,8 @@
 #ifndef RUNLIST_H
 #define RUNLIST_H
 
+#include "TypeDef.h"
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -10,16 +12,16 @@ public:
     RunList();
     ~RunList();
 
-    std::pair<std::vector<std::string>, std::vector<std::string> > GetListOfRuns() {return std::make_pair(listOfRuns, listOfOutputs);}
+    std::vector<fileListStruct> GetListOfRuns() {return listOfRuns;}
 
 private:
     void CompileListOfRuns();
     void GetAllRuns();
 
+    std::vector<fileListStruct> listOfRuns;
+
     std::string pathToFolders;
     std::string outputPath;
-    std::vector<std::string> listOfRuns;
-    std::vector<std::string> listOfOutputs;
     bool useAllFolders;
     std::string pathPrefix;
     std::string ldfPrefix;

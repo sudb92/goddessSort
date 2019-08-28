@@ -82,7 +82,7 @@ std::vector<int> ReadChannel;
 std::vector<int> ReadValue;
 
 int main(int argc, char *argv[]) {
-    Sort* sort = new Sort();
+    auto* sort = new Sort();
 
     return 0;
 }
@@ -95,12 +95,10 @@ Sort::Sort() {
 
     std::cout << PrintOutput("Reading RunList", "green") << std::endl;
 
-    RunList* runList = new RunList();
-    auto inputOutputList = runList->GetListOfRuns();
-    auto inputList = inputOutputList.first;
-    auto outputList = inputOutputList.second;
+    auto* runList = new RunList();
+    auto fileList = runList->GetListOfRuns();
 
-    std::cout << PrintOutput("Number of files to be sort = ", "yellow") << inputList.size() << std::endl;
+    std::cout << PrintOutput("Number of files to be sort = ", "yellow") << fileList.size() << std::endl;
 
     Calibrations* calibrations = Calibrations::Instance();
 
@@ -108,16 +106,18 @@ Sort::Sort() {
 
 
     // Loop through all files in the run list
-    for(int run = 0; run < inputList.size(); run++) {
+    int numRuns = 0;
+    for(auto run: fileList) {
         // Open the file. Check whether file opened successfully
-        std::ifstream file(inputList[run].c_str(), std::ios::binary);
-        ASSERT_WITH_MESSAGE(file.is_open(), Form("File not found: %s", DataFileName.c_str()));
+        std::ifstream file(run.ldfPath.c_str(), std::ios::binary);
+        ASSERT_WITH_MESSAGE(file.is_open(), Form("File not found: %s", run.ldfPath.c_str()));
 
         //Create and Open Root file to store data in. Check for success.
-        TFile *outputFile = new TFile(outputList[run].c_str(), "RECREATE");
-        ASSERT_WITH_MESSAGE(outputFile->IsOpen(), Form("Root output file did not open: %s", outputList[run].c_str()));
+        TFile *outputFile = new TFile(run.rootPath.c_str(), "RECREATE");
+        ASSERT_WITH_MESSAGE(outputFile->IsOpen(), Form("Root output file did not open: %s", run.rootPath.c_str()));
 
-        std::cout << PrintOutput(Form("Sorting data file [%d/%ld]", run + 1, inputList.size()), "green") << std::endl;
+        std::cout << PrintOutput(Form("Unpacking data file [%d/%ld]", ++numRuns, fileList.size()), "green") << std::endl;
+        std::cout << PrintOutput(Form("Reading .ldf file: %s", run.ldfPath.c_str()), "cyan") << std::endl;
 
         //Setup Tree
         TTree *tree = new TTree("data", "Data Tree");
@@ -708,17 +708,11 @@ Sort::Sort() {
 
         file.close();
         RunClock = clock();
-        std::cout << "\r" << std::flush;
-        std::cout << PrintOutput("Events Processed", "green") << " = " << NumberEvents << "\t";
-        std::cout << PrintOutput("Time", "green") << " = " << Form("%.02f", (RunClock-StartClock)/double(CLOCKS_PER_SEC)) << " seconds" << std::flush;
-        std::cout << std::endl;
-        //std::cout << "Number of events processed = " << NumberEvents << std::endl;
-        std::cout << PrintOutput("Finished Sorting:  ", "green") << DataFileName << std::endl;
-        std::cout << PrintOutput("Created root file : ", "green") << outputFile->GetName()<< std::endl;
 
-        //}//end of RunList Loop
-
-        std::cout << PrintOutput("************************************************", "yellow") << std::endl;
-        std::cout << PrintOutput("Finished Sorting ", "yellow") << run << PrintOutput(" files!", "yellow") <<  std::endl;
+        std::cout << PrintOutput("Finished Unpacking Run: ", "cyan") << run.runNumber << '\t';
+        std::cout << PrintOutput("Time", "cyan") << " = " << Form("%.02f", (RunClock-StartClock)/double(CLOCKS_PER_SEC)) << " seconds" << std::flush << std::endl;
+        std::cout << PrintOutput("Created ROOT file : ", "cyan") << outputFile->GetName()<< std::endl;
     }
+    std::cout << PrintOutput("************************************************", "yellow") << std::endl;
+    std::cout << PrintOutput("Finished Unpacking ", "yellow") << fileList.size() << PrintOutput(" files!", "yellow") <<  std::endl;
 }

@@ -12,17 +12,18 @@ RunList::RunList() {
     else GetAllRuns();
 }
 
-RunList::~RunList() {}
+RunList::~RunList() = default;
 
 void RunList::CompileListOfRuns() {
     std::vector<std::string> listNumbers = {"0255"};
 
+    listOfRuns.clear();
     for(auto run: listNumbers) {
         std::string ldfPath = pathToFolders + pathPrefix + run + '/' + ldfPrefix + run + ".ldf";
         std::string rootPath = outputPath + pathPrefix + run + ".root";
-        std::cout << '\t' << ldfPath << std::endl;
-        listOfRuns.push_back(ldfPath);
-        listOfOutputs.push_back(rootPath);
+
+        fileListStruct indFile = {pathToFolders, outputPath, ldfPath, rootPath, run};
+        listOfRuns.push_back(indFile);
     }
 }
 

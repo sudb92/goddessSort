@@ -19,7 +19,7 @@ link_directories(${ROOT_LIBRARY_DIR})
 # NB: headers are included so they will show up in IDEs
 #
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-file(GLOB sources ${PROJECT_SOURCE_DIR}/source/*.cpp)
+file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cpp)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.h)
 
 #----------------------------------------------------------------------------

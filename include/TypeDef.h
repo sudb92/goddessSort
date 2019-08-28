@@ -2,6 +2,7 @@
 #define TYPEDEF_H
 
 #include <cassert>
+#include <string>
 
 #define ASSERT_WITH_MESSAGE(condition, message)                                \
     do {                                                                       \
@@ -10,6 +11,14 @@
         }                                                                      \
         assert((condition));                                                   \
     } while(false)
+
+typedef struct fileListStruct {
+    std::string pathToFolder;
+    std::string outputPath;
+    std::string ldfPath;
+    std::string rootPath;
+    std::string runNumber;
+} fileListStruct;
 
 typedef struct QQQ5Ring {
     int channel;

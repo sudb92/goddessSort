@@ -15,8 +15,12 @@ unsigned int ExtractBits(unsigned int Source, int Begin, int Length){
 		ColorCode = 32;
 	} else if(Color.compare("yellow") == 0){
 		ColorCode = 33;
-	} else if(Color.compare("blue") == 0){
-		ColorCode = 34;
+	} else if(Color.compare("blue") == 0) {
+        ColorCode = 34;
+    } else if(Color.compare("magenta") == 0) {
+        ColorCode = 35;
+    } else if(Color.compare("cyan") == 0) {
+	    ColorCode = 36;
 	} else {
 		std::cout << Form("Output Color not recognized : %s", Color.c_str()) << std::endl;
 		return Form("%s", Output.c_str());
