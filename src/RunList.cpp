@@ -15,7 +15,7 @@ RunList::RunList() {
 RunList::~RunList() = default;
 
 void RunList::CompileListOfRuns() {
-    std::vector<std::string> listNumbers = {"0255"};
+    std::vector<std::string> listNumbers = {"0255", "0256"};
 
     listOfRuns.clear();
     for(auto run: listNumbers) {

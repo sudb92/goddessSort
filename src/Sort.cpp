@@ -117,7 +117,7 @@ Sort::Sort() {
         ASSERT_WITH_MESSAGE(outputFile->IsOpen(), Form("Root output file did not open: %s", run.rootPath.c_str()));
 
         std::cout << PrintOutput(Form("Unpacking data file [%d/%ld]", ++numRuns, fileList.size()), "green") << std::endl;
-        std::cout << PrintOutput(Form("Reading .ldf file: %s", run.ldfPath.c_str()), "cyan") << std::endl;
+        std::cout << PrintOutput("Reading .ldf file: ", "cyan") << run.ldfPath << std::endl;
 
         //Setup Tree
         TTree *tree = new TTree("data", "Data Tree");
@@ -136,7 +136,7 @@ Sort::Sort() {
 
         tree->Branch("icdE", &fICdE, "icdE/I");
         tree->Branch("icE", &fICE, "icE/I");
-        tree->Branch("tdc", &fTDC, "TDC/I");
+        tree->Branch("tdc", &fTDC, "tdc/I");
 
         //Declare some variables
         int NumberBuffer = 0;
@@ -640,7 +640,6 @@ Sort::Sort() {
                             fQQQ5Angle[fQQQ5Mul] = QDetect.angle;
                             fQQQ5Mul++;
                         }
-
 
                         fICdE = icdE;
                         fICE = icE;
