@@ -4,6 +4,7 @@
 #include "Calibrations.h"
 #include "TypeDef.h"
 
+#include <algorithm>
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
