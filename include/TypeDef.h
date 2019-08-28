@@ -11,31 +11,32 @@
         assert((condition));                                                   \
     } while(false)
 
-struct QQQ5RingIn{
-	//All values read in
-	float ReadE[32];
-	int Echan[32];
+typedef struct QQQ5Ring {
+    int channel;
+    int detector;
+    int ring;
+    int adc;
+} QQQ5Ring;
 
-	float RawE[32];
-	int Eid[32];
+typedef struct QQQ5Sector {
+    int channel;
+    int detector;
+    int sector;
+    int adc;
+} QQQ5Sector;
 
-	int Emult;
-};
-
-struct QQQ5SectorIn{
-	//All values read in
-	float ReadE[4];
-	int Echan[4];
-
-	float RawE[4];
-	int Eid[4];
-
-	int Emult;
-};
-
-struct QQQ5ParticleIn{
-	QQQ5RingIn Ring;
-	QQQ5SectorIn Sector;
-};
+typedef struct QQQ5Detector {
+    bool upstream;
+    int detector;
+    int ring;
+    int ringChannel;
+    int sector;
+    int sectorChannel;
+    int ringEnergyADC;
+    double ringEnergy;
+    int sectorEnergyADC;
+    double sectorEnergy;
+    double angle;
+} QQQ5Detector;
 
 #endif

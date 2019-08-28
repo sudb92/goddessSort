@@ -1,94 +1,54 @@
 #include "ProcessQQQ5.h"
 
-using namespace std;
-
-bool ProcessQQQ5(ParticleHit *Qu[4], ParticleHit *Qd[3], QQQ5ParticleIn *QuIn, QQQ5ParticleIn *QdIn){
-
+std::vector<QQQ5Detector> ProcessQQQ5(std::vector<QQQ5Ring> ring_, std::vector<QQQ5Sector> sector_, bool up) {
     Calibrations* calibrations = Calibrations::Instance();
     auto QdGains = calibrations->GetQQQ5DownCalibrations();
     auto QuGains = calibrations->GetQQQ5UpCalibrations();
     auto QQQAngles = calibrations->GetQQQ5Angles();
 
-	float RandomOffset;
+    std::map<int, std::map<int, std::pair<double, double> > > QGains;
+    QGains = up ? QuGains : QdGains;
 
-    float BeamEnergy = 227.0;
-	float Ta = BeamEnergy*1000;
-	float Tb = 0;
+    std::vector<QQQ5Detector> outputQQQ5_;
 
-    float Ma = 29.97831; //Beam mass
-    float Mx = 2.01410; //Target Mass
+    // Remove duplicates in the data stream (based on channel number)
+    // No idea why this is happening in the sectors
+    RemoveQQQ5RingDuplicates(ring_);
+    RemoveQQQ5SectorDuplicates(sector_);
 
-    float Mb = 1.00782; //Ejectile mass
-    float My = 30.97376; // Recoil mass
+    for(auto ring: ring_) {
+        for(auto sector: sector_) {
+            if(ring.detector == sector.detector) {
+                int detector = ring.detector;
+                int ringNumber = ring.ring;
+                int ringChannel = ring.channel;
+                int sectorNumber = sector.sector;
+                int sectorChannel = sector.channel;
+                int ringADC = ring.adc;
+                int sectorADC = sector.adc;
 
-    float Qgs = 10.087; //Ground State Q-Value (MeV)
+                double ringEnergy = QGains[detector][ringNumber].first + static_cast<double>(ringADC)*QGains[detector][ringNumber].second;
+                double sectorEnergy = QGains[detector][sectorNumber + 32].first + static_cast<double>(sectorADC)*QGains[detector][sectorNumber + 32].second;
 
-	float Energy, Exe;
+                double angle = QQQAngles[ringNumber];
 
-	//Upstream QQQ5
-	for(int i = 0; i < 4; i++) {
-	    Qu[i]->SetRmult(QuIn[i].Ring.Emult);
-	    Qu[i]->SetSmult(QuIn[i].Sector.Emult);
-	}
-
-	//Downstream QQQ5
-    for(int i = 0; i < 3; i++) {
-        Qd[i]->SetRmult(QdIn[i].Ring.Emult);
-        Qd[i]->SetSmult(QdIn[i].Sector.Emult);
+                QQQ5Detector hit = {up, detector, ringNumber, ringChannel, sectorNumber, sectorChannel, ringADC, ringEnergy, sectorADC, sectorEnergy, angle};
+                outputQQQ5_.push_back(hit);
+            }
+        }
     }
 
-	//Upstream QQQ5
-	for(int k = 0; k < 4; k++){
-		for(int i = 0; i < QuIn[k].Ring.Emult; i++){
-		    Qu[k]->SetEnergy(QuIn[k].Ring.ReadE[i]);
-		    Qu[k]->SetRing(QuIn[k].Ring.Echan[i]);
-		    // Calibrate
-            Energy = QuGains[k][QuIn[k].Ring.Echan[i] - 1].first + QuIn[k].Ring.ReadE[i]*QuGains[k][QuIn[k].Ring.Echan[i] - 1].second;
-            Qu[k]->SetEnergy(Energy);
-            //Get Excitation Energy
-            Tb = Energy;
-            Exe = (Qgs*1000.0) - (1.0/My)*((My + Mb)*Tb - (My - Ma)*Ta - (2.0*sqrt(Ma*Mb*Ta*Tb)*cos(QQQAngles[QuIn[k].Ring.Echan[i] - 1]*(M_PI/180.0))));
-            Qu[k]->SetEx(Exe);
-            Qu[k]->SetAngle(QQQAngles[QuIn[k].Ring.Echan[i]]);
-		}
-		for(int i = 0; i < QuIn[k].Sector.Emult; i++){
-            Qu[k]->SetRawBackEnergy(QuIn[k].Sector.ReadE[i]);
-            Qu[k]->SetSector(QuIn[k].Sector.Echan[i]);
-
-            Energy = QuGains[k][32 + QuIn[k].Ring.Echan[i] - 1].first + QuIn[k].Sector.ReadE[i]*QuGains[k][32 + QuIn[k].Ring.Echan[i] - 1].second;
-            // Energy = Qu1Gains[32 + QuIn[k].Sector.Echan[i] - 1][0] + ((QuIn[k].Sector.ReadE[i] - QuPedestals[QuIn[k].Sector.Echan[i] - 1]))*Qu1Gains[32 + QuIn[k].Ring.Echan[i] - 1][1];
-            Qu[k]->SetBackEnergy(Energy);
-		}
-
-	}	
-
-	//Downstream QQQ5
-	for(int k = 0; k < 3; k++){
-		for(int i = 0; i < QdIn[k].Ring.Emult; i++){
-            Qd[k]->SetEnergy(QdIn[k].Ring.ReadE[i]);
-            Qd[k]->SetRing(QuIn[k].Ring.Echan[i]);
-            //Calibrate
-            Energy = QdGains[k][QdIn[k].Ring.Echan[i] - 1].first + QdIn[k].Ring.ReadE[i]*QdGains[k][QdIn[k].Ring.Echan[i] - 1].second;
-            // Energy = Qd1Gains[QdIn[j].Ring.Echan[l]-1][0]+(QdIn[j].Ring.ReadE[l])*Qd1Gains[QdIn[j].Ring.Echan[l]-1][1];
-            Qd[k]->SetEnergy(Energy);
-            //Get Excitation Energy
-            Tb = Energy;
-            Exe = (Qgs*1000.0) -  (1.0/My)*((My+Mb)*Tb - (My-Ma)*Ta - (2.0*sqrt(Ma*Mb*Ta*Tb)*cos(QQQAngles[QdIn[k].Ring.Echan[i] - 1]*(M_PI/180.0))));
-            Qd[k]->SetEx(Exe);
-            Qd[k]->SetAngle(QQQAngles[QdIn[k].Ring.Echan[i]]);
-		}
-		for(int i = 0; i < QdIn[k].Sector.Emult; i++){
-            Qd[k]->SetRawBackEnergy(QdIn[k].Sector.ReadE[i]);
-            Qd[k]->SetSector(QdIn[k].Sector.Echan[i]);
-
-            Energy = QdGains[k][32 + QuIn[k].Ring.Echan[i] - 1].first + QdIn[k].Sector.ReadE[i]*QdGains[k][32 + QdIn[k].Ring.Echan[i] - 1].second;
-            // Energy = Qd1Gains[32 + QuIn[j].Sector.Echan[l] - 1][0] + ((QdIn[j].Sector.ReadE[l] - QdPedestals[QdIn[j].Sector.Echan[j] - 1]))*Qd1Gains[32 + QdIn[j].Ring.Echan[l] - 1][1];
-            Qd[k]->SetBackEnergy(Energy);
-		}
-	}
-
-	return true;
+    return outputQQQ5_;
 }
 
+void RemoveQQQ5RingDuplicates(std::vector<QQQ5Ring>& ring_) {
+    std::sort(ring_.begin(), ring_.end(), predRing);
+    auto last = std::unique(ring_.begin(), ring_.end(), compRing);
+    ring_.erase(last, ring_.end());
+}
 
-
+void RemoveQQQ5SectorDuplicates(std::vector<QQQ5Sector>& sector_) {
+    std::sort(sector_.begin(), sector_.end(), predSector);
+    auto last = std::unique(sector_.begin(), sector_.end(), compSector);
+    sector_.erase(last, sector_.end());
+}

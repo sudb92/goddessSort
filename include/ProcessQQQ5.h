@@ -2,14 +2,18 @@
 #define PROCESSQQQ5_H
 
 #include "Calibrations.h"
-#include "ParticleHit.h"
 #include "TypeDef.h"
 
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
 
-bool ProcessQQQ5(ParticleHit *Qu[4], ParticleHit *Qd[3], QQQ5ParticleIn *QuIn, QQQ5ParticleIn *QdIn);
-//std::vector<std::vector<std::vector<float>>> CalculateAngles();
+auto compRing = [] (const QQQ5Ring& lhs, const QQQ5Ring& rhs) {return lhs.channel == rhs.channel;};
+auto predRing = [] (const QQQ5Ring& lhs, const QQQ5Ring& rhs) {return lhs.channel < rhs.channel;};
+auto compSector = [] (const QQQ5Sector& lhs, const QQQ5Sector& rhs) {return lhs.channel == rhs.channel;};
+auto predSector = [] (const QQQ5Sector& lhs, const QQQ5Sector& rhs) {return lhs.channel < rhs.channel;};
+void RemoveQQQ5RingDuplicates(std::vector<QQQ5Ring>& ring_);
+void RemoveQQQ5SectorDuplicates(std::vector<QQQ5Sector>& sector_);
+std::vector<QQQ5Detector> ProcessQQQ5(std::vector<QQQ5Ring> ring_, std::vector<QQQ5Sector> sector_, bool up);
 
 #endif

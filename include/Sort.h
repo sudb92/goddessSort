@@ -2,13 +2,10 @@
 #define SORT_H
 
 #include "BB10det.h"
-#include "IChit.h"
-#include "ParticleHit.h"
-#include "ProcessIC.h"
 #include "ProcessQQQ5.h"
 #include "ProcessSX3.h"
+#include "RunList.h"
 #include "SX3det.h"
-#include "TDChit.h"
 #include "TypeDef.h"
 #include "Utilities.h"
 
@@ -30,23 +27,33 @@
 #include <TSystem.h>
 #include <TTree.h>
 
-extern QQQ5ParticleIn Qu1in;
-extern QQQ5ParticleIn Qu2in;
-extern QQQ5ParticleIn Qu3in;
-extern QQQ5ParticleIn Qu4in;
-
-extern QQQ5ParticleIn Qd1in;
-extern QQQ5ParticleIn Qd2in;
-extern QQQ5ParticleIn Qd3in;
-
-extern QQQ5ParticleIn QuIn[4];
-extern QQQ5ParticleIn QdIn[3];
-
-extern int ICdEin;
-extern int ICEin;
-extern int TDCin;
-
 extern float BeamEnergy,Ma,Mb,Mx,Qgs;
 extern float My;
+
+class Sort {
+public:
+    Sort();
+
+private:
+
+    // Tree variables
+    int fQQQ5Mul;
+    bool fQQQ5Upstream[256];
+    int fQQQ5Det[256];
+    int fQQQ5Ring[256];
+    int fQQQ5Sector[256];
+    int fQQQ5RingADC[256];
+    float fQQQ5RingEnergy[256];
+    int fQQQ5SectorADC[256];
+    float fQQQ5SectorEnergy[256];
+    float fQQQ5Angle[256];
+    int fQQQ5RingMult;
+    int fQQQ5SectorMult;
+
+    int fICdE;
+    int fICE;
+    int fTDC;
+
+};
 
 #endif

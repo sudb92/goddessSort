@@ -21,6 +21,7 @@ Calibrations::Calibrations() {
 }
 
 void Calibrations::ReadQQQ5DownCalibrations() {
+    std::cout << PrintOutput("Reading QQQ5DownCalibrations.dat", "green") << std::endl;
     std::ifstream in("QQQ5DownCalibrations.dat");
     ASSERT_WITH_MESSAGE(in.is_open(), "Could not open QQQ5DownCalibrations.dat");
 
@@ -35,6 +36,7 @@ void Calibrations::ReadQQQ5DownCalibrations() {
 }
 
 void Calibrations::ReadQQQ5DownPedestals() {
+    std::cout << PrintOutput("Reading QQQ5DownPedestals.dat", "green") << std::endl;
     std::ifstream in("QQQ5DownPedestals.dat");
     ASSERT_WITH_MESSAGE(in.is_open(), "Could not open QQQ5DownPedestals.dat");
 
@@ -49,6 +51,7 @@ void Calibrations::ReadQQQ5DownPedestals() {
 }
 
 void Calibrations::ReadQQQ5UpCalibrations() {
+    std::cout << PrintOutput("Reading QQQ5UpCalibrations.dat", "green") << std::endl;
     std::ifstream in("QQQ5UpCalibrations.dat");
     ASSERT_WITH_MESSAGE(in.is_open(), "Could not open QQQ5UpCalibrations.dat");
 
@@ -63,6 +66,7 @@ void Calibrations::ReadQQQ5UpCalibrations() {
 }
 
 void Calibrations::ReadQQQ5UpPedestals() {
+    std::cout << PrintOutput("Reading QQQ5UpPedestals.dat", "green") << std::endl;
     std::ifstream in("QQQ5UpPedestals.dat");
     ASSERT_WITH_MESSAGE(in.is_open(), "Could not open QQQ5UpPedestals.dat");
 
@@ -77,6 +81,7 @@ void Calibrations::ReadQQQ5UpPedestals() {
 }
 
 void Calibrations::ReadQQQ5Angles() {
+    std::cout << PrintOutput("Reading QQQ5Angles.dat", "green") << std::endl;
     std::ifstream in("QQQ5Angles.dat");
     ASSERT_WITH_MESSAGE(in.is_open(), "Could not open QQQ5Angles.dat");
 
@@ -91,7 +96,8 @@ void Calibrations::ReadQQQ5Angles() {
 }
 
 void Calibrations::ReadSuperX3UpCalibrations() {
-    std::ifstream in("SuperX3Calibrations.dat");
+    std::cout << PrintOutput("Reading SuperX3UpCalibrations.dat", "green") << std::endl;
+    std::ifstream in("SuperX3UpCalibrations.dat");
     ASSERT_WITH_MESSAGE(in.is_open(), "Could not open SuperX3UpCalibrations.dat");
 
     int det, strip, back;
@@ -105,6 +111,7 @@ void Calibrations::ReadSuperX3UpCalibrations() {
 }
 
 void Calibrations::ReadSuperX3UpPedestals() {
+    std::cout << PrintOutput("Reading SuperX3UpPedestals.dat", "green") << std::endl;
     std::ifstream in("SuperX3UpPedestals.dat");
     ASSERT_WITH_MESSAGE(in.is_open(), "Could not open SuperX3UpPedestals.dat");
 
