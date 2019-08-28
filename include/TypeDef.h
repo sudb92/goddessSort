@@ -33,10 +33,10 @@ typedef struct QQQ5Detector {
     int sector;
     int sectorChannel;
     int ringEnergyADC;
-    double ringEnergy;
+    float ringEnergy;
     int sectorEnergyADC;
-    double sectorEnergy;
-    double angle;
+    float sectorEnergy;
+    float angle;
 } QQQ5Detector;
 
 #endif

@@ -125,14 +125,14 @@ Sort::Sort() {
         tree->Branch("QQQ5Upstream", &fQQQ5Upstream, "QQQ5Upstream[QQQ5Mul]/B");
         tree->Branch("QQQ5Det", &fQQQ5Det, "QQQ5Det[QQQ5Mul]/I");
         tree->Branch("QQQ5Ring", &fQQQ5Ring, "QQQ5Ring[QQQ5Mul]/I");
+        tree->Branch("QQQ5RingChannel", &fQQQ5RingChannel, "QQQ5RingChannel[QQQ5Mul]/I");
         tree->Branch("QQQ5Sector", &fQQQ5Sector, "QQQ5Sector[QQQ5Mul]/I");
+        tree->Branch("QQQ5SectorChannel", &fQQQ5SectorChannel, "QQQ5SectorChannel[QQQ5Mul]/I");
         tree->Branch("QQQ5RingADC", &fQQQ5RingADC, "QQQ5RingADC[QQQ5Mul]/I");
         tree->Branch("QQQ5RingEnergy", &fQQQ5RingEnergy, "QQQ5RingEnergy[QQQ5Mul]/F");
         tree->Branch("QQQ5SectorADC", &fQQQ5SectorADC, "QQQ5SectorADC[QQQ5Mul]/I");
         tree->Branch("QQQ5SectorEnergy", &fQQQ5SectorEnergy, "QQQ5SectorEnergy[QQQ5Mul]/F");
         tree->Branch("QQQ5Angle", &fQQQ5Angle, "QQQ5Angle[QQQ5Mul]/F");
-        tree->Branch("QQQ5RingMult", &fQQQ5RingMult, "QQQ5RingMult/I");
-        tree->Branch("QQQ5SectorMult", &fQQQ5SectorMult, "QQQ5SectorMult/I");
 
         tree->Branch("icdE", &fICdE, "icdE/I");
         tree->Branch("icE", &fICE, "icE/I");
@@ -182,6 +182,8 @@ Sort::Sort() {
 
                     } else { //End of the Event
 
+                        std::vector<QQQ5Ring> QdRing_;
+                        std::vector<QQQ5Sector> QdSector_;
                         std::vector<QQQ5Ring> QuRing_;
                         std::vector<QQQ5Sector> QuSector_;
 
@@ -195,12 +197,20 @@ Sort::Sort() {
 
                             if(channel <= 128 && adc > QQQThreshold) { // QQQ5 upstream front (rings)
                                 int detector = static_cast<int>((channel - 1)/32);
-                                QQQ5Ring hit = {channel, detector, channel - 1 - detector * 32, adc};
+                                QQQ5Ring hit = {channel, detector, channel - 1 - detector*32, adc};
                                 QuRing_.push_back(hit);
-                            } else if(channel > 128 && channel <= 144 && adc > QQQThreshold) { // QQQ5 upstream back
+                            } else if(channel > 128 && channel <= 144 && adc > QQQThreshold) { // QQQ5 upstream back (sectors)
                                 int detector = static_cast<int>((channel - 129)/4);
                                 QQQ5Sector hit = {channel, detector, channel - 129 - detector*4, adc};
                                 QuSector_.push_back(hit);
+                            } else if(channel > 496 && channel <= 508 && adc > QQQThreshold) { // QQQ5 downstream back (sectors)
+                                int detector = static_cast<int>((channel - 497)/4);
+                                QQQ5Sector hit = {channel, detector, channel - 497 - detector*4, adc};
+                                QdSector_.push_back(hit);
+                            } else if(channel > 512 && channel <= 608 && adc > QQQThreshold) { // QQQ5 downstream front (rings)
+                                int detector = static_cast<int>((channel - 513)/32);
+                                QQQ5Ring hit = {channel, detector, channel - 513 - detector*32, adc};
+                                QdRing_.push_back(hit);
                             } else if(channel == 739) { //IC dE
                                  icdE = adc;
                             } else if(channel == 740){ //IC E
@@ -588,35 +598,6 @@ Sort::Sort() {
 //                                BB10_8->IncrementMult();
 //
 //
-//
-//
-//
-//                                //Downstream QQQ5 Front and back
-//                            }else if(ReadChannel[k]>=513 && ReadChannel[k]<=544 && ReadValue[k]>QQQThreshold){ //QQQ5 downstream 1 front
-//                                QdIn[0].Ring.ReadE[QdIn[0].Ring.Emult]=ReadValue[k];
-//                                QdIn[0].Ring.Echan[QdIn[0].Ring.Emult]=ReadChannel[k]-512;
-//                                QdIn[0].Ring.Emult++;
-//                            }else if(ReadChannel[k]>=545 && ReadChannel[k]<=576 && ReadValue[k]>QQQThreshold){ //QQQ5 downstream 2 front
-//                                QdIn[1].Ring.ReadE[QdIn[1].Ring.Emult]=ReadValue[k];
-//                                QdIn[1].Ring.Echan[QdIn[1].Ring.Emult]=ReadChannel[k]-544;
-//                                QdIn[1].Ring.Emult++;
-//                            }else if(ReadChannel[k]>=577 && ReadChannel[k]<=608 && ReadValue[k]>QQQThreshold){ //QQQ5 downstream 3 front
-//                                QdIn[2].Ring.ReadE[QdIn[2].Ring.Emult]=ReadValue[k];
-//                                QdIn[2].Ring.Echan[QdIn[2].Ring.Emult]=ReadChannel[k]-576;
-//                                QdIn[2].Ring.Emult++;
-//                            }else if(ReadChannel[k]>=497 && ReadChannel[k]<=500 && ReadValue[k]>QQQThreshold){ //QQQ5 downstream 1 Back
-//                                QdIn[0].Ring.ReadE[QdIn[0].Ring.Emult]=ReadValue[k];
-//                                QdIn[0].Ring.Echan[QdIn[0].Ring.Emult]=ReadChannel[k]-496;
-//                                QdIn[0].Ring.Emult++;
-//                            }else if(ReadChannel[k]>=501 && ReadChannel[k]<=504 && ReadValue[k]>QQQThreshold){ //QQQ5 downstream 2 Back
-//                                QdIn[1].Ring.ReadE[QdIn[1].Ring.Emult]=ReadValue[k];
-//                                QdIn[1].Ring.Echan[QdIn[1].Ring.Emult]=ReadChannel[k]-500;
-//                                QdIn[1].Ring.Emult++;
-//                            }else if(ReadChannel[k]>=505 && ReadChannel[k]<=508 && ReadValue[k]>QQQThreshold){ //QQQ5 downstream 3 Back
-//                                QdIn[2].Ring.ReadE[QdIn[2].Ring.Emult]=ReadValue[k];
-//                                QdIn[2].Ring.Echan[QdIn[2].Ring.Emult]=ReadChannel[k]-504;
-//                                QdIn[2].Ring.Emult++;
-//
                         }
                         ///////////////////////////
                         // End of Sub-event loop //
@@ -625,23 +606,41 @@ Sort::Sort() {
                         std::vector<QQQ5Detector> QuDetect_;
                         if(!QuRing_.empty() && !QuSector_.empty()) QuDetect_ = ProcessQQQ5(QuRing_, QuSector_, true);
 
-                        if(QuDetect_.empty()) continue;
+                        std::vector<QQQ5Detector> QdDetect_;
+                        if(!QdRing_.empty() && !QdSector_.empty()) QdDetect_ = ProcessQQQ5(QdRing_, QdSector_, false);
+
+                        if(QuDetect_.empty() && QdDetect_.empty()) continue;
 
                         fQQQ5Mul = 0;
-                        for(auto QuDetect: QuDetect_) {
-                            fQQQ5Upstream[fQQQ5Mul] = QuDetect.upstream;
-                            fQQQ5Det[fQQQ5Mul] = QuDetect.detector;
-                            fQQQ5Ring[fQQQ5Mul] = QuDetect.ring;
-                            fQQQ5Sector[fQQQ5Mul] = QuDetect.sector;
-                            fQQQ5RingADC[fQQQ5Mul] = QuDetect.ringEnergyADC;
-                            fQQQ5RingEnergy[fQQQ5Mul] = QuDetect.ringEnergy;
-                            fQQQ5SectorADC[fQQQ5Mul] = QuDetect.sectorEnergyADC;
-                            fQQQ5SectorEnergy[fQQQ5Mul] = QuDetect.sectorEnergy;
-                            fQQQ5Angle[fQQQ5Mul] = QuDetect.angle;
+                        for(auto QDetect: QuDetect_) {
+                            fQQQ5Upstream[fQQQ5Mul] = QDetect.upstream;
+                            fQQQ5Det[fQQQ5Mul] = QDetect.detector;
+                            fQQQ5Ring[fQQQ5Mul] = QDetect.ring;
+                            fQQQ5RingChannel[fQQQ5Mul] = QDetect.ringChannel;
+                            fQQQ5Sector[fQQQ5Mul] = QDetect.sector;
+                            fQQQ5SectorChannel[fQQQ5Mul] = QDetect.sectorChannel;
+                            fQQQ5RingADC[fQQQ5Mul] = QDetect.ringEnergyADC;
+                            fQQQ5RingEnergy[fQQQ5Mul] = QDetect.ringEnergy;
+                            fQQQ5SectorADC[fQQQ5Mul] = QDetect.sectorEnergyADC;
+                            fQQQ5SectorEnergy[fQQQ5Mul] = QDetect.sectorEnergy;
+                            fQQQ5Angle[fQQQ5Mul] = QDetect.angle;
                             fQQQ5Mul++;
                         }
-                        fQQQ5RingMult = QuRing_.size();
-                        fQQQ5SectorMult = QuSector_.size();
+                        for(auto QDetect: QdDetect_) {
+                            fQQQ5Upstream[fQQQ5Mul] = QDetect.upstream;
+                            fQQQ5Det[fQQQ5Mul] = QDetect.detector;
+                            fQQQ5Ring[fQQQ5Mul] = QDetect.ring;
+                            fQQQ5RingChannel[fQQQ5Mul] = QDetect.ringChannel;
+                            fQQQ5Sector[fQQQ5Mul] = QDetect.sector;
+                            fQQQ5SectorChannel[fQQQ5Mul] = QDetect.sectorChannel;
+                            fQQQ5RingADC[fQQQ5Mul] = QDetect.ringEnergyADC;
+                            fQQQ5RingEnergy[fQQQ5Mul] = QDetect.ringEnergy;
+                            fQQQ5SectorADC[fQQQ5Mul] = QDetect.sectorEnergyADC;
+                            fQQQ5SectorEnergy[fQQQ5Mul] = QDetect.sectorEnergy;
+                            fQQQ5Angle[fQQQ5Mul] = QDetect.angle;
+                            fQQQ5Mul++;
+                        }
+
 
                         fICdE = icdE;
                         fICE = icE;

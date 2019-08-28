@@ -14,12 +14,12 @@ public:
     Calibrations();
     static Calibrations* Instance();
 
-    std::map<int, std::map<int, std::pair<double, double> > > GetQQQ5DownCalibrations() {return fQQQ5DownCalibrations;}
-    std::map<int, std::map<int, std::pair<double, double> > > GetQQQ5UpCalibrations() {return fQQQ5UpCalibrations;}
-    std::map<int, double> GetQQQ5Angles() {return fQQQ5Angles;}
+    std::map<int, std::map<int, std::pair<float, float> > > GetQQQ5DownCalibrations() {return fQQQ5DownCalibrations;}
+    std::map<int, std::map<int, std::pair<float, float> > > GetQQQ5UpCalibrations() {return fQQQ5UpCalibrations;}
+    std::map<int, float> GetQQQ5Angles() {return fQQQ5Angles;}
 
-    std::map<int, std::map<int, std::map<int, std::pair<double, double> > > > GetSuperX3Calibrations() {return fSuperX3UpCalibrations;}
-    std::map<int, std::map<int, double> > GetSuperX3Pedestals() {return fSuperX3UpPedestals;}
+    std::map<int, std::map<int, std::map<int, std::pair<float, float> > > > GetSuperX3Calibrations() {return fSuperX3UpCalibrations;}
+    std::map<int, std::map<int, float> > GetSuperX3Pedestals() {return fSuperX3UpPedestals;}
 
 private:
     static Calibrations* fInstance;
@@ -33,15 +33,15 @@ private:
     void ReadSuperX3UpCalibrations();
     void ReadSuperX3UpPedestals();
 
-    std::map<int, std::map<int, std::pair<double, double> > > fQQQ5DownCalibrations;
-    std::map<int, double> fQQQ5DownPedestals;
-    std::map<int, std::map<int, std::pair<double, double> > > fQQQ5UpCalibrations;
-    std::map<int, double> fQQQ5UpPedestals;
+    std::map<int, std::map<int, std::pair<float, float> > > fQQQ5DownCalibrations;
+    std::map<int, float> fQQQ5DownPedestals;
+    std::map<int, std::map<int, std::pair<float, float> > > fQQQ5UpCalibrations;
+    std::map<int, float> fQQQ5UpPedestals;
 
-    std::map<int, double> fQQQ5Angles;
+    std::map<int, float> fQQQ5Angles;
 
-    std::map<int, std::map<int, std::map<int, std::pair<double, double> > > > fSuperX3UpCalibrations;
-    std::map<int, std::map<int, double> > fSuperX3UpPedestals;
+    std::map<int, std::map<int, std::map<int, std::pair<float, float> > > > fSuperX3UpCalibrations;
+    std::map<int, std::map<int, float> > fSuperX3UpPedestals;
 };
 
 #endif

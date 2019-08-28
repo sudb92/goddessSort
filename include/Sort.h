@@ -41,14 +41,14 @@ private:
     bool fQQQ5Upstream[256];
     int fQQQ5Det[256];
     int fQQQ5Ring[256];
+    int fQQQ5RingChannel[256];
     int fQQQ5Sector[256];
+    int fQQQ5SectorChannel[256];
     int fQQQ5RingADC[256];
     float fQQQ5RingEnergy[256];
     int fQQQ5SectorADC[256];
     float fQQQ5SectorEnergy[256];
     float fQQQ5Angle[256];
-    int fQQQ5RingMult;
-    int fQQQ5SectorMult;
 
     int fICdE;
     int fICE;

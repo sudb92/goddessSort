@@ -6,7 +6,7 @@ std::vector<QQQ5Detector> ProcessQQQ5(std::vector<QQQ5Ring> ring_, std::vector<Q
     auto QuGains = calibrations->GetQQQ5UpCalibrations();
     auto QQQAngles = calibrations->GetQQQ5Angles();
 
-    std::map<int, std::map<int, std::pair<double, double> > > QGains;
+    std::map<int, std::map<int, std::pair<float, float> > > QGains;
     QGains = up ? QuGains : QdGains;
 
     std::vector<QQQ5Detector> outputQQQ5_;
@@ -27,10 +27,11 @@ std::vector<QQQ5Detector> ProcessQQQ5(std::vector<QQQ5Ring> ring_, std::vector<Q
                 int ringADC = ring.adc;
                 int sectorADC = sector.adc;
 
-                double ringEnergy = QGains[detector][ringNumber].first + static_cast<double>(ringADC)*QGains[detector][ringNumber].second;
-                double sectorEnergy = QGains[detector][sectorNumber + 32].first + static_cast<double>(sectorADC)*QGains[detector][sectorNumber + 32].second;
+                float ringEnergy = QGains[detector][ringNumber].first + static_cast<float>(ringADC)*QGains[detector][ringNumber].second;
+                float sectorEnergy = QGains[detector][sectorNumber + 32].first + static_cast<float>(sectorADC)*QGains[detector][sectorNumber + 32].second;
 
-                double angle = QQQAngles[ringNumber];
+                float angle = QQQAngles[ringNumber];
+                angle = up ? angle : 180 - angle;
 
                 QQQ5Detector hit = {up, detector, ringNumber, ringChannel, sectorNumber, sectorChannel, ringADC, ringEnergy, sectorADC, sectorEnergy, angle};
                 outputQQQ5_.push_back(hit);
