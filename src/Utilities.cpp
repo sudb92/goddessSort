@@ -1,5 +1,4 @@
 #include "Utilities.h"
-#include "Sort.h"
 
 unsigned int ExtractBits(unsigned int Source, int Begin, int Length){
     return (Source >> Begin) & ((1 << Length) - 1);

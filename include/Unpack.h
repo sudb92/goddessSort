@@ -1,5 +1,5 @@
-#ifndef SORT_H
-#define SORT_H
+#ifndef UNPACK_H
+#define UNPACK_H
 
 #include "BB10det.h"
 #include "ProcessQQQ5.h"
@@ -30,9 +30,9 @@
 extern float BeamEnergy,Ma,Mb,Mx,Qgs;
 extern float My;
 
-class Sort {
+class Unpack {
 public:
-    Sort();
+    Unpack();
 
 private:
 
