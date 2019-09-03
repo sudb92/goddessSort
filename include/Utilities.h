@@ -17,4 +17,7 @@ unsigned int ExtractBits(unsigned int value, int begin, int end);
 unsigned int ReverseBits(unsigned int n);
 std::string PrintOutput(std::string Output, std::string Color);
 
+void PrintConditions();
+void PrintHelpInformation();
+
 #endif

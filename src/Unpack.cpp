@@ -53,24 +53,6 @@
 //
 //							   };
 
-
-//////////////////////////////////////
-//		Define Kinematic Values		//
-//////////////////////////////////////
-
-//Reaction : X(a,b)Y
-
-//float BeamEnergy = 227.0;
-
-//30P(d,p)31P inverse kin
-//float Ma = 29.97831; //Beam mass
-////float Mx = 2.01410; //Target Mass
-////
-////float Mb = 1.00782; //Ejectile mass
-////float My = 30.97376; // Recoil mass
-////
-////float Qgs = 10.087; //Ground State Q-Value (MeV)
-
 int RunClock;
 
 //Set thresholds in channel number

@@ -5,6 +5,7 @@
 #include "ProcessQQQ5.h"
 #include "ProcessSX3.h"
 #include "RunList.h"
+#include "SortingStructures.h"
 #include "SX3det.h"
 #include "TypeDef.h"
 #include "Utilities.h"
@@ -26,9 +27,6 @@
 #include <TROOT.h>
 #include <TSystem.h>
 #include <TTree.h>
-
-extern float BeamEnergy,Ma,Mb,Mx,Qgs;
-extern float My;
 
 class Unpack {
 public:
