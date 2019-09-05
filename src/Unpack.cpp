@@ -291,7 +291,7 @@ Unpack::Unpack() {
             std::ofstream dst(run.cutPath,   std::ios::binary);
             try {
                 dst << src.rdbuf();
-                std::cout << PrintOutput("Copied cut file from run directory to :", "cyan") << run.cutPath << std::endl;
+                std::cout << PrintOutput("Copied cut file from run: ", "cyan") << run.runNumber.c_str() << std::endl;
             }
             catch(int e) {
                 std::cout << PrintOutput(Form("Did not copy cut from run %s", run.runNumber.c_str()), "red") << std::endl;
