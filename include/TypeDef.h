@@ -4,20 +4,15 @@
 #include <cassert>
 #include <string>
 
-#define ASSERT_WITH_MESSAGE(condition, message)                                \
-    do {                                                                       \
-        if(!(condition)) {                                                     \
-            std::cout << PrintOutput(message, "red") << std::endl;             \
-        }                                                                      \
-        assert((condition));                                                   \
-    } while(false)
-
 typedef struct fileListStruct {
     std::string pathToFolder;
     std::string outputPath;
     std::string ldfPath;
     std::string rootPath;
     std::string runNumber;
+    std::string preCutPath;
+    std::string cutPath;
+    bool copyCuts;
 } fileListStruct;
 
 typedef struct QQQ5Ring {

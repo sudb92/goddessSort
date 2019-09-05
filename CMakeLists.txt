@@ -19,7 +19,7 @@ link_directories(${ROOT_LIBRARY_DIR})
 #
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cpp)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.h)
+file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.h ${PROJECT_SOURCE_DIR}/include/json/*.h)
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the libraries
@@ -31,6 +31,7 @@ target_link_libraries(goddessSort ${ROOT_LIBRARIES})
 # Copy over files to the build directory
 #
 set(_SCRIPTS
+        config.json
         QQQ5Angles.dat
         QQQ5DownCalibrations.dat
         QQQ5DownPedestals.dat

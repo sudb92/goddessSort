@@ -60,8 +60,10 @@ int SX3backThreshold = 500;
 int QQQThreshold = 400;
 int BB10Threshold = 500;
 
-std::vector<int> ReadChannel;
-std::vector<int> ReadValue;
+// Timestamps
+// 1001
+// 1002
+// 1003
 
 int main(int argc, char *argv[]) {
     auto* unpacker = new Unpack();
@@ -85,7 +87,6 @@ Unpack::Unpack() {
     Calibrations* calibrations = Calibrations::Instance();
 
     std::cout << PrintOutput("Begin data processing loop", "yellow") << std::endl;
-
 
     // Loop through all files in the run list
     int numRuns = 0;
@@ -122,16 +123,18 @@ Unpack::Unpack() {
 
         //Declare some variables
         int NumberBuffer = 0;
-        unsigned long int NumberEvents = 0;
+        unsigned long int numberEvents = 0;
         int Counter = 0 ;
         unsigned int Buffer[BUFFER_LENGTH];
-        unsigned int Word;
-        int Channel,Value;
+        unsigned int word;
         unsigned short halfWord[2];
 
         //Declare some ROOT structures
         TH2F *hMap = new TH2F("Map", "Map", MAXCHANNEL, 0, MAXCHANNEL, MAXVALUE, 0,MAXVALUE);
         TH1F *hEventMult = new TH1F("EventMult", "EventMult", 1024, 0, 1024);
+
+        std::vector<int> readChannel;
+        std::vector<int> readValue;
 
         //This is the main loop over the ldf file
         while(!file.eof()){
@@ -140,30 +143,30 @@ Unpack::Unpack() {
             file.read((char*)Buffer, BUFFER_LENGTHB);
 
             //std::cout << "**** Reading Buffer : " << std::dec << NumberBuffer << " ****" << std::endl;
-            if(Buffer[0] == 0x41544144) { //This buffer is physics data type
-                for (int i = 0; i < BUFFER_LENGTH; i++) {
 
-                    Word = Buffer[i];
+            if(Buffer[0] == 0x41544144) { //This buffer is physics data type
+                for(int i = 0; i < BUFFER_LENGTH; i++) {
+
+                    word = Buffer[i];
                     // Reverse the byte order. Switching between big and little endian
-                    halfWord[0] = 0x0000ffff & Word;
-                    halfWord[1] = Word >> 16;
-                    Word = (halfWord[0] << 16) | (halfWord[1]);
+                    halfWord[0] = 0x0000ffff & word;
+                    halfWord[1] = word >> 16;
+                    word = (halfWord[0] << 16) | (halfWord[1]);
 
                     //Check for the end of the event
-                    if (Word != 0xffffffff) {
+                    if (word != 0xffffffff) {
 
-                        Channel = ExtractBits(Word, 16, 12);
-                        Value = ExtractBits(Word, 0, 12);
-                        hMap->Fill(Channel, Value);
+                        int channel = ExtractBits(word, 16, 12);
+                        int value = ExtractBits(word, 0, 12);
+                        hMap->Fill(channel, value);
 
                         //Add values to Read Arrays
-                        ReadChannel.push_back(Channel);
-                        ReadValue.push_back(Value);
+                        readChannel.push_back(channel);
+                        readValue.push_back(value);
 
                         Counter++;
 
                     } else { //End of the Event
-
                         std::vector<QQQ5Ring> QdRing_;
                         std::vector<QQQ5Sector> QdSector_;
                         std::vector<QQQ5Ring> QuRing_;
@@ -173,29 +176,36 @@ Unpack::Unpack() {
                         int icdE = 0;
                         int icE = 0;
 
-                        for(int k = 0; k < ReadChannel.size(); k++){
-                            int channel = ReadChannel[k];
-                            int adc = ReadValue[k];
+                        for(int k = 0; k < readChannel.size(); k++) {
+                            int channel = readChannel[k];
+                            int adc = readValue[k];
 
-                            if(channel <= 128 && adc > QQQThreshold) { // QQQ5 upstream front (rings)
-                                int detector = static_cast<int>((channel - 1)/32);
-                                QQQ5Ring hit = {channel, detector, channel - 1 - detector*32, adc};
+                            if (channel <= 128 && adc > QQQThreshold) { // QQQ5 upstream front (rings)
+                                int detector = static_cast<int>((channel - 1) / 32);
+                                QQQ5Ring hit = {channel, detector, channel - 1 - detector * 32, adc};
                                 QuRing_.push_back(hit);
-                            } else if(channel > 128 && channel <= 144 && adc > QQQThreshold) { // QQQ5 upstream back (sectors)
-                                int detector = static_cast<int>((channel - 129)/4);
-                                QQQ5Sector hit = {channel, detector, channel - 129 - detector*4, adc};
+                            } else if (channel > 128 && channel <= 144 &&
+                                       adc > QQQThreshold) { // QQQ5 upstream back (sectors)
+                                int detector = static_cast<int>((channel - 129) / 4);
+                                QQQ5Sector hit = {channel, detector, channel - 129 - detector * 4, adc};
                                 QuSector_.push_back(hit);
-                            } else if(channel > 496 && channel <= 508 && adc > QQQThreshold) { // QQQ5 downstream back (sectors)
-                                int detector = static_cast<int>((channel - 497)/4);
-                                QQQ5Sector hit = {channel, detector, channel - 497 - detector*4, adc};
+                            } else if (channel > 496 && channel <= 508 &&
+                                       adc > QQQThreshold) { // QQQ5 downstream back (sectors)
+                                int detector = static_cast<int>((channel - 497) / 4);
+                                QQQ5Sector hit = {channel, detector, channel - 497 - detector * 4, adc};
                                 QdSector_.push_back(hit);
-                            } else if(channel > 512 && channel <= 608 && adc > QQQThreshold) { // QQQ5 downstream front (rings)
-                                int detector = static_cast<int>((channel - 513)/32);
-                                QQQ5Ring hit = {channel, detector, channel - 513 - detector*32, adc};
+                            } else if (channel > 512 && channel <= 608 &&
+                                       adc > QQQThreshold) { // QQQ5 downstream front (rings)
+                                int detector = static_cast<int>((channel - 513) / 32);
+                                QQQ5Ring hit = {channel, detector, channel - 513 - detector * 32, adc};
                                 QdRing_.push_back(hit);
+                            } else if(channel > 672 && channel <= 704) { // IC x
+
+                            } else if(channel > 704 && channel <= 736) { // IC y
+
                             } else if(channel == 739) { //IC dE
                                  icdE = adc;
-                            } else if(channel == 740){ //IC E
+                            } else if(channel == 740) { //IC E
                                  icE = adc;
                             } else if(channel == 818) { // TDC
                                  tdc = adc;
@@ -208,6 +218,11 @@ Unpack::Unpack() {
                         ///////////////////////////
                         // End of Sub-event loop //
                         ///////////////////////////
+
+                        readChannel.clear();
+                        readValue.clear();
+
+                        numberEvents++;
 
                         std::vector<QQQ5Detector> QuDetect_;
                         if(!QuRing_.empty() && !QuSector_.empty()) QuDetect_ = ProcessQQQ5(QuRing_, QuSector_, true);
@@ -253,14 +268,8 @@ Unpack::Unpack() {
 
                         tree->Fill();
 
-                        ReadChannel.clear();
-                        ReadValue.clear();
-
                         hEventMult->Fill(Counter);
                         Counter = 0;
-                        NumberEvents++;
-
-                        RunClock = clock();
                     }
                 }
             }
@@ -275,7 +284,19 @@ Unpack::Unpack() {
 
         std::cout << PrintOutput("Finished Unpacking Run: ", "cyan") << run.runNumber << '\t';
         std::cout << PrintOutput("Time", "cyan") << " = " << Form("%.02f", (RunClock-StartClock)/double(CLOCKS_PER_SEC)) << " seconds" << std::flush << std::endl;
-        std::cout << PrintOutput("Created ROOT file : ", "cyan") << outputFile->GetName()<< std::endl;
+        std::cout << PrintOutput("Created ROOT file : ", "cyan") << outputFile->GetName() << std::endl;
+
+        if(run.copyCuts) {
+            std::ifstream src(run.preCutPath, std::ios::binary);
+            std::ofstream dst(run.cutPath,   std::ios::binary);
+            try {
+                dst << src.rdbuf();
+                std::cout << PrintOutput("Copied cut file from run directory to :", "cyan") << run.cutPath << std::endl;
+            }
+            catch(int e) {
+                std::cout << PrintOutput(Form("Did not copy cut from run %s", run.runNumber.c_str()), "red") << std::endl;
+            }
+        }
     }
     std::cout << PrintOutput("************************************************", "yellow") << std::endl;
     std::cout << PrintOutput("Finished Unpacking ", "yellow") << fileList.size() << PrintOutput(" files!", "yellow") <<  std::endl;

@@ -1,0 +1,10 @@
+{
+  "pathToFolders": "/Users/joshhooker/physics/utk/research/GoddessFiles/RunFolder/",
+  "pathPrefix": "Run",
+  "ldfPrefix": "p30dp",
+  "outputPath": "/Users/joshhooker/physics/utk/research/GoddessFiles/OutputFolder/",
+  "copyCuts": true,
+  "cutPrefix": "cut_p30dp",
+  "useAllFolders": false,
+  "runs": ["0255", "0256"]
+}
