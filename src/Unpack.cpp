@@ -167,10 +167,15 @@ Unpack::Unpack() {
                         Counter++;
 
                     } else { //End of the Event
+                        std::vector<BB10Hit> BB10Hit_;
                         std::vector<QQQ5Ring> QdRing_;
                         std::vector<QQQ5Sector> QdSector_;
                         std::vector<QQQ5Ring> QuRing_;
                         std::vector<QQQ5Sector> QuSector_;
+                        std::vector<SuperX3Back> SX3dBack_;
+                        std::vector<SuperX3Front> SX3dFront_;
+                        std::vector<SuperX3Back> SX3uBack_;
+                        std::vector<SuperX3Front> SX3uFront_;
 
                         int tdc = 0;
                         int icdE = 0;
@@ -180,24 +185,57 @@ Unpack::Unpack() {
                             int channel = readChannel[k];
                             int adc = readValue[k];
 
-                            if (channel <= 128 && adc > QQQThreshold) { // QQQ5 upstream front (rings)
-                                int detector = static_cast<int>((channel - 1) / 32);
-                                QQQ5Ring hit = {channel, detector, channel - 1 - detector * 32, adc};
+                            if(channel <= 128 && adc > QQQThreshold) { // QQQ5 upstream front (rings)
+                                int detector = static_cast<int>((channel - 1)/32);
+                                QQQ5Ring hit = {channel, detector, channel - 1 - detector*32, adc};
                                 QuRing_.push_back(hit);
-                            } else if (channel > 128 && channel <= 144 &&
-                                       adc > QQQThreshold) { // QQQ5 upstream back (sectors)
-                                int detector = static_cast<int>((channel - 129) / 4);
-                                QQQ5Sector hit = {channel, detector, channel - 129 - detector * 4, adc};
+                            } else if(channel > 128 && channel <= 144 && adc > QQQThreshold) { // QQQ5 upstream back (sectors)
+                                int detector = static_cast<int>((channel - 129)/4);
+                                QQQ5Sector hit = {channel, detector, channel - 129 - detector*4, adc};
                                 QuSector_.push_back(hit);
-                            } else if (channel > 496 && channel <= 508 &&
-                                       adc > QQQThreshold) { // QQQ5 downstream back (sectors)
-                                int detector = static_cast<int>((channel - 497) / 4);
-                                QQQ5Sector hit = {channel, detector, channel - 497 - detector * 4, adc};
+                            } else if(channel > 144 && channel <= 160 && adc > SX3backThreshold) { // SuperX3 Upstream Detectors 0-3 (back sides)
+                            } else if(channel > 160 && channel <= 176 && adc > SX3backThreshold) { // SuperX3 Upstream Detectors 6-9 (back sides)
+                            } else if(channel > 176 && channel <= 184 && adc > SX3backThreshold) { // SuperX3 Upstream Detectors 4-5 (back sides)
+                            } else if(channel > 185 && channel <= 192 && adc > SX3backThreshold) { // SuperX3 Upstream Detectors 10-11 (back sides)
+                            } else if(channel > 192 && channel <= 288 && adc > SX3backThreshold) { // SuperX3 Upstream (front sides)
+                                int detector = static_cast<int>((channel - 193)/8);
+                                int strip = static_cast<int>((channel - 193 - detector*8)/2);
+                                bool leftSide = channel % 2 == 0;
+                                SuperX3Front hit = {channel, detector, strip, leftSide, adc};
+                                SX3uFront_.push_back(hit);
+                            } else if(channel > 288 && channel <= 384 && adc > SX3backThreshold) { // SuperX3 Downstream (front sides)
+                                int detector = static_cast<int>((channel - 289)/8);
+                                int strip = static_cast<int>((channel - 289 - detector*8)/2);
+                                bool leftSide = channel % 2 == 0;
+                                SuperX3Front hit = {channel, detector, strip, leftSide, adc};
+                                SX3dFront_.push_back(hit);
+                            } else if(channel > 384 && channel <= 404 && adc > SX3backThreshold) { // SuperX3 Downstream Detectors 0-4 (back sides)
+                                int detector = static_cast<int>((channel - 385)/4);
+                                SuperX3Back hit = {channel, detector, channel - 385 - detector*4, adc};
+                                SX3dBack_.push_back(hit);
+                            } else if(channel > 404 && channel <= 416 && adc > SX3backThreshold) { // SuperX3 Downstream Detectors 7-9 (back sides)
+                                int detector = static_cast<int>((channel - 405)/4) + 7;
+                                SuperX3Back hit = {channel, detector, channel - 405 - (detector - 7)*4, adc};
+                                SX3dBack_.push_back(hit);
+                            } else if(channel > 416 && channel <= 424 && adc > SX3backThreshold) { // SuperX3 Downstream Detectors 5-6 (back sides)
+                                int detector = static_cast<int>((channel - 417)/4) + 5;
+                                SuperX3Back hit = {channel, detector, channel - 405 - (detector - 5)*4, adc};
+                                SX3dBack_.push_back(hit);
+                            } else if(channel > 424 && channel <= 432 && adc > SX3backThreshold) { // SuperX3 Downstream Detectors 10-11 (back sides)
+                                int detector = static_cast<int>((channel - 425)/4) + 10;
+                                SuperX3Back hit = {channel, detector, channel - 425 - (detector - 10)*4, adc};
+                                SX3dBack_.push_back(hit);
+                            } else if(channel > 432 && channel <= 496 && adc > BB10Threshold) { // BB10 Downstream
+                                int detector = static_cast<int>((channel - 433)/8);
+                                BB10Hit hit = {channel, detector, channel - 433 - detector*8, adc};
+                                BB10Hit_.push_back(hit);
+                            } else if(channel > 496 && channel <= 508 && adc > QQQThreshold) { // QQQ5 downstream back (sectors)
+                                int detector = static_cast<int>((channel - 497)/4);
+                                QQQ5Sector hit = {channel, detector, channel - 497 - detector*4, adc};
                                 QdSector_.push_back(hit);
-                            } else if (channel > 512 && channel <= 608 &&
-                                       adc > QQQThreshold) { // QQQ5 downstream front (rings)
-                                int detector = static_cast<int>((channel - 513) / 32);
-                                QQQ5Ring hit = {channel, detector, channel - 513 - detector * 32, adc};
+                            } else if(channel > 512 && channel <= 608 && adc > QQQThreshold) { // QQQ5 downstream front (rings)
+                                int detector = static_cast<int>((channel - 513)/32);
+                                QQQ5Ring hit = {channel, detector, channel - 513 - detector*32, adc};
                                 QdRing_.push_back(hit);
                             } else if(channel > 672 && channel <= 704) { // IC x
 

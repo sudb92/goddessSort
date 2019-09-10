@@ -15,6 +15,24 @@ typedef struct fileListStruct {
     bool copyCuts;
 } fileListStruct;
 
+// Detector structures
+
+typedef struct BB10Hit {
+    int channel;
+    int detector;
+    int strip;
+    int adc;
+} BB10Hit;
+
+typedef struct BB10Detector {
+    int channel;
+    int detector;
+    int strip;
+    int adc;
+    float energy;
+    float angle;
+} BB10Detector;
+
 typedef struct QQQ5Ring {
     int channel;
     int detector;
@@ -42,5 +60,20 @@ typedef struct QQQ5Detector {
     float sectorEnergy;
     float angle;
 } QQQ5Detector;
+
+typedef struct SuperX3Back {
+    int channel;
+    int detector;
+    int sector;
+    int adc;
+} SuperX3Back;
+
+typedef struct SuperX3Front {
+    int channel;
+    int detector;
+    int strip;
+    bool leftSide;
+    int adc;
+} SuperX3Front;
 
 #endif
