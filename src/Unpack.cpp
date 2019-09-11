@@ -6,59 +6,7 @@
 #define MAXCHANNEL 1024
 #define MAXVALUE 4096
 
-//std::vector<std::string> RunList = {
-//												   /*  "0023","0024","0025","0026","0027","0028","0029",
-//								"0030","0031","0032","0033","0034","0035","0036","0037","0038","0039",
-//								"0040","0041","0042","0043","0044","0045","0046","0047","0048","0049",
-//								"0050","0051","0052","0053","0054","0055","0056","0057","0058","0059",
-//								"0060","0061","0062","0063","0064","0065","0066","0067","0068","0069",
-//								"0070","0071","0072",*/
-//													 "0073","0074","0075","0076","0077","0078","0079",
-//								"0080","0081","0082","0083","0084","0085","0086","0087","0088","0089",
-//								"0090","0091","0092","0093","0094","0095","0096","0097","0098","0099",
-//								"0100","0101","0102","0103","0104","0105","0106","0107","0108","0109",
-//								"0110","0111","0112","0113","0114","0115","0116","0117","0118","0119",
-//								"0120","0121","0122","0123","0124","0125","0126","0127","0128","0129",
-//								"0130","0131","0132","0133","0134","0135","0136","0137","0138","0139",
-//								"0140","0141","0142","0143","0144","0145","0146","0147","0148","0149",
-//								"0150","0151","0152","0153","0154","0155","0156","0157","0158","0159",
-//								"0160","0161","0162","0163","0164","0165","0166","0167","0168","0169",
-//								"0170","0171","0172","0173","0174","0175","0176","0177","0178","0179",
-//								"0180","0181","0182","0183","0184","0185","0186","0187","0188","0189",
-//								"0190","0191","0192","0193","0194","0195","0196","0197","0198","0199",
-//								"0200","0201","0202","0203","0204","0205","0206","0207","0208","0209",
-//								"0210","0211","0212","0213","0214","0215","0216","0217","0218","0219",
-//								"0220","0221","0222","0223","0224","0225","0226","0227","0228","0229",
-//								"0230","0231","0232","0233","0234","0235","0236","0237","02389","0239",
-//								"0240","0241","0242","0243","0244","0245","0246","0247","0248","0249",
-//								"0250","0251","0252","0253","0254","0255","0256","0257","0258","0259",
-//								"0260","0261","0262","0263","0264","0265","0266","0267","0268","0269",
-//								"0270","0271","0272","0273","0274","0275","0276","0277","0278","0279",
-//								"0280","0281","0282","0283","0284","0285","0286","0287","0288","0289",
-//								"0290","0291","0292","0293","0294","0295","0296","0297","0298","0299",
-//								"0300","0301","0302","0303","0304","0205","0306","0307","0308","0309",
-//								"0310","0311","0312","0313","0314","0315","0326","0317","0318","0319",
-//								"0320","0321","0322","0323","0324","0325","0326","0327","0328","0329",
-//								"0330","0331","0332","0333","0334","0335","0336","0337","0338","0339",
-//								"0340","0341","0342","0343","0344","0345","0346","0347","0348","0349",
-//								"0350","0351","0352","0353","0354","0355","0356","0357","0358","0359",
-//								"0360","0361","0362","0363","0364","0365","0366","0367","0368","0369",
-//								"0370","0371","0372","0373","0374","0375","0376","0377","0378","0379",
-//								"0380","0381","0382","0383","0384","0385","0386","0387","0388","0389",
-//								"0390","0391","0392","0393","0394","0395","0396","0397","0398","0399",
-//								"0400","0401","0402","0403","0404","0405","0406","0407","0408","0409",
-//								"0410","0411","0412","0413","0414","0415","0416","0417","0418","0419",
-//								"0420","0421","0422","0423","0424","0425","0426","0427","0428","0429",
-//								"0430","0431","0432","0433","0434","0435","0436","0437","0438","0439"
-//
-//							   };
-
 int RunClock;
-
-//Set thresholds in channel number
-int SX3backThreshold = 500;
-int QQQThreshold = 400;
-int BB10Threshold = 500;
 
 // Timestamps
 // 1001
@@ -85,6 +33,9 @@ Unpack::Unpack() {
     std::cout << PrintOutput("Number of files to be sort = ", "yellow") << fileList.size() << std::endl;
 
     Calibrations* calibrations = Calibrations::Instance();
+    int BB10Threshold = calibrations->GetBB10Threshold();
+    int QQQThreshold = calibrations->GetQQQThreshold();
+    int SX3Threshold = calibrations->GetSX3Threshold();
 
     std::cout << PrintOutput("Begin data processing loop", "yellow") << std::endl;
 
@@ -152,8 +103,8 @@ Unpack::Unpack() {
         //Declare some variables
         int NumberBuffer = 0;
         unsigned long int numberEvents = 0;
-        int Counter = 0 ;
-        unsigned int Buffer[BUFFER_LENGTH];
+        int counter = 0 ;
+        unsigned int buffer[BUFFER_LENGTH];
         unsigned int word;
         unsigned short halfWord[2];
 
@@ -168,14 +119,14 @@ Unpack::Unpack() {
         while(!file.eof()){
 
             //Get Buffer
-            file.read((char*)Buffer, BUFFER_LENGTHB);
+            file.read((char*)buffer, BUFFER_LENGTHB);
 
             //std::cout << "**** Reading Buffer : " << std::dec << NumberBuffer << " ****" << std::endl;
 
-            if(Buffer[0] == 0x41544144) { //This buffer is physics data type
+            if(buffer[0] == 0x41544144) { //This buffer is physics data type
                 for(int i = 0; i < BUFFER_LENGTH; i++) {
 
-                    word = Buffer[i];
+                    word = buffer[i];
                     // Reverse the byte order. Switching between big and little endian
                     halfWord[0] = 0x0000ffff & word;
                     halfWord[1] = word >> 16;
@@ -192,7 +143,7 @@ Unpack::Unpack() {
                         readChannel.push_back(channel);
                         readValue.push_back(value);
 
-                        Counter++;
+                        counter++;
 
                     } else { //End of the Event
                         std::vector<BB10Hit> BB10Hit_;
@@ -221,47 +172,47 @@ Unpack::Unpack() {
                                 int detector = static_cast<int>((channel - 129)/4);
                                 QQQ5Sector hit = {channel, detector, channel - 129 - detector*4, adc};
                                 QuSector_.push_back(hit);
-                            } else if(channel > 144 && channel <= 160 && adc > SX3backThreshold) { // SuperX3 Upstream Detectors 0-3 (back sides)
+                            } else if(channel > 144 && channel <= 160 && adc > SX3Threshold) { // SuperX3 Upstream Detectors 0-3 (back sides)
                                 int detector = static_cast<int>((channel - 145)/4);
                                 SuperX3Back hit = {channel, detector, channel - 145 - detector*4, adc};
                                 SX3uBack_.push_back(hit);
-                            } else if(channel > 160 && channel <= 176 && adc > SX3backThreshold) { // SuperX3 Upstream Detectors 6-9 (back sides)
+                            } else if(channel > 160 && channel <= 176 && adc > SX3Threshold) { // SuperX3 Upstream Detectors 6-9 (back sides)
                                 int detector = static_cast<int>((channel - 161)/4) + 6;
                                 SuperX3Back hit = {channel, detector, channel - 161 - (detector - 6)*4, adc};
                                 SX3uBack_.push_back(hit);
-                            } else if(channel > 176 && channel <= 184 && adc > SX3backThreshold) { // SuperX3 Upstream Detectors 4-5 (back sides)
+                            } else if(channel > 176 && channel <= 184 && adc > SX3Threshold) { // SuperX3 Upstream Detectors 4-5 (back sides)
                                 int detector = static_cast<int>((channel - 177)/4) + 4;
                                 SuperX3Back hit = {channel, detector, channel - 177 - (detector - 4)*4, adc};
                                 SX3uBack_.push_back(hit);
-                            } else if(channel > 184 && channel <= 192 && adc > SX3backThreshold) { // SuperX3 Upstream Detectors 10-11 (back sides)
+                            } else if(channel > 184 && channel <= 192 && adc > SX3Threshold) { // SuperX3 Upstream Detectors 10-11 (back sides)
                                 int detector = static_cast<int>((channel - 185)/4) + 10;
                                 SuperX3Back hit = {channel, detector, channel - 185 - (detector - 10)*4, adc};
                                 SX3uBack_.push_back(hit);
-                            } else if(channel > 192 && channel <= 288 && adc > SX3backThreshold) { // SuperX3 Upstream (front sides)
+                            } else if(channel > 192 && channel <= 288 && adc > SX3Threshold) { // SuperX3 Upstream (front sides)
                                 int detector = static_cast<int>((channel - 193)/8);
                                 int strip = static_cast<int>((channel - 193 - detector*8)/2);
                                 bool leftSide = channel % 2 == 0;
                                 SuperX3Front hit = {channel, detector, strip, leftSide, adc};
                                 SX3uFront_.push_back(hit);
-                            } else if(channel > 288 && channel <= 384 && adc > SX3backThreshold) { // SuperX3 Downstream (front sides)
+                            } else if(channel > 288 && channel <= 384 && adc > SX3Threshold) { // SuperX3 Downstream (front sides)
                                 int detector = static_cast<int>((channel - 289)/8);
                                 int strip = static_cast<int>((channel - 289 - detector*8)/2);
                                 bool leftSide = channel % 2 == 0;
                                 SuperX3Front hit = {channel, detector, strip, leftSide, adc};
                                 SX3dFront_.push_back(hit);
-                            } else if(channel > 384 && channel <= 404 && adc > SX3backThreshold) { // SuperX3 Downstream Detectors 0-4 (back sides)
+                            } else if(channel > 384 && channel <= 404 && adc > SX3Threshold) { // SuperX3 Downstream Detectors 0-4 (back sides)
                                 int detector = static_cast<int>((channel - 385)/4);
                                 SuperX3Back hit = {channel, detector, channel - 385 - detector*4, adc};
                                 SX3dBack_.push_back(hit);
-                            } else if(channel > 404 && channel <= 416 && adc > SX3backThreshold) { // SuperX3 Downstream Detectors 7-9 (back sides)
+                            } else if(channel > 404 && channel <= 416 && adc > SX3Threshold) { // SuperX3 Downstream Detectors 7-9 (back sides)
                                 int detector = static_cast<int>((channel - 405)/4) + 7;
                                 SuperX3Back hit = {channel, detector, channel - 405 - (detector - 7)*4, adc};
                                 SX3dBack_.push_back(hit);
-                            } else if(channel > 416 && channel <= 424 && adc > SX3backThreshold) { // SuperX3 Downstream Detectors 5-6 (back sides)
+                            } else if(channel > 416 && channel <= 424 && adc > SX3Threshold) { // SuperX3 Downstream Detectors 5-6 (back sides)
                                 int detector = static_cast<int>((channel - 417)/4) + 5;
                                 SuperX3Back hit = {channel, detector, channel - 405 - (detector - 5)*4, adc};
                                 SX3dBack_.push_back(hit);
-                            } else if(channel > 424 && channel <= 432 && adc > SX3backThreshold) { // SuperX3 Downstream Detectors 10-11 (back sides)
+                            } else if(channel > 424 && channel <= 432 && adc > SX3Threshold) { // SuperX3 Downstream Detectors 10-11 (back sides)
                                 int detector = static_cast<int>((channel - 425)/4) + 10;
                                 SuperX3Back hit = {channel, detector, channel - 425 - (detector - 10)*4, adc};
                                 SX3dBack_.push_back(hit);
@@ -406,8 +357,8 @@ Unpack::Unpack() {
 
                         tree->Fill();
 
-                        hEventMult->Fill(Counter);
-                        Counter = 0;
+                        hEventMult->Fill(counter);
+                        counter = 0;
                     }
                 }
             }

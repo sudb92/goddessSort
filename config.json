@@ -6,5 +6,8 @@
   "copyCuts": true,
   "cutPrefix": "cut_p30dp",
   "useAllFolders": false,
-  "runs": ["0255", "0256"]
+  "runs": ["0255", "0256"],
+  "BB10Threshold": 500,
+  "QQQThreshold": 400,
+  "SX3Threshold": 500
 }
