@@ -104,21 +104,49 @@ Unpack::Unpack() {
 
         //Setup Tree
         TTree *tree = new TTree("data", "Data Tree");
-        tree->Branch("QQQ5Mul", &fQQQ5Mul, "QQQ5Mul/I");
-        tree->Branch("QQQ5Upstream", &fQQQ5Upstream, "QQQ5Upstream[QQQ5Mul]/B");
-        tree->Branch("QQQ5Det", &fQQQ5Det, "QQQ5Det[QQQ5Mul]/I");
-        tree->Branch("QQQ5Ring", &fQQQ5Ring, "QQQ5Ring[QQQ5Mul]/I");
-        tree->Branch("QQQ5RingChannel", &fQQQ5RingChannel, "QQQ5RingChannel[QQQ5Mul]/I");
-        tree->Branch("QQQ5Sector", &fQQQ5Sector, "QQQ5Sector[QQQ5Mul]/I");
-        tree->Branch("QQQ5SectorChannel", &fQQQ5SectorChannel, "QQQ5SectorChannel[QQQ5Mul]/I");
-        tree->Branch("QQQ5RingADC", &fQQQ5RingADC, "QQQ5RingADC[QQQ5Mul]/I");
-        tree->Branch("QQQ5RingEnergy", &fQQQ5RingEnergy, "QQQ5RingEnergy[QQQ5Mul]/F");
-        tree->Branch("QQQ5SectorADC", &fQQQ5SectorADC, "QQQ5SectorADC[QQQ5Mul]/I");
-        tree->Branch("QQQ5SectorEnergy", &fQQQ5SectorEnergy, "QQQ5SectorEnergy[QQQ5Mul]/F");
-        tree->Branch("QQQ5Angle", &fQQQ5Angle, "QQQ5Angle[QQQ5Mul]/F");
 
+        // BB10 Detectors
+        tree->Branch("BB10Mul",     &fBB10Mul,     "BB10Mul/I");
+        tree->Branch("BB10Det",     &fBB10Det,     "BB10Det[BB10Mul]/I");
+        tree->Branch("BB10Strip",   &fBB10Strip,   "BB10Strip[BB10Mul]/I");
+        tree->Branch("BB10Channel", &fBB10Channel, "BB10Channel[BB10Mul]/I");
+        tree->Branch("BB10ADC",     &fBB10ADC,     "BB10ADC[BB10Mul]/I");
+        tree->Branch("BB10Energy",  &fBB10Energy,  "BB10Energy[BB10Mul]/F");
+
+        // QQQ5 Detectors
+        tree->Branch("QQQ5Mul",           &fQQQ5Mul,           "QQQ5Mul/I");
+        tree->Branch("QQQ5Upstream",      &fQQQ5Upstream,      "QQQ5Upstream[QQQ5Mul]/B");
+        tree->Branch("QQQ5Det",           &fQQQ5Det,           "QQQ5Det[QQQ5Mul]/I");
+        tree->Branch("QQQ5Ring",          &fQQQ5Ring,          "QQQ5Ring[QQQ5Mul]/I");
+        tree->Branch("QQQ5RingChannel",   &fQQQ5RingChannel,   "QQQ5RingChannel[QQQ5Mul]/I");
+        tree->Branch("QQQ5Sector",        &fQQQ5Sector,        "QQQ5Sector[QQQ5Mul]/I");
+        tree->Branch("QQQ5SectorChannel", &fQQQ5SectorChannel, "QQQ5SectorChannel[QQQ5Mul]/I");
+        tree->Branch("QQQ5RingADC",       &fQQQ5RingADC,       "QQQ5RingADC[QQQ5Mul]/I");
+        tree->Branch("QQQ5RingEnergy",    &fQQQ5RingEnergy,    "QQQ5RingEnergy[QQQ5Mul]/F");
+        tree->Branch("QQQ5SectorADC",     &fQQQ5SectorADC,     "QQQ5SectorADC[QQQ5Mul]/I");
+        tree->Branch("QQQ5SectorEnergy",  &fQQQ5SectorEnergy,  "QQQ5SectorEnergy[QQQ5Mul]/F");
+        tree->Branch("QQQ5Angle",         &fQQQ5Angle,         "QQQ5Angle[QQQ5Mul]/F");
+
+        // Super X3 Detectors
+        tree->Branch("SX3Mul",               &fSX3Mul,               "SX3Mul/I");
+        tree->Branch("SX3Upstream",          &fSX3Upstream,          "SX3Upstream[SX3Mul]/B");
+        tree->Branch("SX3Det",               &fSX3Det,               "SX3Det[SX3Mul]/I");
+        tree->Branch("SX3Sector",            &fSX3Sector,            "SX3Sector[SX3Mul]/I");
+        tree->Branch("SX3SectorChannel",     &fSX3SectorChannel,     "SX3SectorChannel[SX3Mul]/I");
+        tree->Branch("SX3SectorADC",         &fSX3SectorADC,         "SX3SectorADC[SX3Mul]/I");
+        tree->Branch("SX3SectorEnergy",      &fSX3SectorEnergy,      "SX3SectorEnergy[SX3Mul]/F");
+        tree->Branch("SX3Strip",             &fSX3Strip,             "SX3Strip[SX3Mul]/I");
+        tree->Branch("SX3StripLeftChannel",  &fSX3StripLeftChannel,  "SX3StripLeftChannel[SX3Mul]/I");
+        tree->Branch("SX3StripRightChannel", &fSX3StripRightChannel, "SX3StripRightChannel[SX3Mul]/I");
+        tree->Branch("SX3StripLeftADC",      &fSX3StripLeftADC,      "SX3StripLeftADC[SX3Mul]/I");
+        tree->Branch("SX3StripRightADC",     &fSX3StripRightADC,     "SX3StripRightADC[SX3Mul]/I");
+        tree->Branch("SX3StripEnergy",       &fSX3StripEnergy,       "SX3StripEnergy[SX3Mul]/F");
+
+        // Ionization Chamber
         tree->Branch("icdE", &fICdE, "icdE/I");
-        tree->Branch("icE", &fICE, "icE/I");
+        tree->Branch("icE",  &fICE,  "icE/I");
+
+        // TDCs
         tree->Branch("tdc", &fTDC, "tdc/I");
 
         //Declare some variables
@@ -301,6 +329,11 @@ Unpack::Unpack() {
                         fBB10Mul = 0;
                         for(auto BB10Detect: BB10Detect_) {
                             fBB10Mul++;
+                            fBB10Det[fBB10Mul] = BB10Detect.detector;
+                            fBB10Strip[fBB10Mul] = BB10Detect.strip;
+                            fBB10Channel[fBB10Mul] = BB10Detect.channel;
+                            fBB10ADC[fBB10Mul] = BB10Detect.adc;
+                            fBB10Energy[fBB10Mul] = BB10Detect.energy;
                         }
 
                         // QQQ5 Detectors

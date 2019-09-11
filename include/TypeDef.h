@@ -30,7 +30,6 @@ typedef struct BB10Detector {
     int strip;
     int adc;
     float energy;
-    float angle;
 } BB10Detector;
 
 typedef struct QQQ5Ring {
