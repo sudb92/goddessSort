@@ -194,9 +194,21 @@ Unpack::Unpack() {
                                 QQQ5Sector hit = {channel, detector, channel - 129 - detector*4, adc};
                                 QuSector_.push_back(hit);
                             } else if(channel > 144 && channel <= 160 && adc > SX3backThreshold) { // SuperX3 Upstream Detectors 0-3 (back sides)
+                                int detector = static_cast<int>((channel - 145)/4);
+                                SuperX3Back hit = {channel, detector, channel - 145 - detector*4, adc};
+                                SX3uBack_.push_back(hit);
                             } else if(channel > 160 && channel <= 176 && adc > SX3backThreshold) { // SuperX3 Upstream Detectors 6-9 (back sides)
+                                int detector = static_cast<int>((channel - 161)/4) + 6;
+                                SuperX3Back hit = {channel, detector, channel - 161 - (detector - 6)*4, adc};
+                                SX3uBack_.push_back(hit);
                             } else if(channel > 176 && channel <= 184 && adc > SX3backThreshold) { // SuperX3 Upstream Detectors 4-5 (back sides)
-                            } else if(channel > 185 && channel <= 192 && adc > SX3backThreshold) { // SuperX3 Upstream Detectors 10-11 (back sides)
+                                int detector = static_cast<int>((channel - 177)/4) + 4;
+                                SuperX3Back hit = {channel, detector, channel - 177 - (detector - 4)*4, adc};
+                                SX3uBack_.push_back(hit);
+                            } else if(channel > 184 && channel <= 192 && adc > SX3backThreshold) { // SuperX3 Upstream Detectors 10-11 (back sides)
+                                int detector = static_cast<int>((channel - 185)/4) + 10;
+                                SuperX3Back hit = {channel, detector, channel - 185 - (detector - 10)*4, adc};
+                                SX3uBack_.push_back(hit);
                             } else if(channel > 192 && channel <= 288 && adc > SX3backThreshold) { // SuperX3 Upstream (front sides)
                                 int detector = static_cast<int>((channel - 193)/8);
                                 int strip = static_cast<int>((channel - 193 - detector*8)/2);
@@ -248,10 +260,6 @@ Unpack::Unpack() {
                             } else if(channel == 818) { // TDC
                                  tdc = adc;
                             }
-
-//                                // SX3
-//
-//                                // BB10
                         }
                         ///////////////////////////
                         // End of Sub-event loop //
@@ -262,15 +270,55 @@ Unpack::Unpack() {
 
                         numberEvents++;
 
-                        std::vector<QQQ5Detector> QuDetect_;
-                        if(!QuRing_.empty() && !QuSector_.empty()) QuDetect_ = ProcessQQQ5(QuRing_, QuSector_, true);
+                        // BB10
+                        std::vector<BB10Detector> BB10Detect_;
+                        if(!BB10Hit_.empty()) BB10Detect_ = ProcessBB10(BB10Hit_);
 
+                        // QQQ5 Downstream
                         std::vector<QQQ5Detector> QdDetect_;
                         if(!QdRing_.empty() && !QdSector_.empty()) QdDetect_ = ProcessQQQ5(QdRing_, QdSector_, false);
 
-                        if(QuDetect_.empty() && QdDetect_.empty()) continue;
+                        // QQQ5 Upstream
+                        std::vector<QQQ5Detector> QuDetect_;
+                        if(!QuRing_.empty() && !QuSector_.empty()) QuDetect_ = ProcessQQQ5(QuRing_, QuSector_, true);
 
+                        // Super X3 Downstream
+                        std::vector<SuperX3Detector> SX3dDetect_;
+                        if(!SX3dBack_.empty() && !SX3dFront_.empty()) SX3dDetect_ = ProcessSX3(SX3dBack_, SX3dFront_, false);
+
+                        // Super X3 Upstream
+                        std::vector<SuperX3Detector> SX3uDetect_;
+                        if(!SX3uBack_.empty() && !SX3uFront_.empty()) SX3uDetect_ = ProcessSX3(SX3uBack_, SX3uFront_, true);
+
+                        bool BB10DetectEmpty = BB10Detect_.empty();
+                        bool QQQDetectEmpty = (QuDetect_.empty() && QdDetect_.empty());
+                        bool SX3DetectEmpty = (SX3dDetect_.empty() && SX3uDetect_.empty());
+                        bool icEmpty = ((icE == 0) && (icdE == 0));
+
+                        if(BB10DetectEmpty && QQQDetectEmpty && SX3DetectEmpty && icEmpty) continue;
+
+                        // BB10 Detectors
+                        fBB10Mul = 0;
+                        for(auto BB10Detect: BB10Detect_) {
+                            fBB10Mul++;
+                        }
+
+                        // QQQ5 Detectors
                         fQQQ5Mul = 0;
+                        for(auto QDetect: QdDetect_) {
+                            fQQQ5Upstream[fQQQ5Mul] = QDetect.upstream;
+                            fQQQ5Det[fQQQ5Mul] = QDetect.detector;
+                            fQQQ5Ring[fQQQ5Mul] = QDetect.ring;
+                            fQQQ5RingChannel[fQQQ5Mul] = QDetect.ringChannel;
+                            fQQQ5Sector[fQQQ5Mul] = QDetect.sector;
+                            fQQQ5SectorChannel[fQQQ5Mul] = QDetect.sectorChannel;
+                            fQQQ5RingADC[fQQQ5Mul] = QDetect.ringEnergyADC;
+                            fQQQ5RingEnergy[fQQQ5Mul] = QDetect.ringEnergy;
+                            fQQQ5SectorADC[fQQQ5Mul] = QDetect.sectorEnergyADC;
+                            fQQQ5SectorEnergy[fQQQ5Mul] = QDetect.sectorEnergy;
+                            fQQQ5Angle[fQQQ5Mul] = QDetect.angle;
+                            fQQQ5Mul++;
+                        }
                         for(auto QDetect: QuDetect_) {
                             fQQQ5Upstream[fQQQ5Mul] = QDetect.upstream;
                             fQQQ5Det[fQQQ5Mul] = QDetect.detector;
@@ -285,19 +333,38 @@ Unpack::Unpack() {
                             fQQQ5Angle[fQQQ5Mul] = QDetect.angle;
                             fQQQ5Mul++;
                         }
-                        for(auto QDetect: QdDetect_) {
-                            fQQQ5Upstream[fQQQ5Mul] = QDetect.upstream;
-                            fQQQ5Det[fQQQ5Mul] = QDetect.detector;
-                            fQQQ5Ring[fQQQ5Mul] = QDetect.ring;
-                            fQQQ5RingChannel[fQQQ5Mul] = QDetect.ringChannel;
-                            fQQQ5Sector[fQQQ5Mul] = QDetect.sector;
-                            fQQQ5SectorChannel[fQQQ5Mul] = QDetect.sectorChannel;
-                            fQQQ5RingADC[fQQQ5Mul] = QDetect.ringEnergyADC;
-                            fQQQ5RingEnergy[fQQQ5Mul] = QDetect.ringEnergy;
-                            fQQQ5SectorADC[fQQQ5Mul] = QDetect.sectorEnergyADC;
-                            fQQQ5SectorEnergy[fQQQ5Mul] = QDetect.sectorEnergy;
-                            fQQQ5Angle[fQQQ5Mul] = QDetect.angle;
-                            fQQQ5Mul++;
+
+                        // Super X3 Detectors
+                        fSX3Mul = 0;
+                        for(auto SX3Detect: SX3dDetect_) {
+                            fSX3Upstream[fSX3Mul] = SX3Detect.upstream;
+                            fSX3Det[fSX3Mul] = SX3Detect.detector;
+                            fSX3Sector[fSX3Mul] = SX3Detect.sector;
+                            fSX3SectorChannel[fSX3Mul] = SX3Detect.sectorChannel;
+                            fSX3SectorADC[fSX3Mul] = SX3Detect.sectorADC;
+                            fSX3SectorEnergy[fSX3Mul] = SX3Detect.sectorEnergy;
+                            fSX3Strip[fSX3Mul] = SX3Detect.strip;
+                            fSX3StripLeftChannel[fSX3Mul] = SX3Detect.stripLeftChannel;
+                            fSX3StripRightChannel[fSX3Mul] = SX3Detect.stripRightChannel;
+                            fSX3StripLeftADC[fSX3Mul] = SX3Detect.stripLeftADC;
+                            fSX3StripRightADC[fSX3Mul] = SX3Detect.stripRightADC;
+                            fSX3StripEnergy[fSX3Mul] = SX3Detect.stripEnergy;
+                            fSX3Mul++;
+                        }
+                        for(auto SX3Detect: SX3uDetect_) {
+                            fSX3Upstream[fSX3Mul] = SX3Detect.upstream;
+                            fSX3Det[fSX3Mul] = SX3Detect.detector;
+                            fSX3Sector[fSX3Mul] = SX3Detect.sector;
+                            fSX3SectorChannel[fSX3Mul] = SX3Detect.sectorChannel;
+                            fSX3SectorADC[fSX3Mul] = SX3Detect.sectorADC;
+                            fSX3SectorEnergy[fSX3Mul] = SX3Detect.sectorEnergy;
+                            fSX3Strip[fSX3Mul] = SX3Detect.strip;
+                            fSX3StripLeftChannel[fSX3Mul] = SX3Detect.stripLeftChannel;
+                            fSX3StripRightChannel[fSX3Mul] = SX3Detect.stripRightChannel;
+                            fSX3StripLeftADC[fSX3Mul] = SX3Detect.stripLeftADC;
+                            fSX3StripRightADC[fSX3Mul] = SX3Detect.stripRightADC;
+                            fSX3StripEnergy[fSX3Mul] = SX3Detect.stripEnergy;
+                            fSX3Mul++;
                         }
 
                         fICdE = icdE;

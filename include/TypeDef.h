@@ -76,4 +76,28 @@ typedef struct SuperX3Front {
     int adc;
 } SuperX3Front;
 
+typedef struct SuperX3FrontMatched {
+    int detector;
+    int strip;
+    int stripLeftChannel;
+    int stripLeftADC;
+    int stripRightChannel;
+    int stripRightADC;
+} SuperX3FrontMatched;
+
+typedef struct SuperX3Detector {
+    bool upstream;
+    int detector;
+    int sector;
+    int sectorChannel;
+    int sectorADC;
+    float sectorEnergy;
+    int strip;
+    int stripLeftChannel;
+    int stripLeftADC;
+    int stripRightChannel;
+    int stripRightADC;
+    float stripEnergy;
+} SuperX3Detector;
+
 #endif
