@@ -1,6 +1,7 @@
 #ifndef CALIBRATIONS_H
 #define CALIBRATIONS_H
 
+#include "json/json.h"
 #include "TypeDef.h"
 #include "Utilities.h"
 
@@ -21,6 +22,10 @@ public:
     std::map<int, std::map<int, std::map<int, std::pair<float, float> > > > GetSuperX3Calibrations() {return fSuperX3UpCalibrations;}
     std::map<int, std::map<int, float> > GetSuperX3Pedestals() {return fSuperX3UpPedestals;}
 
+    int GetBB10Threshold() {return BB10Threshold;}
+    int GetQQQThreshold() {return QQQThreshold;}
+    int GetSX3Threshold() {return SX3Threshold;}
+
 private:
     static Calibrations* fInstance;
 
@@ -32,6 +37,10 @@ private:
 
     void ReadSuperX3UpCalibrations();
     void ReadSuperX3UpPedestals();
+
+    int BB10Threshold;
+    int QQQThreshold;
+    int SX3Threshold;
 
     std::map<int, std::map<int, std::pair<float, float> > > fQQQ5DownCalibrations;
     std::map<int, float> fQQQ5DownPedestals;
