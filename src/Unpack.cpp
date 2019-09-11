@@ -270,7 +270,7 @@ Unpack::Unpack() {
                         if(!SX3uBack_.empty() && !SX3uFront_.empty()) SX3uDetect_ = ProcessSX3(SX3uBack_, SX3uFront_, true);
 
                         bool BB10DetectEmpty = BB10Detect_.empty();
-                        bool QQQDetectEmpty = (QuDetect_.empty() && QdDetect_.empty());
+                        bool QQQDetectEmpty = (QdDetect_.empty() && QuDetect_.empty());
                         bool SX3DetectEmpty = (SX3dDetect_.empty() && SX3uDetect_.empty());
                         bool icEmpty = ((icE == 0) && (icdE == 0));
 
@@ -279,12 +279,12 @@ Unpack::Unpack() {
                         // BB10 Detectors
                         fBB10Mul = 0;
                         for(auto BB10Detect: BB10Detect_) {
-                            fBB10Mul++;
                             fBB10Det[fBB10Mul] = BB10Detect.detector;
                             fBB10Strip[fBB10Mul] = BB10Detect.strip;
                             fBB10Channel[fBB10Mul] = BB10Detect.channel;
                             fBB10ADC[fBB10Mul] = BB10Detect.adc;
                             fBB10Energy[fBB10Mul] = BB10Detect.energy;
+                            fBB10Mul++;
                         }
 
                         // QQQ5 Detectors
@@ -373,6 +373,7 @@ Unpack::Unpack() {
 
         std::cout << PrintOutput("Finished Unpacking Run: ", "cyan") << run.runNumber << '\t';
         std::cout << PrintOutput("Time", "cyan") << " = " << Form("%.02f", (RunClock-StartClock)/double(CLOCKS_PER_SEC)) << " seconds" << std::flush << std::endl;
+        std::cout << PrintOutput("Number of events: ", "cyan") << numberEvents << std::flush << std::endl;
         std::cout << PrintOutput("Created ROOT file : ", "cyan") << outputFile->GetName() << std::endl;
 
         if(run.copyCuts) {
