@@ -78,6 +78,8 @@ private:
     int fICE;
     int fTDC;
 
+    unsigned long long fTimeStamp;
+
 };
 
 #endif

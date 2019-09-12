@@ -100,6 +100,9 @@ Unpack::Unpack() {
         // TDCs
         tree->Branch("tdc", &fTDC, "tdc/I");
 
+        // Timestamp
+        tree->Branch("timeStamp", &fTimeStamp);
+
         //Declare some variables
         int NumberBuffer = 0;
         unsigned long int numberEvents = 0;
@@ -159,6 +162,8 @@ Unpack::Unpack() {
                         int tdc = 0;
                         int icdE = 0;
                         int icE = 0;
+
+                        unsigned long long timeStamp = 0;
 
                         for(int k = 0; k < readChannel.size(); k++) {
                             int channel = readChannel[k];
@@ -233,12 +238,17 @@ Unpack::Unpack() {
                             } else if(channel > 704 && channel <= 736) { // IC y
 
                             } else if(channel == 739) { //IC dE
-                                 icdE = adc;
+                                icdE = adc;
                             } else if(channel == 740) { //IC E
-                                 icE = adc;
+                                icE = adc;
                             } else if(channel == 818) { // TDC
-                                 tdc = adc;
+                                tdc = adc;
                             }
+
+                            if(channel >= 1000 && channel <= 1003) {
+                                timeStamp |= (unsigned long long) adc << (16*(channel - 1000));
+                            }
+
                         }
                         ///////////////////////////
                         // End of Sub-event loop //
@@ -355,7 +365,11 @@ Unpack::Unpack() {
                         fICE = icE;
                         fTDC = tdc;
 
+                        fTimeStamp = timeStamp;
+
                         tree->Fill();
+
+                        std::cout << timeStamp << std::endl;
 
                         hEventMult->Fill(counter);
                         counter = 0;
