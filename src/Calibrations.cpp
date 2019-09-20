@@ -30,6 +30,7 @@ Calibrations::Calibrations() {
     BB10Threshold = config["BB10Threshold"].asInt(); // Original Value: 500
     QQQThreshold = config["QQQThreshold"].asInt(); // Original Value: 400
     SX3Threshold = config["SX3Threshold"].asInt(); // Original Value: 500
+    ICTrackingThreshold = config["ICTrackingThreshold"].asInt(); // Original Value: 300
 }
 
 void Calibrations::ReadQQQ5DownCalibrations() {

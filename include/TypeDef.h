@@ -99,4 +99,19 @@ typedef struct SuperX3Detector {
     float stripEnergy;
 } SuperX3Detector;
 
+typedef struct ICTracking{
+    bool x;
+    int wire;
+    int adc;
+} ICTracking;
+
+typedef struct ICTrackingDetector {
+    int wireX;
+    int wireY;
+    float positionX;
+    float positionY;
+    float positionWeightedX;
+    float positionWeightedY;
+} ICTrackingDetector;
+
 #endif

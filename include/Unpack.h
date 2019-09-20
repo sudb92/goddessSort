@@ -4,8 +4,9 @@
 #include "ProcessBB10.h"
 #include "ProcessQQQ5.h"
 #include "ProcessSX3.h"
+#include "ProcessIC.h"
 #include "RunList.h"
-//#include "SortingStructures.h"
+
 #include "TypeDef.h"
 #include "Utilities.h"
 
@@ -76,6 +77,12 @@ private:
 
     int fICdE;
     int fICE;
+    int fICWireX;
+    int fICWireY;
+    float fICPositionX;
+    float fICPositionY;
+    float fICPositionWeightedX;
+    float fICPositionWeightedY;
 
     int fTDCIC;
     int fTDCGRETINA;

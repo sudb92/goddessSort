@@ -9,5 +9,6 @@
   "runs": ["0255"],
   "BB10Threshold": 500,
   "QQQThreshold": 400,
-  "SX3Threshold": 500
+  "SX3Threshold": 500,
+  "ICTrackingThreshold": 300
 }

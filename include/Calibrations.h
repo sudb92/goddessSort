@@ -25,6 +25,7 @@ public:
     int GetBB10Threshold() {return BB10Threshold;}
     int GetQQQThreshold() {return QQQThreshold;}
     int GetSX3Threshold() {return SX3Threshold;}
+    int GetICTrackingThreshold() {return ICTrackingThreshold;}
 
 private:
     static Calibrations* fInstance;
@@ -41,6 +42,7 @@ private:
     int BB10Threshold;
     int QQQThreshold;
     int SX3Threshold;
+    int ICTrackingThreshold;
 
     std::map<int, std::map<int, std::pair<float, float> > > fQQQ5DownCalibrations;
     std::map<int, float> fQQQ5DownPedestals;

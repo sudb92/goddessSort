@@ -8,11 +8,6 @@
 
 int RunClock;
 
-// Timestamps
-// 1001
-// 1002
-// 1003
-
 int main(int argc, char *argv[]) {
     auto* unpacker = new Unpack();
 
@@ -36,6 +31,7 @@ Unpack::Unpack() {
     int BB10Threshold = calibrations->GetBB10Threshold();
     int QQQThreshold = calibrations->GetQQQThreshold();
     int SX3Threshold = calibrations->GetSX3Threshold();
+    int ICTrackingThreshold = calibrations->GetICTrackingThreshold();
 
     std::cout << PrintOutput("Begin data processing loop", "yellow") << std::endl;
 
@@ -96,10 +92,16 @@ Unpack::Unpack() {
         // Ionization Chamber
         tree->Branch("icdE", &fICdE, "icdE/I");
         tree->Branch("icE",  &fICE,  "icE/I");
+        tree->Branch("icWireX", &fICWireX, "icWireX/I");
+        tree->Branch("icWireY", &fICWireY, "icWireY/I");
+        tree->Branch("icPositionX", &fICPositionX, "icPositionX/F");
+        tree->Branch("icPositionY", &fICPositionY, "icPositionY/F");
+        tree->Branch("icPositionWeightedX", &fICPositionWeightedX, "icPositionWeightedX/F");
+        tree->Branch("icPositionWeightedY", &fICPositionWeightedY, "icPositionWeightedY/F");
 
         // TDCs
         tree->Branch("tdcIC", &fTDCIC, "tdcIC/I");
-        tree->Branch("tdcGRETINA". &fTDCGRETINA, "tdcGRETINA/I");
+        tree->Branch("tdcGRETINA", &fTDCGRETINA, "tdcGRETINA/I");
         tree->Branch("tdcRF", &fTDCRF, "tdcRF/I");
         tree->Branch("tdcSilicon", &fTDCSilicon, "tdcSilicon/I");
 
@@ -161,6 +163,9 @@ Unpack::Unpack() {
                         std::vector<SuperX3Front> SX3dFront_;
                         std::vector<SuperX3Back> SX3uBack_;
                         std::vector<SuperX3Front> SX3uFront_;
+
+                        std::vector<ICTracking> ICx_;
+                        std::vector<ICTracking> ICy_;
 
                         int icdE = 0;
                         int icE = 0;
@@ -240,10 +245,14 @@ Unpack::Unpack() {
                                 int detector = static_cast<int>((channel - 513)/32);
                                 QQQ5Ring hit = {channel, detector, channel - 513 - detector*32, adc};
                                 QdRing_.push_back(hit);
-                            } else if(channel > 672 && channel <= 704) { // IC x
-
-                            } else if(channel > 704 && channel <= 736) { // IC y
-
+                            } else if(channel > 672 && channel <= 704 && adc > ICTrackingThreshold) { // IC x
+                                int wire = channel - 673;
+                                ICTracking hit = {true, wire, adc};
+                                ICx_.push_back(hit);
+                            } else if(channel > 704 && channel <= 736 && adc > ICTrackingThreshold) { // IC y
+                                int wire = channel - 705;
+                                ICTracking hit = {false, wire, adc};
+                                ICy_.push_back(hit);
                             } else if(channel == 739) { //IC dE
                                 icdE = adc;
                             } else if(channel == 740) { //IC E
@@ -291,6 +300,10 @@ Unpack::Unpack() {
                         // Super X3 Upstream
                         std::vector<SuperX3Detector> SX3uDetect_;
                         if(!SX3uBack_.empty() && !SX3uFront_.empty()) SX3uDetect_ = ProcessSX3(SX3uBack_, SX3uFront_, true);
+
+                        // IC Tracking
+                        std::vector<ICTrackingDetector> ICTrackDetect_;
+                        if(!ICx_.empty() && !ICy_.empty()) ICTrackDetect_ = ProcessIC(ICx_, ICy_);
 
                         bool BB10DetectEmpty = BB10Detect_.empty();
                         bool QQQDetectEmpty = (QdDetect_.empty() && QuDetect_.empty());
@@ -377,6 +390,15 @@ Unpack::Unpack() {
                         fICdE = icdE;
                         fICE = icE;
 
+                        if(!ICTrackDetect_.empty()) {
+                            fICWireX = ICTrackDetect_[0].wireX;
+                            fICWireY = ICTrackDetect_[0].wireY;
+                            fICPositionX = ICTrackDetect_[0].positionX;
+                            fICPositionY = ICTrackDetect_[0].positionY;
+                            fICPositionWeightedX = ICTrackDetect_[0].positionWeightedX;
+                            fICPositionWeightedY = ICTrackDetect_[0].positionWeightedY;
+                        }
+
                         fTDCIC = tdcIC;
                         fTDCGRETINA = tdcGRETINA;
                         fTDCRF = tdcRF;
@@ -385,8 +407,6 @@ Unpack::Unpack() {
                         fTimeStamp = timeStamp;
 
                         tree->Fill();
-
-                        std::cout << timeStamp << std::endl;
 
                         hEventMult->Fill(counter);
                         counter = 0;
