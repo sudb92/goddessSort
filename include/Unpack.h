@@ -76,7 +76,11 @@ private:
 
     int fICdE;
     int fICE;
-    int fTDC;
+
+    int fTDCIC;
+    int fTDCGRETINA;
+    int fTDCRF;
+    int fTDCSilicon;
 
     unsigned long long fTimeStamp;
 

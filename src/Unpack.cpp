@@ -98,7 +98,10 @@ Unpack::Unpack() {
         tree->Branch("icE",  &fICE,  "icE/I");
 
         // TDCs
-        tree->Branch("tdc", &fTDC, "tdc/I");
+        tree->Branch("tdcIC", &fTDCIC, "tdcIC/I");
+        tree->Branch("tdcGRETINA". &fTDCGRETINA, "tdcGRETINA/I");
+        tree->Branch("tdcRF", &fTDCRF, "tdcRF/I");
+        tree->Branch("tdcSilicon", &fTDCSilicon, "tdcSilicon/I");
 
         // Timestamp
         tree->Branch("timeStamp", &fTimeStamp);
@@ -159,9 +162,13 @@ Unpack::Unpack() {
                         std::vector<SuperX3Back> SX3uBack_;
                         std::vector<SuperX3Front> SX3uFront_;
 
-                        int tdc = 0;
                         int icdE = 0;
                         int icE = 0;
+
+                        int tdcIC = 0;
+                        int tdcGRETINA = 0;
+                        int tdcRF = 0;
+                        int tdcSilicon = 0;
 
                         unsigned long long timeStamp = 0;
 
@@ -241,8 +248,14 @@ Unpack::Unpack() {
                                 icdE = adc;
                             } else if(channel == 740) { //IC E
                                 icE = adc;
-                            } else if(channel == 818) { // TDC
-                                tdc = adc;
+                            } else if(channel == 818) { // TDC IC
+                                tdcIC = adc;
+                            } else if(channel == 819) { // TDC GRETINA
+                                tdcGRETINA = adc;
+                            } else if(channel == 821) { // TDC RF
+                                tdcRF = adc;
+                            } else if(channel == 822) { // TDC Silicon
+                                tdcSilicon = adc;
                             }
 
                             if(channel >= 1000 && channel <= 1003) {
@@ -363,7 +376,11 @@ Unpack::Unpack() {
 
                         fICdE = icdE;
                         fICE = icE;
-                        fTDC = tdc;
+
+                        fTDCIC = tdcIC;
+                        fTDCGRETINA = tdcGRETINA;
+                        fTDCRF = tdcRF;
+                        fTDCSilicon = tdcSilicon;
 
                         fTimeStamp = timeStamp;
 
