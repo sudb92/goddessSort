@@ -15,7 +15,7 @@ std::vector<ICTrackingDetector> ProcessIC(std::vector<ICTracking> ICx_, std::vec
     // Go through x wires
     // Assuming 2 mm spacing between wires
     int wireX = ICx_[0].wire;
-    float positionX = static_cast<float>(wireX)*2. - 15.5*2.;
+    float positionX = 15.5*2. - static_cast<float>(wireX)*2.;
     float positionWeightedX = positionX;
     bool doubleHitX = false;
     if(ICx_.size() > 1) {
@@ -24,7 +24,7 @@ std::vector<ICTrackingDetector> ProcessIC(std::vector<ICTracking> ICx_, std::vec
         }
     }
     if(doubleHitX) {
-        float secondPositionX = static_cast<float>(ICx_[1].wire)*2. - 15.5*2.;
+        float secondPositionX = 15.5*2. - static_cast<float>(ICx_[1].wire)*2.;
         positionWeightedX = (positionX*ICx_[0].adc + secondPositionX*ICx_[1].adc)/(ICx_[0].adc + ICx_[1].adc);
     }
 
