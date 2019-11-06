@@ -52,6 +52,9 @@ Unpack::Unpack() {
         //Setup Tree
         TTree *tree = new TTree("data", "Data Tree");
 
+        // General variables
+        tree->Branch("RunNumber", &fRunNumber);
+
         // BB10 Detectors
         tree->Branch("BB10Mul",     &fBB10Mul,     "BB10Mul/I");
         tree->Branch("BB10Det",     &fBB10Det,     "BB10Det[BB10Mul]/I");
@@ -144,7 +147,7 @@ Unpack::Unpack() {
                     if (word != 0xffffffff) {
 
                         int channel = ExtractBits(word, 16, 12);
-                        int value = ExtractBits(word, 0, 12);
+                        int value = ExtractBits(word, 0, 16);
                         hMap->Fill(channel, value);
 
                         //Add values to Read Arrays
@@ -270,7 +273,6 @@ Unpack::Unpack() {
                             if(channel >= 1000 && channel <= 1003) {
                                 timeStamp |= (unsigned long long) adc << (16*(channel - 1000));
                             }
-
                         }
                         ///////////////////////////
                         // End of Sub-event loop //
@@ -405,6 +407,8 @@ Unpack::Unpack() {
                         fTDCSilicon = tdcSilicon;
 
                         fTimeStamp = timeStamp;
+
+                        fRunNumber = run.runNumber;
 
                         tree->Fill();
 

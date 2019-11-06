@@ -38,6 +38,9 @@ private:
     // Tree variables //
     ////////////////////
 
+    // General variables
+    std::string fRunNumber;
+
     // BB10 Detectors
     int fBB10Mul;
     int fBB10Det[256];
