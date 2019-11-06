@@ -1,12 +1,10 @@
-#ifndef UNPACK_H
-#define UNPACK_H
-
-#include "UnpackORRUBA.h"
+#ifndef UnpackORRUBA_h
+#define UnpackORRUBA_h
 
 #include "ProcessBB10.h"
+#include "ProcessIC.h"
 #include "ProcessQQQ5.h"
 #include "ProcessSX3.h"
-#include "ProcessIC.h"
 #include "RunList.h"
 #include "TypeDef.h"
 #include "Utilities.h"
@@ -29,15 +27,21 @@
 #include <TSystem.h>
 #include <TTree.h>
 
-class Unpack {
+class UnpackORRUBA {
 public:
-    Unpack();
+    UnpackORRUBA() {};
+    UnpackORRUBA(fileListStruct run);
+    ~UnpackORRUBA() {};
+
+    TTree* GetTree() {return tree;}
 
 private:
 
     ////////////////////
     // Tree variables //
     ////////////////////
+
+    TTree* tree;
 
     // General variables
     std::string fRunNumber;
@@ -94,7 +98,6 @@ private:
     int fTDCSilicon;
 
     unsigned long long fTimeStamp;
-
 };
 
 #endif

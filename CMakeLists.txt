@@ -21,14 +21,14 @@ include_directories(include)
 file(GLOB json_source ${PROJECT_SOURCE_DIR}/src/jsoncpp.cpp)
 #file(GLOB json_headers ${PROJECT_SOURCE_DIR}/include/json/*.h)
 
-file(GLOB orruba_sources src/Unpack.cpp src/Calibrations.cpp src/ProcessBB10.cpp src/ProcessIC.cpp src/ProcessQQQ5.cpp src/ProcessSX3.cpp src/RunList.cpp src/Utilities.cpp)
+file(GLOB orruba_sources src/UnpackORRUBA.cpp src/Calibrations.cpp src/ProcessBB10.cpp src/ProcessIC.cpp src/ProcessQQQ5.cpp src/ProcessSX3.cpp src/RunList.cpp src/Utilities.cpp)
 #file(GLOB orruba_headers ${PROJECT_SOURCE_DIR}/include/Unpack.h ${PROJECT_SOURCE_DIR}/include/Calibrations.h ${PROJECT_SOURCE_DIR}/include/ProcessBB10.h ${PROJECT_SOURCE_DIR}/include/ProcessIC.h ${PROJECT_SOURCE_DIR}/include/ProcessQQQ5.h ${PROJECT_SOURCE_DIR}/include/ProcessSX3.h ${PROJECT_SOURCE_DIR}/include/RunList.h)
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the libraries
 #
 #add_executable(goddessSort ${sources} ${headers})
-add_executable(goddessSort ${orruba_sources} ${json_source})
+add_executable(goddessSort src/Unpack.cpp ${orruba_sources} ${json_source})
 target_link_libraries(goddessSort ${ROOT_LIBRARIES})
 
 #
