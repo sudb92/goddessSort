@@ -1,5 +1,5 @@
-#ifndef PROCESSSX3_H
-#define PROCESSSX3_H
+#ifndef ProcessSX3_h
+#define ProcessSX3_h
 
 #include "Calibrations.h"
 #include "TypeDef.h"
@@ -17,4 +17,4 @@ void RemoveSX3BackDuplicates(std::vector<SuperX3Back>& back_);
 void RemoveSX3FrontDuplicates(std::vector<SuperX3Front>& front_);
 //bool ApplyGainMatch(int Id, SX3det &SX3);
 
-#endif
+#endif // ProcessSX3_h

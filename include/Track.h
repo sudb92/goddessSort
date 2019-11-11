@@ -1,15 +1,15 @@
-#ifndef TRACK_H
-#define TRACK_H
+#ifndef Track_h
+#define Track_h
 
 #include <limits.h>
 #include <stdint.h>
 #include <stdlib.h>
 
-#include <Riostream.h>
-#include <Rtypes.h>
 #include <TObject.h>
 #include <TString.h>
 #include <TVector3.h>
+#include <Riostream.h>
+#include <Rtypes.h>
 
 /* Tracking define statements */
 
@@ -62,7 +62,7 @@ public:
     Double_t yy();
     Double_t zz();
 
-//    ClassDef(TrackClusterIP, 1);
+    ClassDef(TrackClusterIP, 1);
 };
 
 class TrackCluster : public TObject {
@@ -88,7 +88,7 @@ public:
     void Clear();
     void PrintCluster();
 
-//    ClassDef(TrackCluster, 1);
+    ClassDef(TrackCluster, 1);
 };
 
 class TrackShell : public TObject {
@@ -130,7 +130,7 @@ public:
     void Print();
     void PrintClusters();
 
-    //ClassDef(TrackShell, 1);
+    ClassDef(TrackShell, 1);
 };
 
 class TrackCtrl : public TObject {
@@ -210,7 +210,7 @@ public:
     void PrintPartial();
     Int_t trackOpt(Int_t i);
 
-//    ClassDef(TrackCtrl, 1);
+    ClassDef(TrackCtrl, 1);
 };
 
 class TrackStat : public TObject {
@@ -258,7 +258,7 @@ public:
 public:
     void Zero();
 
-//    ClassDef(TrackStat, 1);
+    ClassDef(TrackStat, 1);
 };
 
 class TrackPerm : public TObject {
@@ -269,7 +269,7 @@ public:
 public:
     void Initialize();
 
-//    ClassDef(TrackPerm, 1);
+    ClassDef(TrackPerm, 1);
 };
 
 class Track : public TObject {
@@ -287,8 +287,8 @@ public:
     long long faculty[MAXFACULTY];
 
 public:
-    Track() {}
-    ~Track() {}
+    Track() { ; }
+    ~Track() { ; }
     void Initialize();
     Int_t findTargetPos();
     Int_t findClusters();
@@ -301,7 +301,7 @@ public:
     Int_t matchMaker(Int_t ii, Int_t jj);
     void PrintValidClusters();
 
-//    ClassDef(Track, 1);
+    ClassDef(Track, 1);
 };
 
-#endif
+#endif // Track_h

@@ -9,4 +9,4 @@
 
 std::vector<BB10Detector> ProcessBB10(std::vector<BB10Hit> BB10Hit_);
 
-#endif
+#endif // ProcessBB10_h

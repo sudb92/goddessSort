@@ -1,5 +1,5 @@
-#ifndef CALIBRATIONS_H
-#define CALIBRATIONS_H
+#ifndef Calibrations_h
+#define Calibrations_h
 
 #include "json/json.h"
 #include "TypeDef.h"
@@ -55,4 +55,4 @@ private:
     std::map<int, std::map<int, float> > fSuperX3UpPedestals;
 };
 
-#endif
+#endif // Calibrations_h

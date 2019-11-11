@@ -1,5 +1,5 @@
-#ifndef DEFINES_H
-#define DEFINES_H
+#ifndef Defines_h
+#define Defines_h
 
 #define DEBUG 0
 
@@ -54,4 +54,4 @@
     channels in the .spn files. */
 #define AVG_TR_STRIDE 110
 
-#endif
+#endif // Defines_h

@@ -1,5 +1,5 @@
-#ifndef RUNLIST_H
-#define RUNLIST_H
+#ifndef RunList_h
+#define RunList_h
 
 #include "json/json.h"
 #include "TypeDef.h"
@@ -33,4 +33,4 @@ private:
     std::vector<std::string> listNumbers;
 };
 
-#endif
+#endif // RunList_h

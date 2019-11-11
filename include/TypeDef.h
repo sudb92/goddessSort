@@ -1,5 +1,5 @@
-#ifndef TYPEDEF_H
-#define TYPEDEF_H
+#ifndef TypeDef_h
+#define TypeDef_h
 
 #include <cassert>
 #include <string>
@@ -114,4 +114,11 @@ typedef struct ICTrackingDetector {
     float positionWeightedY;
 } ICTrackingDetector;
 
-#endif
+typedef struct out4Mario {
+  float ccEnergy;
+  float segEnergy[36];
+  float pad;
+  short wf[37][300];
+} out4Mario;
+
+#endif // TypeDef_h

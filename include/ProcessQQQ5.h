@@ -1,5 +1,5 @@
-#ifndef PROCESSQQQ5_H
-#define PROCESSQQQ5_H
+#ifndef ProcessQQQ5_h
+#define ProcessQQQ5_h
 
 #include "Calibrations.h"
 #include "TypeDef.h"
@@ -18,4 +18,4 @@ void RemoveQQQ5RingDuplicates(std::vector<QQQ5Ring>& ring_);
 void RemoveQQQ5SectorDuplicates(std::vector<QQQ5Sector>& sector_);
 std::vector<QQQ5Detector> ProcessQQQ5(std::vector<QQQ5Ring> ring_, std::vector<QQQ5Sector> sector_, bool up);
 
-#endif
+#endif // ProcessQQQ5_h
