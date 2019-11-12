@@ -4,6 +4,8 @@
 #include <cassert>
 #include <string>
 
+#include <Rtypes.h>
+
 typedef struct fileListStruct {
     std::string pathToFolder;
     std::string outputPath;
@@ -12,6 +14,9 @@ typedef struct fileListStruct {
     std::string runNumber;
     std::string preCutPath;
     std::string cutPath;
+    std::string globalPath;
+    std::string gretinaPath;
+    std::string combinedPath;
     bool copyCuts;
 } fileListStruct;
 
@@ -114,11 +119,19 @@ typedef struct ICTrackingDetector {
     float positionWeightedY;
 } ICTrackingDetector;
 
+typedef struct matchedEvents {
+    int orrubaNumber;
+    int gretinaNumber;
+    Long64_t orrubaTimeStamp;
+    Long64_t gretinaTimeStamp;
+} matchedEvents;
+
 typedef struct out4Mario {
-  float ccEnergy;
-  float segEnergy[36];
-  float pad;
-  short wf[37][300];
+    float ccEnergy;
+    float segEnergy[36];
+    float pad;
+    short wf[37][300];
 } out4Mario;
+
 
 #endif // TypeDef_h

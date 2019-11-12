@@ -40,10 +40,10 @@ file(GLOB gretina_sources src/UnpackGRETINARaw.cpp src/Globals.cpp src/UnpackUti
 # Add the executable, and link it to the libraries
 #
 add_executable(goddessSort src/Unpack.cpp ${orruba_sources} ${json_source} src/UnpackGRETINA.cpp)
-target_link_libraries(goddessSort ${ROOT_LIBRARIES})
+target_link_libraries(goddessSort ${ROOT_LIBRARIES} GRETINA)
 
-add_executable(goddessSortGRETINA ${gretina_sources})
-target_link_libraries(goddessSortGRETINA ${ROOT_LIBRARIES} GRETINA)
+add_executable(unpackGRETINA ${gretina_sources})
+target_link_libraries(unpackGRETINA ${ROOT_LIBRARIES} GRETINA)
 
 add_executable(GEB_HFC ${CMAKE_CURRENT_SOURCE_DIR}/src/hfc/GEB_HFC.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/hfc/HFC.cpp)
 

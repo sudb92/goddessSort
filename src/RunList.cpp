@@ -35,8 +35,11 @@ void RunList::CompileListOfRuns() {
         std::string rootPath = outputPath + pathPrefix + run + ".root";
         std::string preCutPath = pathToFolders + pathPrefix + run + '/' + cutPrefix + run + ".root";
         std::string cutPath = outputPath + cutPrefix + run + ".root";
+        std::string globalPath = pathToFolders + pathPrefix + run + "/Global.dat";
+        std::string gretinaPath = outputPath + pathPrefix + run + "_gretina.root";
+        std::string combinedPath = outputPath + pathPrefix + run + "_combined.root";
 
-        fileListStruct indFile = {pathToFolders, outputPath, ldfPath, rootPath, run, preCutPath, cutPath, copyCuts};
+        fileListStruct indFile = {pathToFolders, outputPath, ldfPath, rootPath, run, preCutPath, cutPath, globalPath, gretinaPath, combinedPath, copyCuts};
         listOfRuns.push_back(indFile);
     }
 }

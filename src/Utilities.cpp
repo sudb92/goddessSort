@@ -4,7 +4,7 @@ unsigned int ExtractBits(unsigned int Source, int Begin, int Length){
     return (Source >> Begin) & ((1 << Length) - 1);
 }
 
- std::string PrintOutput(std::string Output, std::string Color){
+std::string PrintOutput(std::string Output, std::string Color){
 	int ColorCode = 0;
 	if(Color.compare("red") == 0){
 		ColorCode = 31;

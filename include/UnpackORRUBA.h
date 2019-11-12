@@ -32,10 +32,12 @@ public:
     UnpackORRUBA() {};
     UnpackORRUBA(fileListStruct run);
     ~UnpackORRUBA() {};
+    bool GetCompleted() {return completed;}
 
     TTree* GetTree() {return tree;}
 
 private:
+    bool completed;
 
     ////////////////////
     // Tree variables //

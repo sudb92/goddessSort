@@ -414,4 +414,6 @@ UnpackORRUBA::UnpackORRUBA(fileListStruct run) {
             std::cout << PrintOutput(Form("\t\tDid not copy cut from run %s", run.runNumber.c_str()), "red") << std::endl;
         }
     }
+
+    completed = true;
 }
