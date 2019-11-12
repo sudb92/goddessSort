@@ -29,7 +29,9 @@ Unpack::Unpack() {
         //     Combine(run);
         // }
 
-        Combine(run);
+        // Combine(run);
+
+        CombineReader(run);
     }
 
     std::cout << PrintOutput("************************************************", "yellow") << std::endl;
@@ -99,7 +101,7 @@ void Unpack::CombineTrees(TTree* orruba, TTree* gretina) {
     Int_t nonMatchedEvents = 0;
     for(ULong64_t i = 0; i < nentriesORRUBA; i++) {
         orruba->GetEntry(i);
-        orrubaArray[i] = timeStamp;
+        // orrubaArray[i] = timeStamp;
 
         // Lets be smart and not loop over all entries in the GRETINA trees
         Float_t i_percent = static_cast<Float_t>(i)/static_cast<Float_t>(nentriesORRUBA); // Get percentage we have looped through
@@ -123,4 +125,54 @@ void Unpack::CombineTrees(TTree* orruba, TTree* gretina) {
     }
 
     return;
+}
+
+void Unpack::CombineReader(fileListStruct run) {
+    std::cout << PrintOutput("\tCombining ORRUBA and GRETINA trees based on timestamp:", "yellow") << std::endl;
+
+    std::cout << PrintOutput(Form("\t\tOpening ORRUBA file: %s", run.rootPath.c_str()), "green") << std::endl;
+    auto f_ORRUBA = TFile::Open(Form("%s", run.rootPath.c_str()));
+    if(!f_ORRUBA) {
+        std::cout << PrintOutput(Form("\t\tCould not open ORRUBA file: %s", run.rootPath.c_str()), "red") << std::endl;
+        return;
+    }
+    TTreeReader t_ORRUBA("data", f_ORRUBA);
+    Long64_t nentriesORRUBA = t_ORRUBA.GetEntries();
+    if(nentriesORRUBA == 0) {
+        std::cout << PrintOutput("\t\tCould not open TTree 'data' in ORRBUA file", "red") << std::endl;
+        return;
+    }
+
+    std::cout << PrintOutput(Form("\t\tOpening GRETINA file: %s", run.gretinaPath.c_str()), "green") << std::endl;
+    auto f_GRETINA = TFile::Open(Form("%s", run.gretinaPath.c_str()));
+    if(!f_GRETINA) {
+        std::cout << PrintOutput(Form("\t\tCould not open GRETINA file: %s", run.gretinaPath.c_str()), "red") << std::endl;
+        return;
+    }
+    TTreeReader t_GRETINA("teb", f_GRETINA);
+    Long64_t nentriesGRETINA = t_GRETINA.GetEntries();
+    if(nentriesGRETINA == 0) {
+        std::cout << PrintOutput("\t\tCould not open TTree 'teb' in GRETINA file", "red") << std::endl;
+        return;
+    }
+
+    std::cout << PrintOutput(Form("\t\t\tORRUBA Entries: %lld GRETINA Entries: %lld", nentriesORRUBA, nentriesGRETINA), "yellow") << std::endl;
+
+    TTreeReaderValue<ULong64_t> orrubaTimeStamp(t_ORRUBA, "timeStamp");
+    TTreeReaderValue<Long64_t> gretinaTimeStamp(t_GRETINA, "timestamp");
+
+    Long64_t orrubaTimeStamps[nentriesORRUBA];
+    Long64_t gretinaTimeStamps[nentriesGRETINA];
+
+    Int_t i = 0;
+    while(t_ORRUBA.Next()) {
+        orrubaTimeStamps[i] = *orrubaTimeStamp;
+        i++;
+    }
+
+    i = 0;
+    while(t_GRETINA.Next()) {
+        gretinaTimeStamps[i] = *gretinaTimeStamp;
+        i++;
+    }
 }

@@ -36,6 +36,8 @@ public:
 private:
     void Combine(fileListStruct run);
     void CombineTrees(TTree* orruba, TTree* gretina);
+
+    void CombineReader(fileListStruct run);
 };
 
 #endif
