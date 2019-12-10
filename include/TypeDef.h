@@ -120,8 +120,8 @@ typedef struct ICTrackingDetector {
 } ICTrackingDetector;
 
 typedef struct matchedEvents {
-    int orrubaNumber;
-    int gretinaNumber;
+    size_t orrubaNumber;
+    size_t gretinaNumber;
     Long64_t orrubaTimeStamp;
     Long64_t gretinaTimeStamp;
 } matchedEvents;

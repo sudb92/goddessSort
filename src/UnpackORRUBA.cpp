@@ -22,7 +22,7 @@ UnpackORRUBA::UnpackORRUBA(fileListStruct run) {
     ASSERT_WITH_MESSAGE(file.is_open(), Form("File not found: %s", run.ldfPath.c_str()));
 
     //Create and Open Root file to store data in. Check for success.
-    TFile *outputFile = new TFile(run.rootPath.c_str(), "RECREATE");
+    TFile *outputFile = new TFile(run.rootPath.c_str(), "recreate");
     ASSERT_WITH_MESSAGE(outputFile->IsOpen(), Form("Root output file did not open: %s", run.rootPath.c_str()));
 
     // std::cout << PrintOutput(Form("Unpacking data file [%d/%ld]", ++numRuns, fileList.size()), "green") << std::endl;
@@ -72,19 +72,19 @@ UnpackORRUBA::UnpackORRUBA(fileListStruct run) {
     tree->Branch("SX3StripEnergy",       &fSX3StripEnergy,       "SX3StripEnergy[SX3Mul]/F");
 
     // Ionization Chamber
-    tree->Branch("icdE", &fICdE, "icdE/I");
-    tree->Branch("icE",  &fICE,  "icE/I");
-    tree->Branch("icWireX", &fICWireX, "icWireX/I");
-    tree->Branch("icWireY", &fICWireY, "icWireY/I");
-    tree->Branch("icPositionX", &fICPositionX, "icPositionX/F");
-    tree->Branch("icPositionY", &fICPositionY, "icPositionY/F");
+    tree->Branch("icdE",                &fICdE,                "icdE/I");
+    tree->Branch("icE",                 &fICE,                 "icE/I");
+    tree->Branch("icWireX",             &fICWireX,             "icWireX/I");
+    tree->Branch("icWireY",             &fICWireY,             "icWireY/I");
+    tree->Branch("icPositionX",         &fICPositionX,         "icPositionX/F");
+    tree->Branch("icPositionY",         &fICPositionY,         "icPositionY/F");
     tree->Branch("icPositionWeightedX", &fICPositionWeightedX, "icPositionWeightedX/F");
     tree->Branch("icPositionWeightedY", &fICPositionWeightedY, "icPositionWeightedY/F");
 
     // TDCs
-    tree->Branch("tdcIC", &fTDCIC, "tdcIC/I");
+    tree->Branch("tdcIC",      &fTDCIC,      "tdcIC/I");
     tree->Branch("tdcGRETINA", &fTDCGRETINA, "tdcGRETINA/I");
-    tree->Branch("tdcRF", &fTDCRF, "tdcRF/I");
+    tree->Branch("tdcRF",      &fTDCRF,      "tdcRF/I");
     tree->Branch("tdcSilicon", &fTDCSilicon, "tdcSilicon/I");
 
     // Timestamp
@@ -405,7 +405,7 @@ UnpackORRUBA::UnpackORRUBA(fileListStruct run) {
 
     if(run.copyCuts) {
         std::ifstream src(run.preCutPath, std::ios::binary);
-        std::ofstream dst(run.cutPath,   std::ios::binary);
+        std::ofstream dst(run.cutPath, std::ios::binary);
         try {
             dst << src.rdbuf();
             std::cout << PrintOutput("\t\tCopied cut file from run: ", "cyan") << run.runNumber.c_str() << std::endl;
@@ -413,6 +413,8 @@ UnpackORRUBA::UnpackORRUBA(fileListStruct run) {
         catch(int e) {
             std::cout << PrintOutput(Form("\t\tDid not copy cut from run %s", run.runNumber.c_str()), "red") << std::endl;
         }
+        src.close();
+        dst.close();
     }
 
     completed = true;

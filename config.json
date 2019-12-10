@@ -7,8 +7,8 @@
   "cutPrefix": "cut_p30dp",
   "useAllFolders": false,
   "runs": ["0255"],
-  "BB10Threshold": 500,
-  "QQQThreshold": 400,
-  "SX3Threshold": 500,
-  "ICTrackingThreshold": 300
+  "BB10Threshold": 200,
+  "QQQThreshold": 200,
+  "SX3Threshold": 200,
+  "ICTrackingThreshold": 200
 }

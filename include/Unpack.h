@@ -14,6 +14,7 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <TCanvas.h>
@@ -34,9 +35,6 @@ public:
     Unpack();
 
 private:
-    void Combine(fileListStruct run);
-    void CombineTrees(TTree* orruba, TTree* gretina);
-
     void CombineReader(fileListStruct run);
 };
 

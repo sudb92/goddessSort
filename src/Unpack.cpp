@@ -26,10 +26,8 @@ Unpack::Unpack() {
         // bool gretinaCompleted = gretina->GetCompleted();
 
         // if(orrubaCompleted && gretinaCompleted) {
-        //     Combine(run);
+        //     CombineReader(run);
         // }
-
-        // Combine(run);
 
         CombineReader(run);
     }
@@ -38,102 +36,13 @@ Unpack::Unpack() {
     std::cout << PrintOutput("Finished Unpacking ", "yellow") << fileList.size() << PrintOutput(" files!", "yellow") <<  std::endl;
 }
 
-void Unpack::Combine(fileListStruct run) {
-    std::cout << PrintOutput("\tCombining ORRUBA and GRETINA trees based on timestamp", "yellow") << std::endl;
-
-    std::cout << PrintOutput(Form("\t\tOpening ORRUBA file: %s", run.rootPath.c_str()), "green") << std::endl;
-    TFile *f_ORRUBA = new TFile(Form("%s", run.rootPath.c_str()), "read");
-    if(!f_ORRUBA) {
-        std::cout << PrintOutput(Form("\t\tCould not open ORRUBA file: %s", run.rootPath.c_str()), "red") << std::endl;
-        return;
-    }
-    TTree *t_ORRUBA = (TTree*)f_ORRUBA->Get("data");
-    if(!t_ORRUBA) {
-        std::cout << PrintOutput("\t\tCould not open TTree data in ORRBUA file", "red") << std::endl;
-        return;
-    }
-
-    std::cout << PrintOutput(Form("\t\tOpening GRETINA file: %s", run.gretinaPath.c_str()), "green") << std::endl;
-    TFile *f_GRETINA = new TFile(Form("%s", run.gretinaPath.c_str()), "read");
-    if(!f_GRETINA) {
-        std::cout << PrintOutput(Form("\t\tCould not open GRETINA file: %s", run.gretinaPath.c_str()), "red") << std::endl;
-        return;
-    }
-    TTree *t_GRETINA = (TTree*)f_GRETINA->Get("teb");
-    if(!t_GRETINA) {
-        std::cout << PrintOutput("\t\tCould not open TTree teb in GRETINA file", "red") << std::endl;
-        return;
-    }
-
-    CombineTrees(t_ORRUBA, t_GRETINA);
-}
-
-void Unpack::CombineTrees(TTree* orruba, TTree* gretina) {
-    TTree* outTree = new TTree("data", "Combined TTree of ORRUBA and GRETINA");
-
-    Long64_t nentriesORRUBA = orruba->GetEntries();
-    Long64_t nentriesGRETINA = gretina->GetEntries();
-
-    std::cout << PrintOutput(Form("\t\t\tORRUBA Entries: %lld GRETINA Entries: %lld", nentriesORRUBA, nentriesGRETINA), "yellow") << std::endl;
-
-    std::string *runNumber = new std::string();
-    Int_t BB10Mul, BB10Det[128], BB10Strip[128], BB10Channel[128], BB10ADC[128];
-    Float_t BB10Energy[128];
-    Int_t QQQ5Mul;
-    Int_t SX3Mul;
-    ULong64_t timeStamp;
-
-    orruba->SetBranchAddress("RunNumber", &runNumber);
-    orruba->SetBranchAddress("BB10Mul", &BB10Mul);
-    orruba->SetBranchAddress("BB10Det", &BB10Det);
-    orruba->SetBranchAddress("BB10Strip", &BB10Strip);
-    orruba->SetBranchAddress("timeStamp", &timeStamp);
-
-    Bank88 *b88 = 0;
-    g2OUT *g2 = 0;
-
-    gretina->SetBranchAddress("b88", &b88);
-    gretina->SetBranchAddress("g2", &g2);
-
-    // Long64_t orrubaArray[nentriesORRUBA];
-    // Long64_t gretinaArray[nentriesGRETINA];
-
-    Int_t nonMatchedEvents = 0;
-    for(ULong64_t i = 0; i < nentriesORRUBA; i++) {
-        orruba->GetEntry(i);
-        // orrubaArray[i] = timeStamp;
-
-        // Lets be smart and not loop over all entries in the GRETINA trees
-        Float_t i_percent = static_cast<Float_t>(i)/static_cast<Float_t>(nentriesORRUBA); // Get percentage we have looped through
-        Float_t j_start_percent = i_percent < 0.1 ? 0. : i_percent - 0.1;
-        Float_t j_stop_percent = i_percent > 0.9 ? 1. : i_percent + 0.1;
-        ULong64_t j_start = static_cast<ULong64_t>(j_start_percent*nentriesGRETINA);
-        ULong64_t j_stop = static_cast<ULong64_t>(j_stop_percent*nentriesGRETINA);
-
-        Bool_t matched = false;
-        for(ULong64_t j = j_start; j < j_stop; j++) {
-            gretina->GetEntry(j);
-            if(fabs(timeStamp - b88->timestamp) < 1000) {
-                matched = true;
-                break;
-            }
-        }
-
-        if(!matched) {
-            nonMatchedEvents++;
-        }
-    }
-
-    return;
-}
-
 void Unpack::CombineReader(fileListStruct run) {
     std::cout << PrintOutput("\tCombining ORRUBA and GRETINA trees based on timestamp:", "yellow") << std::endl;
 
-    std::cout << PrintOutput(Form("\t\tOpening ORRUBA file: %s", run.rootPath.c_str()), "green") << std::endl;
+    std::cout << PrintOutput("\t\tOpening ORRUBA file: ", "green") << run.rootPath.c_str() << std::endl;
     auto f_ORRUBA = TFile::Open(Form("%s", run.rootPath.c_str()));
     if(!f_ORRUBA) {
-        std::cout << PrintOutput(Form("\t\tCould not open ORRUBA file: %s", run.rootPath.c_str()), "red") << std::endl;
+        std::cout << PrintOutput("\t\tCould not open Combined file: ", "red") << run.rootPath.c_str() << std::endl;
         return;
     }
     TTreeReader t_ORRUBA("data", f_ORRUBA);
@@ -142,11 +51,12 @@ void Unpack::CombineReader(fileListStruct run) {
         std::cout << PrintOutput("\t\tCould not open TTree 'data' in ORRBUA file", "red") << std::endl;
         return;
     }
+    TTree *tree_ORRUBA = (TTree*)f_ORRUBA->Get("data");
 
-    std::cout << PrintOutput(Form("\t\tOpening GRETINA file: %s", run.gretinaPath.c_str()), "green") << std::endl;
+    std::cout << PrintOutput("\t\tOpening GRETINA file: ", "green") << run.gretinaPath.c_str() << std::endl;
     auto f_GRETINA = TFile::Open(Form("%s", run.gretinaPath.c_str()));
     if(!f_GRETINA) {
-        std::cout << PrintOutput(Form("\t\tCould not open GRETINA file: %s", run.gretinaPath.c_str()), "red") << std::endl;
+        std::cout << PrintOutput("\t\tCould not open GRETINA file: ", "red") << run.gretinaPath.c_str() << std::endl;
         return;
     }
     TTreeReader t_GRETINA("teb", f_GRETINA);
@@ -155,8 +65,9 @@ void Unpack::CombineReader(fileListStruct run) {
         std::cout << PrintOutput("\t\tCould not open TTree 'teb' in GRETINA file", "red") << std::endl;
         return;
     }
+    TTree *tree_GRETINA = (TTree*)f_GRETINA->Get("teb");
 
-    std::cout << PrintOutput(Form("\t\t\tORRUBA Entries: %lld GRETINA Entries: %lld", nentriesORRUBA, nentriesGRETINA), "yellow") << std::endl;
+    std::cout << PrintOutput("\t\t\tTotal ORRUBA Entries: ", "yellow") << nentriesORRUBA << PrintOutput("; Total GRETINA Entries: ", "yellow") << nentriesGRETINA << std::endl;
 
     TTreeReaderValue<ULong64_t> orrubaTimeStamp(t_ORRUBA, "timeStamp");
     TTreeReaderValue<Long64_t> gretinaTimeStamp(t_GRETINA, "timestamp");
@@ -164,15 +75,231 @@ void Unpack::CombineReader(fileListStruct run) {
     Long64_t orrubaTimeStamps[nentriesORRUBA];
     Long64_t gretinaTimeStamps[nentriesGRETINA];
 
+    std::vector<std::pair<Int_t, Long64_t> > orrubaTimeStamps_;
+    std::vector<std::pair<Int_t, Long64_t> > gretinaTimeStamps_;
+
+    // Loop through ORRUBA events and get the timestamps
     Int_t i = 0;
     while(t_ORRUBA.Next()) {
         orrubaTimeStamps[i] = *orrubaTimeStamp;
+        orrubaTimeStamps_.push_back(std::make_pair(i, *orrubaTimeStamp));
         i++;
     }
 
+    // Loop through the GRETINA events and get the timestamps (using Bank88 branch)
     i = 0;
     while(t_GRETINA.Next()) {
         gretinaTimeStamps[i] = *gretinaTimeStamp;
+        gretinaTimeStamps_.push_back(std::make_pair(i, *gretinaTimeStamp));
         i++;
     }
+
+    // Loop through ORRUBA events and for each event, match to the corresponding GRETINA event based on the timestamp
+    // The difference of timestamps is to be < 1000 which is a lot considering the timestamps between two ORRUBA events
+    // are generally on the order of 100,000.
+    std::vector<matchedEvents> matchedEvents_;
+    for(size_t i = 0; i < orrubaTimeStamps_.size(); i++) {
+        size_t found_j = 0;
+        int found_index = 0;
+        Long64_t orrubaTime = orrubaTimeStamps_[i].second;
+        Bool_t found = false;
+        for(size_t j = 0; j < gretinaTimeStamps_.size(); j++) {
+            if(fabs(orrubaTime - gretinaTimeStamps_[j].second) < 1000) {
+                found_j = gretinaTimeStamps_[j].first;
+                found_index = j;
+                matchedEvents hit = {i, found_j, orrubaTime, gretinaTimeStamps_[j].second};
+                matchedEvents_.push_back(hit);
+                found = true;
+                break;
+            }
+        }
+
+        // Record ORRUBA hits that do not have a GRETINA timestamp
+        if(!found) {
+            matchedEvents hit = {i, 0, orrubaTime, 0};
+            matchedEvents_.push_back(hit);
+        }
+
+        // Remove the first found_index elements and shift everything else down by found_index indices
+        // This is so that we don't have to loop through GRETINA events that have already been matched
+        // Don't do it for every event as it will slow it down too much. Every 1000 seems to work well
+        if((i % 1000 == 0) && found) gretinaTimeStamps_.erase(gretinaTimeStamps_.begin(), gretinaTimeStamps_.begin() + found_index);
+    }
+    std::cout << PrintOutput("\t\tMatched ORRUBA and GRETINA time stamps", "green") << std::endl;
+
+    // Reset ORRUBA and GRETINA TTreeReaders
+    t_ORRUBA.Restart();
+    t_GRETINA.Restart();
+
+    // Create Combined TTree
+    TFile* f_Combined = new TFile(run.combinedPath.c_str(), "recreate");
+    TTree* tree_Combined = new TTree("data", "Combined ORRUBA and GRETINA data");
+
+    // It appears g2 is the important branch in the GRETINA dataset
+    g2OUT *g2 = 0;
+    tree_GRETINA->SetBranchAddress("g2", &g2);
+
+    // Get ORRUBA branches from ORRUBA tree //
+    Int_t BB10Mul, BB10Det[128], BB10Strip[128], BB10Channel[128], BB10ADC[128];
+    Float_t BB10Energy[128];
+    Int_t QQQ5Mul, QQQ5Det[128], QQQ5Ring[128], QQQ5RingChannel[128], QQQ5Sector[128], QQQ5SectorChannel[128], QQQ5RingADC[128], QQQ5SectorADC[128];
+    Bool_t QQQ5Upstream[128];
+    Float_t QQQ5RingEnergy[128], QQQ5SectorEnergy[128], QQQ5Angle[128];
+    Int_t ICdE, ICE, ICWireX, ICWireY;
+    Float_t ICPositionX, ICPositionY, ICPositionWeightedX, ICPositionWeightedY;
+
+    tree_ORRUBA->SetBranchAddress("BB10Mul",     &BB10Mul);
+    tree_ORRUBA->SetBranchAddress("BB10Det",     &BB10Det);
+    tree_ORRUBA->SetBranchAddress("BB10Strip",   &BB10Strip);
+    tree_ORRUBA->SetBranchAddress("BB10Channel", &BB10Channel);
+    tree_ORRUBA->SetBranchAddress("BB10ADC",     &BB10ADC);
+    tree_ORRUBA->SetBranchAddress("BB10Energy",  &BB10Energy);
+
+    tree_ORRUBA->SetBranchAddress("QQQ5Mul",           &QQQ5Mul);
+    tree_ORRUBA->SetBranchAddress("QQQ5Upstream",      &QQQ5Upstream);
+    tree_ORRUBA->SetBranchAddress("QQQ5Det",           &QQQ5Det);
+    tree_ORRUBA->SetBranchAddress("QQQ5Ring",          &QQQ5Ring);
+    tree_ORRUBA->SetBranchAddress("QQQ5RingChannel",   &QQQ5RingChannel);
+    tree_ORRUBA->SetBranchAddress("QQQ5Sector",        &QQQ5Sector);
+    tree_ORRUBA->SetBranchAddress("QQQ5SectorChannel", &QQQ5SectorChannel);
+    tree_ORRUBA->SetBranchAddress("QQQ5RingADC",       &QQQ5RingADC);
+    tree_ORRUBA->SetBranchAddress("QQQ5RingEnergy",    &QQQ5RingEnergy);
+    tree_ORRUBA->SetBranchAddress("QQQ5SectorADC",     &QQQ5SectorADC);
+    tree_ORRUBA->SetBranchAddress("QQQ5SectorEnergy",  &QQQ5SectorEnergy);
+    tree_ORRUBA->SetBranchAddress("QQQ5Angle",         &QQQ5Angle);
+
+    tree_ORRUBA->SetBranchAddress("icdE",                &ICdE);
+    tree_ORRUBA->SetBranchAddress("icE",                 &ICE);
+    tree_ORRUBA->SetBranchAddress("icWireX",             &ICWireX);
+    tree_ORRUBA->SetBranchAddress("icWireY",             &ICWireY);
+    tree_ORRUBA->SetBranchAddress("icPositionX",         &ICPositionX);
+    tree_ORRUBA->SetBranchAddress("icPositionY",         &ICPositionY);
+    tree_ORRUBA->SetBranchAddress("icPositionWeightedX", &ICPositionWeightedX);
+    tree_ORRUBA->SetBranchAddress("icPositionWeightedY", &ICPositionWeightedY);
+
+    // Set ORRUBA branches in Combined tree
+    Int_t fBB10Mul, fBB10Det[128], fBB10Strip[128], fBB10Channel[128], fBB10ADC[128];
+    Float_t fBB10Energy[128];
+    Int_t fQQQ5Mul, fQQQ5Det[128], fQQQ5Ring[128], fQQQ5RingChannel[128], fQQQ5Sector[128], fQQQ5SectorChannel[128], fQQQ5RingADC[128], fQQQ5SectorADC[128];
+    Bool_t fQQQ5Upstream[128];
+    Float_t fQQQ5RingEnergy[128], fQQQ5SectorEnergy[128], fQQQ5Angle[128];
+    Int_t fICdE, fICE, fICWireX, fICWireY;
+    Float_t fICPositionX, fICPositionY, fICPositionWeightedX, fICPositionWeightedY;
+
+    tree_Combined->Branch("BB10Mul",     &fBB10Mul,     "BB10Mul/I");
+    tree_Combined->Branch("BB10Det",     &fBB10Det,     "BB10Det[BB10Mul]/I");
+    tree_Combined->Branch("BB10Strip",   &fBB10Strip,   "BB10Strip[BB10Mul]/I");
+    tree_Combined->Branch("BB10Channel", &fBB10Channel, "BB10Channel[BB10Mul]/I");
+    tree_Combined->Branch("BB10ADC",     &fBB10ADC,     "BB10ADC[BB10Mul]/I");
+    tree_Combined->Branch("BB10Energy",  &fBB10Energy,  "BB10Energy[BB10Mul]/F");
+
+    tree_Combined->Branch("QQQ5Mul",           &fQQQ5Mul,           "QQQ5Mul/I");
+    tree_Combined->Branch("QQQ5Upstream",      &fQQQ5Upstream,      "QQQ5Upstream[QQQ5Mul]/B");
+    tree_Combined->Branch("QQQ5Det",           &fQQQ5Det,           "QQQ5Det[QQQ5Mul]/I");
+    tree_Combined->Branch("QQQ5Ring",          &fQQQ5Ring,          "QQQ5Ring[QQQ5Mul]/I");
+    tree_Combined->Branch("QQQ5RingChannel",   &fQQQ5RingChannel,   "QQQ5RingChannel[QQQ5Mul]/I");
+    tree_Combined->Branch("QQQ5Sector",        &fQQQ5Sector,        "QQQ5Sector[QQQ5Mul]/I");
+    tree_Combined->Branch("QQQ5SectorChannel", &fQQQ5SectorChannel, "QQQ5SectorChannel[QQQ5Mul]/I");
+    tree_Combined->Branch("QQQ5RingADC",       &fQQQ5RingADC,       "QQQ5RingADC[QQQ5Mul]/I");
+    tree_Combined->Branch("QQQ5RingEnergy",    &fQQQ5RingEnergy,    "QQQ5RingEnergy[QQQ5Mul]/F");
+    tree_Combined->Branch("QQQ5SectorADC",     &fQQQ5SectorADC,     "QQQ5SectorADC[QQQ5Mul]/I");
+    tree_Combined->Branch("QQQ5SectorEnergy",  &fQQQ5SectorEnergy,  "QQQ5SectorEnergy[QQQ5Mul]/F");
+    tree_Combined->Branch("QQQ5Angle",         &fQQQ5Angle,         "QQQ5Angle[QQQ5Mul]/F");
+
+    tree_Combined->Branch("icdE",                &fICdE,                "icdE/I");
+    tree_Combined->Branch("icE",                 &fICE,                 "icE/I");
+    tree_Combined->Branch("icWireX",             &fICWireX,             "icWireX/I");
+    tree_Combined->Branch("icWireY",             &fICWireY,             "icWireY/I");
+    tree_Combined->Branch("icPositionX",         &fICPositionX,         "icPositionX/F");
+    tree_Combined->Branch("icPositionY",         &fICPositionY,         "icPositionY/F");
+    tree_Combined->Branch("icPositionWeightedX", &fICPositionWeightedX, "icPositionWeightedX/F");
+    tree_Combined->Branch("icPositionWeightedY", &fICPositionWeightedY, "icPositionWeightedY/F");
+
+    // Set GRETINA branches in Combined tree
+    Int_t xtalsMul;
+    Float_t xtals_cc[128];
+    Float_t xtals_edop[128];
+    Float_t xtals_edopMaxInt[128];
+    Float_t xtals_edopSeg[128];
+    Float_t xtals_edopXtal[128];
+    Int_t xtals_crystalNum[128];
+    Int_t xtals_quadNum[128];
+    Float_t xtals_t0[128];
+    Long64_t xtals_timestamp[128];
+
+    tree_Combined->Branch("xtalsMul", &xtalsMul, "xtalsMul/I");
+    tree_Combined->Branch("xtals_cc", &xtals_cc, "xtals_cc[xtalsMul]/F");
+    tree_Combined->Branch("xtals_edop", &xtals_edop, "xtals_edop[xtalsMul]/F");
+    tree_Combined->Branch("xtals_edopMaxInt", &xtals_edopMaxInt, "xtals_edopMaxInt[xtalsMul]/F");
+    tree_Combined->Branch("xtals_edopSeg", &xtals_edopSeg, "xtals_edopSeg[xtalsMul]/F");
+    tree_Combined->Branch("xtals_edopXtal", &xtals_edopXtal, "xtals_edopXtal[xtalsMul]/F");
+    tree_Combined->Branch("xtals_crystalNum", &xtals_crystalNum, "xtals_crystalNum[xtalsMul]/I");
+    tree_Combined->Branch("xtals_quadNum", &xtals_quadNum, "xtals_quadNum[xtalsMul]/I");
+    tree_Combined->Branch("xtals_t0", &xtals_t0, "xtals_t0[xtalsMul]/F");
+    tree_Combined->Branch("xtals_timestamp", &xtals_timestamp, "xtals_timestamp[xtalsMul]/L");
+
+    Long64_t count = 0;
+    for(auto matchedEvent: matchedEvents_) {
+        // Handle ORRUBA
+        tree_ORRUBA->GetEntry(matchedEvent.orrubaNumber);
+
+        fBB10Mul = BB10Mul;
+        for(int i = 0; i < fBB10Mul; i++) {
+            fBB10Det[i] = BB10Det[i];
+            fBB10Strip[i] = BB10Strip[i];
+            fBB10Channel[i] = BB10Channel[i];
+            fBB10ADC[i] = BB10ADC[i];
+            fBB10Energy[i] = BB10Energy[i];
+        }
+
+        fQQQ5Mul = QQQ5Mul;
+        for(int i = 0; i < fQQQ5Mul; i++) {
+            fQQQ5Mul = QQQ5Mul;
+            fQQQ5Upstream[i] = QQQ5Upstream[i];
+            fQQQ5Det[i] = QQQ5Det[i];
+            fQQQ5Ring[i] = QQQ5Ring[i];
+            fQQQ5RingChannel[i] = QQQ5RingChannel[i];
+            fQQQ5Sector[i] = QQQ5Sector[i];
+            fQQQ5SectorChannel[i] = QQQ5SectorChannel[i];
+            fQQQ5RingADC[i] = QQQ5RingADC[i];
+            fQQQ5RingEnergy[i] = QQQ5RingEnergy[i];
+            fQQQ5SectorADC[i] = QQQ5SectorADC[i];
+            fQQQ5SectorEnergy[i] = QQQ5SectorEnergy[i];
+            fQQQ5Angle[i] = QQQ5Angle[i];
+        }
+
+        fICdE = ICdE; fICE = ICE; fICWireX = ICWireX; fICWireY = ICWireY;
+        fICPositionX = ICPositionX; fICPositionY = ICPositionY; fICPositionWeightedX = ICPositionWeightedX; fICPositionWeightedY = ICPositionWeightedY;
+
+        // Handle GRETINA
+        xtalsMul = 0;
+        if(matchedEvent.gretinaTimeStamp > 1) {
+            // std::cout << count << '\t' << matchedEvent.gretinaTimeStamp << std::endl;
+            tree_GRETINA->GetEntry(matchedEvent.gretinaNumber);
+            for(auto g2Event: g2->xtals) {
+                xtals_cc[xtalsMul] = g2Event.cc;
+                xtals_edop[xtalsMul] = g2Event.edop;
+                xtals_edopMaxInt[xtalsMul] = g2Event.edop_maxInt;
+                xtals_edopSeg[xtalsMul] = g2Event.edopSeg;
+                xtals_edopXtal[xtalsMul] = g2Event.edopXtal;
+                xtals_crystalNum[xtalsMul] = g2Event.crystalNum;
+                xtals_quadNum[xtalsMul] = g2Event.quadNum;
+                xtals_t0[xtalsMul] = g2Event.t0;
+                xtals_timestamp[xtalsMul] = g2Event.timestamp;
+                xtalsMul++;
+            }
+        }
+
+        tree_Combined->Fill();
+        count++;
+    }
+
+    f_ORRUBA->Close();
+    f_GRETINA->Close();
+
+    tree_Combined->Write();
+    f_Combined->Close();
+
+    std::cout << PrintOutput("\t\tFinished combining ORRUBA and GRETINA Trees based on time stamps", "green") << std::endl;
+    std::cout << PrintOutput("\t\tCombined TTree 'data' written to file: ", "green") << run.combinedPath << std::endl;
 }
