@@ -139,14 +139,22 @@ void Unpack::CombineReader(fileListStruct run) {
     g2OUT *g2 = 0;
     tree_GRETINA->SetBranchAddress("g2", &g2);
 
-    // Get ORRUBA branches from ORRUBA tree //
-    Int_t BB10Mul, BB10Det[128], BB10Strip[128], BB10Channel[128], BB10ADC[128];
-    Float_t BB10Energy[128];
-    Int_t QQQ5Mul, QQQ5Det[128], QQQ5Ring[128], QQQ5RingChannel[128], QQQ5Sector[128], QQQ5SectorChannel[128], QQQ5RingADC[128], QQQ5SectorADC[128];
-    Bool_t QQQ5Upstream[128];
-    Float_t QQQ5RingEnergy[128], QQQ5SectorEnergy[128], QQQ5Angle[128];
-    Int_t ICdE, ICE, ICWireX, ICWireY;
-    Float_t ICPositionX, ICPositionY, ICPositionWeightedX, ICPositionWeightedY;
+    // Get ORRUBA branches from ORRUBA tree
+    std::string *RunNumber = 0;
+    int BB10Mul, BB10Det[128], BB10Strip[128], BB10Channel[128], BB10ADC[128];
+    float BB10Energy[128];
+    int QQQ5Mul, QQQ5Det[128], QQQ5Ring[128], QQQ5RingChannel[128], QQQ5Sector[128], QQQ5SectorChannel[128], QQQ5RingADC[128], QQQ5SectorADC[128];
+    bool QQQ5Upstream[128];
+    float QQQ5RingEnergy[128], QQQ5SectorEnergy[128], QQQ5Angle[128];
+    int SX3Mul, SX3Det[128], SX3Sector[128], SX3SectorChannel[128], SX3SectorADC[128], SX3Strip[128], SX3StripLeftChannel[128], SX3StripRightChannel[128], SX3StripLeftADC[128], SX3StripRightADC[128];
+    bool SX3Upstream[128];
+    float SX3SectorEnergy[128], SX3StripEnergy[128];
+    int ICdE, ICE, ICWireX, ICWireY;
+    float ICPositionX, ICPositionY, ICPositionWeightedX, ICPositionWeightedY;
+    int TDCIC, TDCGRETINA, TDCRF, TDCSilicon;
+    unsigned long long TimeStamp;
+
+    tree_ORRUBA->SetBranchAddress("RunNumber", &RunNumber);
 
     tree_ORRUBA->SetBranchAddress("BB10Mul",     &BB10Mul);
     tree_ORRUBA->SetBranchAddress("BB10Det",     &BB10Det);
@@ -168,6 +176,20 @@ void Unpack::CombineReader(fileListStruct run) {
     tree_ORRUBA->SetBranchAddress("QQQ5SectorEnergy",  &QQQ5SectorEnergy);
     tree_ORRUBA->SetBranchAddress("QQQ5Angle",         &QQQ5Angle);
 
+    tree_ORRUBA->SetBranchAddress("SX3Mul",               &SX3Mul);
+    tree_ORRUBA->SetBranchAddress("SX3Upstream",          &SX3Upstream);
+    tree_ORRUBA->SetBranchAddress("SX3Det",               &SX3Det);
+    tree_ORRUBA->SetBranchAddress("SX3Sector",            &SX3Sector);
+    tree_ORRUBA->SetBranchAddress("SX3SectorChannel",     &SX3SectorChannel);
+    tree_ORRUBA->SetBranchAddress("SX3SectorADC",         &SX3SectorADC);
+    tree_ORRUBA->SetBranchAddress("SX3SectorEnergy",      &SX3SectorEnergy);
+    tree_ORRUBA->SetBranchAddress("SX3Strip",             &SX3Strip);
+    tree_ORRUBA->SetBranchAddress("SX3StripLeftChannel",  &SX3StripLeftChannel);
+    tree_ORRUBA->SetBranchAddress("SX3StripRightChannel", &SX3StripRightChannel);
+    tree_ORRUBA->SetBranchAddress("SX3StripLeftADC",      &SX3StripLeftADC);
+    tree_ORRUBA->SetBranchAddress("SX3StripRightADC",     &SX3StripRightADC);
+    tree_ORRUBA->SetBranchAddress("SX3StripEnergy",       &SX3StripEnergy);
+
     tree_ORRUBA->SetBranchAddress("icdE",                &ICdE);
     tree_ORRUBA->SetBranchAddress("icE",                 &ICE);
     tree_ORRUBA->SetBranchAddress("icWireX",             &ICWireX);
@@ -177,14 +199,29 @@ void Unpack::CombineReader(fileListStruct run) {
     tree_ORRUBA->SetBranchAddress("icPositionWeightedX", &ICPositionWeightedX);
     tree_ORRUBA->SetBranchAddress("icPositionWeightedY", &ICPositionWeightedY);
 
+    tree_ORRUBA->SetBranchAddress("tdcIC",      &TDCIC);
+    tree_ORRUBA->SetBranchAddress("tdcGRETINA", &TDCGRETINA);
+    tree_ORRUBA->SetBranchAddress("tdcRF",      &TDCRF);
+    tree_ORRUBA->SetBranchAddress("tdcSilicon", &TDCSilicon);
+
+    tree_ORRUBA->SetBranchAddress("timeStamp", &TimeStamp);
+
     // Set ORRUBA branches in Combined tree
-    Int_t fBB10Mul, fBB10Det[128], fBB10Strip[128], fBB10Channel[128], fBB10ADC[128];
-    Float_t fBB10Energy[128];
-    Int_t fQQQ5Mul, fQQQ5Det[128], fQQQ5Ring[128], fQQQ5RingChannel[128], fQQQ5Sector[128], fQQQ5SectorChannel[128], fQQQ5RingADC[128], fQQQ5SectorADC[128];
-    Bool_t fQQQ5Upstream[128];
-    Float_t fQQQ5RingEnergy[128], fQQQ5SectorEnergy[128], fQQQ5Angle[128];
-    Int_t fICdE, fICE, fICWireX, fICWireY;
-    Float_t fICPositionX, fICPositionY, fICPositionWeightedX, fICPositionWeightedY;
+    std::string fRunNumber;
+    int fBB10Mul, fBB10Det[128], fBB10Strip[128], fBB10Channel[128], fBB10ADC[128];
+    float fBB10Energy[128];
+    int fQQQ5Mul, fQQQ5Det[128], fQQQ5Ring[128], fQQQ5RingChannel[128], fQQQ5Sector[128], fQQQ5SectorChannel[128], fQQQ5RingADC[128], fQQQ5SectorADC[128];
+    bool fQQQ5Upstream[128];
+    float fQQQ5RingEnergy[128], fQQQ5SectorEnergy[128], fQQQ5Angle[128];
+    int fSX3Mul, fSX3Det[128], fSX3Sector[128], fSX3SectorChannel[128], fSX3SectorADC[128], fSX3Strip[128], fSX3StripLeftChannel[128], fSX3StripRightChannel[128], fSX3StripLeftADC[128], fSX3StripRightADC[128];
+    bool fSX3Upstream[128];
+    float fSX3SectorEnergy[128], fSX3StripEnergy[128];
+    int fICdE, fICE, fICWireX, fICWireY;
+    float fICPositionX, fICPositionY, fICPositionWeightedX, fICPositionWeightedY;
+    int fTDCIC, fTDCGRETINA, fTDCRF, fTDCSilicon;
+    unsigned long long fTimeStamp, fGRETINATimeStamp;
+
+    tree_Combined->Branch("RunNumber", &fRunNumber);
 
     tree_Combined->Branch("BB10Mul",     &fBB10Mul,     "BB10Mul/I");
     tree_Combined->Branch("BB10Det",     &fBB10Det,     "BB10Det[BB10Mul]/I");
@@ -206,6 +243,20 @@ void Unpack::CombineReader(fileListStruct run) {
     tree_Combined->Branch("QQQ5SectorEnergy",  &fQQQ5SectorEnergy,  "QQQ5SectorEnergy[QQQ5Mul]/F");
     tree_Combined->Branch("QQQ5Angle",         &fQQQ5Angle,         "QQQ5Angle[QQQ5Mul]/F");
 
+    tree_Combined->Branch("SX3Mul",               &fSX3Mul,               "SX3Mul/I");
+    tree_Combined->Branch("SX3Upstream",          &fSX3Upstream,          "SX3Upstream[SX3Mul]/B");
+    tree_Combined->Branch("SX3Det",               &fSX3Det,               "SX3Det[SX3Mul]/I");
+    tree_Combined->Branch("SX3Sector",            &fSX3Sector,            "SX3Sector[SX3Mul]/I");
+    tree_Combined->Branch("SX3SectorChannel",     &fSX3SectorChannel,     "SX3SectorChannel[SX3Mul]/I");
+    tree_Combined->Branch("SX3SectorADC",         &fSX3SectorADC,         "SX3SectorADC[SX3Mul]/I");
+    tree_Combined->Branch("SX3SectorEnergy",      &fSX3SectorEnergy,      "SX3SectorEnergy[SX3Mul]/F");
+    tree_Combined->Branch("SX3Strip",             &fSX3Strip,             "SX3Strip[SX3Mul]/I");
+    tree_Combined->Branch("SX3StripLeftChannel",  &fSX3StripLeftChannel,  "SX3StripLeftChannel[SX3Mul]/I");
+    tree_Combined->Branch("SX3StripRightChannel", &fSX3StripRightChannel, "SX3StripRightChannel[SX3Mul]/I");
+    tree_Combined->Branch("SX3StripLeftADC",      &fSX3StripLeftADC,      "SX3StripLeftADC[SX3Mul]/I");
+    tree_Combined->Branch("SX3StripRightADC",     &fSX3StripRightADC,     "SX3StripRightADC[SX3Mul]/I");
+    tree_Combined->Branch("SX3StripEnergy",       &fSX3StripEnergy,       "SX3StripEnergy[SX3Mul]/F");
+
     tree_Combined->Branch("icdE",                &fICdE,                "icdE/I");
     tree_Combined->Branch("icE",                 &fICE,                 "icE/I");
     tree_Combined->Branch("icWireX",             &fICWireX,             "icWireX/I");
@@ -214,6 +265,14 @@ void Unpack::CombineReader(fileListStruct run) {
     tree_Combined->Branch("icPositionY",         &fICPositionY,         "icPositionY/F");
     tree_Combined->Branch("icPositionWeightedX", &fICPositionWeightedX, "icPositionWeightedX/F");
     tree_Combined->Branch("icPositionWeightedY", &fICPositionWeightedY, "icPositionWeightedY/F");
+
+    tree_Combined->Branch("tdcIC",      &fTDCIC,      "tdcIC/I");
+    tree_Combined->Branch("tdcGRETINA", &fTDCGRETINA, "tdcGRETINA/I");
+    tree_Combined->Branch("tdcRF",      &fTDCRF,      "tdcRF/I");
+    tree_Combined->Branch("tdcSilicon", &fTDCSilicon, "tdcSilicon/I");
+
+    tree_Combined->Branch("timeStamp", &fTimeStamp);
+    tree_Combined->Branch("GRETINATimeStamp", &fGRETINATimeStamp);
 
     // Set GRETINA branches in Combined tree
     Int_t xtalsMul;
@@ -243,6 +302,8 @@ void Unpack::CombineReader(fileListStruct run) {
         // Handle ORRUBA
         tree_ORRUBA->GetEntry(matchedEvent.orrubaNumber);
 
+        fRunNumber = *RunNumber;
+
         fBB10Mul = BB10Mul;
         for(int i = 0; i < fBB10Mul; i++) {
             fBB10Det[i] = BB10Det[i];
@@ -254,7 +315,6 @@ void Unpack::CombineReader(fileListStruct run) {
 
         fQQQ5Mul = QQQ5Mul;
         for(int i = 0; i < fQQQ5Mul; i++) {
-            fQQQ5Mul = QQQ5Mul;
             fQQQ5Upstream[i] = QQQ5Upstream[i];
             fQQQ5Det[i] = QQQ5Det[i];
             fQQQ5Ring[i] = QQQ5Ring[i];
@@ -268,8 +328,28 @@ void Unpack::CombineReader(fileListStruct run) {
             fQQQ5Angle[i] = QQQ5Angle[i];
         }
 
+        fSX3Mul = SX3Mul;
+        for(int i = 0; i < fSX3Mul; i++) {
+            fSX3Upstream[i] = SX3Upstream[i];
+            fSX3Det[i] = SX3Det[i];
+            fSX3Sector[i] = SX3Sector[i];
+            fSX3SectorChannel[i] = SX3SectorChannel[i];
+            fSX3SectorADC[i] = SX3SectorADC[i];
+            fSX3SectorEnergy[i] = SX3SectorEnergy[i];
+            fSX3Strip[i] = SX3Strip[i];
+            fSX3StripLeftChannel[i] = SX3StripLeftChannel[i];
+            fSX3StripRightChannel[i] = SX3StripRightChannel[i];
+            fSX3StripLeftADC[i] = SX3StripLeftADC[i];
+            fSX3StripRightADC[i] = SX3StripRightADC[i];
+            fSX3StripEnergy[i] = SX3StripEnergy[i];
+        }
+
         fICdE = ICdE; fICE = ICE; fICWireX = ICWireX; fICWireY = ICWireY;
         fICPositionX = ICPositionX; fICPositionY = ICPositionY; fICPositionWeightedX = ICPositionWeightedX; fICPositionWeightedY = ICPositionWeightedY;
+
+        fTDCIC = TDCIC; fTDCGRETINA = TDCGRETINA; fTDCRF = TDCRF; fTDCSilicon = TDCSilicon;
+
+        fTimeStamp = TimeStamp; fGRETINATimeStamp = matchedEvent.gretinaTimeStamp;
 
         // Handle GRETINA
         xtalsMul = 0;
@@ -299,6 +379,8 @@ void Unpack::CombineReader(fileListStruct run) {
 
     tree_Combined->Write();
     f_Combined->Close();
+
+    delete RunNumber;
 
     std::cout << PrintOutput("\t\tFinished combining ORRUBA and GRETINA Trees based on time stamps", "green") << std::endl;
     std::cout << PrintOutput("\t\tCombined TTree 'data' written to file: ", "green") << run.combinedPath << std::endl;
