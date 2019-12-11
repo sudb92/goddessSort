@@ -310,6 +310,10 @@ Current TTree structure in Run####_combined.root:
 
         (unsigned long long)
 
+*   foundGRETINA : foundGRETINA/O
+
+        0 if did not find GRETINA timestamp within 1000, 1 if found GRETINA timestamp within 1000 (bool)
+
 *   xtalsMul  : xtalsMul/I
 
         Number of gammas detected (int)

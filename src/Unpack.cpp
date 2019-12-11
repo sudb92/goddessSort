@@ -275,6 +275,7 @@ void Unpack::CombineReader(fileListStruct run) {
     tree_Combined->Branch("GRETINATimeStamp", &fGRETINATimeStamp);
 
     // Set GRETINA branches in Combined tree
+    bool foundGRETINA;
     Int_t xtalsMul;
     Float_t xtals_cc[128];
     Float_t xtals_edop[128];
@@ -285,6 +286,8 @@ void Unpack::CombineReader(fileListStruct run) {
     Int_t xtals_quadNum[128];
     Float_t xtals_t0[128];
     Long64_t xtals_timestamp[128];
+
+    tree_Combined->Branch("foundGRETINA", &foundGRETINA);
 
     tree_Combined->Branch("xtalsMul", &xtalsMul, "xtalsMul/I");
     tree_Combined->Branch("xtals_cc", &xtals_cc, "xtals_cc[xtalsMul]/F");
@@ -354,7 +357,7 @@ void Unpack::CombineReader(fileListStruct run) {
         // Handle GRETINA
         xtalsMul = 0;
         if(matchedEvent.gretinaTimeStamp > 1) {
-            // std::cout << count << '\t' << matchedEvent.gretinaTimeStamp << std::endl;
+            foundGRETINA = true;
             tree_GRETINA->GetEntry(matchedEvent.gretinaNumber);
             for(auto g2Event: g2->xtals) {
                 xtals_cc[xtalsMul] = g2Event.cc;
@@ -368,6 +371,9 @@ void Unpack::CombineReader(fileListStruct run) {
                 xtals_timestamp[xtalsMul] = g2Event.timestamp;
                 xtalsMul++;
             }
+        }
+        else {
+            foundGRETINA = false;
         }
 
         tree_Combined->Fill();
