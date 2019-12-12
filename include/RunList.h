@@ -5,9 +5,14 @@
 #include "TypeDef.h"
 #include "Utilities.h"
 
+#include <algorithm>
+#include <dirent.h>
 #include <iostream>
 #include <string>
+#include <sys/types.h>
 #include <vector>
+
+auto predRunList = [] (const AllFolderPath& lhs, const AllFolderPath& rhs) {return lhs.run < rhs.run;};
 
 class RunList {
 public:
@@ -31,6 +36,8 @@ private:
     std::string cutPrefix;
     bool useAllFolders;
     std::vector<std::string> listNumbers;
+    bool unpackGRETINA;
+    bool mergeTrees;
 };
 
 #endif // RunList_h

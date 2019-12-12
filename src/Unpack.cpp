@@ -10,7 +10,7 @@ Unpack::Unpack() {
     int StartClock = clock();
     std::cout << PrintOutput("Running GODDESS sort", "yellow") << std::endl;
 
-    std::cout << PrintOutput("Reading RunList", "green") << std::endl;
+    std::cout << PrintOutput("Reading RunList", "yellow") << std::endl;
     auto* runList = new RunList();
     auto fileList = runList->GetListOfRuns();
 
@@ -19,17 +19,18 @@ Unpack::Unpack() {
     int numRuns = 0;
     for(auto run: fileList) {
         std::cout << PrintOutput(Form("Processing Run %s: \n", run.runNumber.c_str()), "green");
-        // auto* orruba = new UnpackORRUBA(run);
-        // auto* gretina = new UnpackGRETINA(run);
+        auto* orruba = new UnpackORRUBA(run);
+        bool orrubaCompleted = orruba->GetCompleted();
 
-        // bool orrubaCompleted = orruba->GetCompleted();
-        // bool gretinaCompleted = gretina->GetCompleted();
+        bool gretinaCompleted = false;
+        if(run.unpackGRETINA) {
+            auto* gretina = new UnpackGRETINA(run);
+            gretinaCompleted = gretina->GetCompleted();
+        }
 
-        // if(orrubaCompleted && gretinaCompleted) {
-        //     CombineReader(run);
-        // }
-
-        CombineReader(run);
+        if(orrubaCompleted && gretinaCompleted && run.mergeTrees) {
+            CombineReader(run);
+        }
     }
 
     std::cout << PrintOutput("************************************************", "yellow") << std::endl;
@@ -39,7 +40,7 @@ Unpack::Unpack() {
 void Unpack::CombineReader(fileListStruct run) {
     std::cout << PrintOutput("\tCombining ORRUBA and GRETINA trees based on timestamp:", "yellow") << std::endl;
 
-    std::cout << PrintOutput("\t\tOpening ORRUBA file: ", "green") << run.rootPath.c_str() << std::endl;
+    std::cout << PrintOutput("\t\tOpening ORRUBA file: ", "blue") << run.rootPath.c_str() << std::endl;
     auto f_ORRUBA = TFile::Open(Form("%s", run.rootPath.c_str()));
     if(!f_ORRUBA) {
         std::cout << PrintOutput("\t\tCould not open Combined file: ", "red") << run.rootPath.c_str() << std::endl;
@@ -53,7 +54,7 @@ void Unpack::CombineReader(fileListStruct run) {
     }
     TTree *tree_ORRUBA = (TTree*)f_ORRUBA->Get("data");
 
-    std::cout << PrintOutput("\t\tOpening GRETINA file: ", "green") << run.gretinaPath.c_str() << std::endl;
+    std::cout << PrintOutput("\t\tOpening GRETINA file: ", "blue") << run.gretinaPath.c_str() << std::endl;
     auto f_GRETINA = TFile::Open(Form("%s", run.gretinaPath.c_str()));
     if(!f_GRETINA) {
         std::cout << PrintOutput("\t\tCould not open GRETINA file: ", "red") << run.gretinaPath.c_str() << std::endl;
@@ -125,7 +126,7 @@ void Unpack::CombineReader(fileListStruct run) {
         // Don't do it for every event as it will slow it down too much. Every 1000 seems to work well
         if((i % 1000 == 0) && found) gretinaTimeStamps_.erase(gretinaTimeStamps_.begin(), gretinaTimeStamps_.begin() + found_index);
     }
-    std::cout << PrintOutput("\t\tMatched ORRUBA and GRETINA time stamps", "green") << std::endl;
+    std::cout << PrintOutput("\t\tMatched ORRUBA and GRETINA time stamps", "blue") << std::endl;
 
     // Reset ORRUBA and GRETINA TTreeReaders
     t_ORRUBA.Restart();
@@ -388,6 +389,6 @@ void Unpack::CombineReader(fileListStruct run) {
 
     delete RunNumber;
 
-    std::cout << PrintOutput("\t\tFinished combining ORRUBA and GRETINA Trees based on time stamps", "green") << std::endl;
-    std::cout << PrintOutput("\t\tCombined TTree 'data' written to file: ", "green") << run.combinedPath << std::endl;
+    std::cout << PrintOutput("\t\tFinished combining ORRUBA and GRETINA Trees based on time stamps", "blue") << std::endl;
+    std::cout << PrintOutput("\t\tCombined TTree 'data' written to file: ", "blue") << run.combinedPath << std::endl;
 }

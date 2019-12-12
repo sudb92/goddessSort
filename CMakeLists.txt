@@ -28,10 +28,10 @@ file(GLOB orruba_sources src/UnpackORRUBA.cpp src/Calibrations.cpp src/ProcessBB
 # Building GRETINADict and libGRETINA
 ROOT_GENERATE_DICTIONARY(GRETINADict ${CMAKE_CURRENT_SOURCE_DIR}/include/GRETINA.h ${CMAKE_CURRENT_SOURCE_DIR}/include/SortingStructures.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/GRETINAWavefunction.h ${CMAKE_CURRENT_SOURCE_DIR}/include/INLCorrection.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/Histos.h ${CMAKE_CURRENT_SOURCE_DIR}/include/Track.h LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/include/LinkDefGRETINA.h)
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Histos.h ${CMAKE_CURRENT_SOURCE_DIR}/include/Track.h ${CMAKE_CURRENT_SOURCE_DIR}/include/Utilities.h LINKDEF ${CMAKE_CURRENT_SOURCE_DIR}/include/LinkDefGRETINA.h)
 add_library(GRETINA SHARED GRETINADict ${CMAKE_CURRENT_SOURCE_DIR}/src/GRETINA.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/SortingStructures.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SuperPulse.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/INLCorrection.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/G3Waveform.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Histos.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/Track.cpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Histos.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/Track.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/Utilities.cpp)
 target_link_libraries(GRETINA ${ROOT_LIBRARIES})
 
 file(GLOB gretina_sources src/UnpackGRETINARaw.cpp src/Globals.cpp src/UnpackUtilities.cpp src/S800Functions.cpp)

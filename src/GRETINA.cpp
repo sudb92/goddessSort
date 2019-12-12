@@ -39,11 +39,11 @@ Int_t rotationMatrix::ReadMatrix(TString file) {
   char *st, str[256];
 
   fp = fopen(file.Data(), "r");
-  if (fp == NULL) {
-    printf("Could not open \"%s\".\n", file.Data());
+  if(fp == NULL) {
+    std::cout << PrintOutput("\t\tCould not open: ", "red") << file.Data() << std::endl;
     exit(1);
   } else {
-    printf("\"%s\" open...", file.Data());
+    std::cout << "\t\t" << file.Data() << PrintOutput(" open... ", "blue");
   }
 
   nn = 0;
@@ -71,7 +71,7 @@ Int_t rotationMatrix::ReadMatrix(TString file) {
     st = fgets(str, 256, fp);
   }
 
-  printf("Read %i rotation matrix coefficients.\n", nn);
+  std::cout << PrintOutput("Read ", "blue") << nn << PrintOutput(" rotation matrix coefficients.\n", "blue");
 
   /* Done! */
   fclose(fp);
@@ -1238,8 +1238,7 @@ void GRETINAVariables::InitializeGRETINAVariables(TString inputFilename) {
     perror("Input variable file could not be opened.");
   }
 
-  std::cout << "Reading variable initialization file: "
-       << inputFilename.Data() << std::endl;
+  std::cout << "\t\t" << PrintOutput("Reading variable initialization file: ", "blue") << inputFilename.Data() << std::endl;
 
   char line[300];
   double value[20];
@@ -1254,7 +1253,7 @@ void GRETINAVariables::InitializeGRETINAVariables(TString inputFilename) {
     if (strncmp(line, "#", 1) == 0) { continue; }
     if (strncmp(line, "Doppler Correction", 18) == 0) {
       beta = GetNextValue(in);
-      std::cout << "beta is " << beta << std::endl;
+      std::cout << "\t\t" << PrintOutput("beta is ", "blue") << beta << std::endl;
       ataCor = GetNextValue(in);
       btaCor = GetNextValue(in);
       targetXYZ.SetX(GetNextValue(in));
@@ -1314,10 +1313,10 @@ void GRETINAVariables::ReadGeCalFile(TString filename) {
   /* Open file */
   fp = fopen(filename.Data(), "r");
   if (fp == NULL) {
-    printf("Could not open \"%s\".\n", filename.Data());
+    std::cout << PrintOutput("\t\tCould not open ", "red") << filename.Data() << std::endl;
     exit(1);
   }
-  printf("\"%s\" open...", filename.Data());
+  std::cout << "\t\t" << filename.Data() << PrintOutput(" open...", "blue");
 
   /* Read values */
   nn = 0;
@@ -1337,7 +1336,7 @@ void GRETINAVariables::ReadGeCalFile(TString filename) {
     /* Attempt to read next line. */
     st = fgets(str, 64, fp);
   }
-  printf("Read %i gain calibration coefficients.\n", nn);
+  std::cout << PrintOutput(" Read ", "blue") << nn << PrintOutput(" gain calibration coefficients.\n", "blue");
 
   fclose(fp);
 }
@@ -1354,7 +1353,7 @@ void GRETINAVariables::ReadSegmentCenters(TString filename) {
     printf("Could not open \"%s\".\n", filename.Data());
     exit(1);
   }
-  printf("\"%s\" open...", filename.Data());
+  std::cout << "\t\t" << filename.Data() << PrintOutput(" open...", "blue") << std::endl;
 
   /* Read values */
   nn = 0;
@@ -1375,7 +1374,7 @@ void GRETINAVariables::ReadSegmentCenters(TString filename) {
     /* Attempt to read next line. */
     st = fgets(str, 64, fp);
   }
-  printf("Read %i segment positions.\n", nn-1);
+  std::cout << "\t\t" << PrintOutput("Read ", "blue") << nn - 1 << PrintOutput(" segment positions.", "blue") << std::endl;
 
   fclose(fp);
 }

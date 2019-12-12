@@ -1,6 +1,8 @@
 #ifndef Track_h
 #define Track_h
 
+#include "Utilities.h"
+
 #include <limits.h>
 #include <stdint.h>
 #include <stdlib.h>

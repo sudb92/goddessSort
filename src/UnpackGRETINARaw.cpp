@@ -54,13 +54,14 @@
 #include "GRETINA.h"
 #include "SortingStructures.h"
 #include "INLCorrection.h"
-
 #include "UnpackUtilities.h"
 
 /* Tracking... */
 #include "Track.h"
 
 #include "Tree.h"
+
+#include "Utilities.h"
 
 #define DEBUG2AND3 0
 
@@ -138,7 +139,7 @@ int main(int argc, char *argv[]) {
     if(ctrl->specifyCalibration) {
         gret->var.ReadGeCalFile(ctrl->calibrationFile);
     } else {
-        std::cout << "Using default GRETINA energy calibration file. " << std::endl;
+        std::cout << PrintOutput("\t\tUsing default GRETINA energy calibration file.\n", "blue");
         gret->var.ReadGeCalFile("gretinaCalibrations/gCalibration.dat");
     }
     std::cout << std::endl;
@@ -151,13 +152,13 @@ int main(int argc, char *argv[]) {
         if(ctrl->outputName) {
             generalOut = fopen(ctrl->outputFileName.Data(), "wb");
             if(!generalOut) {
-                printf("Cannot open general output file: %s \n", ctrl->outputFileName.Data());
+                std::cout << PrintOutput("\t\tCannot open general output file: ", "red") << ctrl->outputFileName.Data() << std::endl;
                 exit(2);
             }
         } else {
             generalOut = fopen("GeneralFile.out", "wb");
             if(!generalOut) {
-                printf("Cannot open general output file: GeneralFile.out \n");
+                std::cout << PrintOutput("\t\tCannot open general output file: GeneralFile.out\n", "red");
                 exit(2);
             }
         }
@@ -189,10 +190,10 @@ int main(int argc, char *argv[]) {
                 fout_root = new TFile(ctrl->outfileName.Data(), "RECREATE");
                 fout_root->SetCompressionAlgorithm(1);
                 fout_root->SetCompressionLevel(2);
-                std::cout << "Output file: " << ctrl->outfileName << " (compression "
-                     << fout_root->GetCompressionLevel() << ")" << std::endl;
+                std::cout << PrintOutput("\t\tOutput file: ", "blue") << ctrl->outfileName << PrintOutput(" (compression ", "blue") <<
+                             fout_root->GetCompressionLevel() << PrintOutput(")\n", "blue");
             } else {
-                std::cout << "No ROOT output requested -- no histos or trees. " << std::endl;
+                std::cout << PrintOutput("\t\tNo ROOT output requested -- no histos or trees.\n", "blue");
             }
 
             if(ctrl->withTREE) {
@@ -201,8 +202,7 @@ int main(int argc, char *argv[]) {
 
             // teb->SetMaxTreeSize(1000000000LL); /* Max tree size is 1GB */
 
-            std::cout << "********************************************************" << std::endl;
-            std::cout << std::endl;
+            std::cout << PrintOutput("\t\t********************************************************\n\n", "blue");
 
             /* Reset variables needed for unpacking, histogramming, etc. */
             cnt->ResetRunCounters();
@@ -316,9 +316,9 @@ int main(int argc, char *argv[]) {
 
                 if(cnt->bytes_read_since_last_time > 2*1024*1024) {
                     if(cnt->bytes_read > 1024*1024*1024) {
-                        std::cerr << "Processing " << (Float_t)cnt->bytes_read/(1024.*1024.*1024.) << " GB         " <<"\r";
+                        std::cerr << "\t\tProcessing " << (Float_t)cnt->bytes_read/(1024.*1024.*1024.) << " GB         " <<"\r";
                     } else {
-                        std::cerr << "Processing " << cnt->bytes_read/(1024*1024) << " MB    " <<"\r";
+                        std::cerr << "\t\tProcessing " << cnt->bytes_read/(1024*1024) << " MB    " <<"\r";
                     }
                     cnt->MBread+=2;
                     cnt->bytes_read_since_last_time = 0;
@@ -342,15 +342,17 @@ int main(int argc, char *argv[]) {
 
             timer.Stop();
 
-            std::cout << "\n CPU time: " << timer.CpuTime() << "\tReal time: " << timer.RealTime() << std::endl;
-            std::cout << " Average processing speed: " << (cnt->bytes_read/(1024*1024))/timer.RealTime()
-                   << "MB/s -- File size was " << cnt->bytes_read/(1024*1024) << " MB \n" << std::endl;
+            std::cout << PrintOutput("\t\tCPU time: ", "yellow") << timer.CpuTime() << PrintOutput("; Real time: ", "yellow") << timer.RealTime() << std::endl;
+            std::cout << PrintOutput("\t\tAverage processing speed: ", "yellow") << (cnt->bytes_read/(1024*1024))/timer.RealTime() << PrintOutput("MB/s -- File size was ", "yellow") << cnt->bytes_read/(1024*1024) << PrintOutput("MB\n", "yellow");
+            // std::cout << "\n CPU time: " << timer.CpuTime() << "\tReal time: " << timer.RealTime() << std::endl;
+            // std::cout << " Average processing speed: " << (cnt->bytes_read/(1024*1024))/timer.RealTime()
+            //        << "MB/s -- File size was " << cnt->bytes_read/(1024*1024) << " MB \n" << std::endl;
 
             cnt->PrintRunStatistics(ctrl->pgh, ctrl->withWAVE, ctrl->superPulse, ctrl->analyze2AND3);
             cnt->ResetRunCounters();
 
             if(ctrl->withTREE) {
-                std::cout << std::endl << "Writing ROOT tree..." << std::endl;
+                std::cout << PrintOutput("\t\tWriting ROOT tree...\n", "blue");
                 teb->Write();
                 if(ctrl->withWAVE) {
                     if(ctrl->WITH_TRACETREE) {
@@ -360,17 +362,16 @@ int main(int argc, char *argv[]) {
             }
 
             if(ctrl->withHISTOS) {
-                std::cout << "Writing histograms..." << std::endl;
+                std::cout << PrintOutput("\t\tWriting histograms...\n", "blue");
                 gret->gHist.writeHistos(1);
             }
             if(ctrl->withHISTOS || ctrl->withTREE) {
-                printf("ROOT file \"%s\" closing...\n", ctrl->outfileName.Data());
+                std::cout << PrintOutput("\t\tROOT file \"", "blue") << ctrl->outfileName.Data() << PrintOutput("\" closing...\n", "blue");
                 //fout_root->Write();
                 fout_root->Close();
             }
 
-            std::cout << "*******************************************************" << std::endl;
-            std::cout << std::endl;
+            std::cout << PrintOutput("\t\t*******************************************************\n\n", "blue");
 
         } /* End of if !gotsignal */
     } /* End of iterating over different run # */
@@ -605,6 +606,6 @@ void PrintHelpInformation() {
 /****************************************************/
 
 void PrintConditions() {
-    printf("\n***************************************************************************\n\n");
-    printf("    Initializing -- GRETINA sort...");
+    std::cout << "\n\t\t" << PrintOutput("***************************************************************************\n", "blue") << std::endl;
+    std::cout << "\t\t" << PrintOutput("Initializing -- GRETINA sort...", "blue") << std::endl;
 }

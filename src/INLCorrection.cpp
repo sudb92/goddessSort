@@ -44,7 +44,7 @@ void INLCorrection::Initialize(controlVariables* ctrl,
         /* No digitizer map filename provided; assume
            we aren't actually doing INL corrections, and let
            the user know... */
-        std::cout << "No digitizer map filename provided; no INL correction. " << std::endl;
+        std::cout << "\t\t" << PrintOutput("No digitizer map filename provided; no INL correction. ", "blue") << std::endl;
         ctrl->INLcorrection = 0;
     }
 }

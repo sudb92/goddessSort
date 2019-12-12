@@ -6,6 +6,7 @@
 #include "SortingStructures.h"
 #include "Track.h"
 #include "TypeDef.h"
+#include "Utilities.h"
 
 #include <signal.h>
 #include <stdint.h>

@@ -6,8 +6,6 @@
 /* Date: January 2013                                                 */
 /**********************************************************************/
 
-#include <stdlib.h>
-
 #include "SortingStructures.h"
 
 ClassImp(controlVariables);
@@ -203,7 +201,7 @@ Int_t controlVariables::InterpretCommandLine(int argc, char *argv[]) {
     }
     else if (strcmp(argv[i], "-track") == 0) {
       doTRACK = 1;
-      std::cout << "Tracking enabled. " << std::endl;
+      std::cout << "\t\t" << PrintOutput("Tracking enabled.", "blue") << std::endl;
       i++;
     }
     else if (strcmp(argv[i], "-wf") == 0) {
@@ -344,67 +342,68 @@ Int_t controlVariables::InterpretCommandLine(int argc, char *argv[]) {
 /****************************************************/
 
 Int_t controlVariables::ReportRunFlags() {
-  std::cout << "  Analysis conditions: " << std::endl;
-  std::cout << "     Expecting ";
+  std::cout << "\t\t" << PrintOutput("", "blue") << std::endl;
+  std::cout << "\t\t" << PrintOutput("  Analysis conditions: ", "blue") << std::endl;
+  std::cout << "\t\t" << PrintOutput("     Expecting ", "blue") << std::endl;
   if (compressedFile) {
-    std::cout << " compressed ";
+    std::cout << "\t\t" << PrintOutput(" compressed ", "blue") << std::endl;
   }
   if (fileType == "g" && !pgh) {
-    std::cout << "GRETINA + auxiliary file WITH global headers -- Global.dat";
+    std::cout << "\t\t" << PrintOutput("GRETINA + auxiliary file WITH global headers -- Global.dat", "blue") << std::endl;
   } else if (fileType == "g" && pgh == 2) {
-    std::cout << "old GRETINA mode2 only file WITHOUT global headers -- Global.dat";
+    std::cout << "\t\t" << PrintOutput("old GRETINA mode2 only file WITHOUT global headers -- Global.dat", "blue") << std::endl;
   } else if (fileType == "g" && pgh == 3) {
-    std::cout << "old GRETINA mode3 only file WITHOUT global headers -- Global.dat";
+    std::cout << "\t\t" << PrintOutput("old GRETINA mode3 only file WITHOUT global headers -- Global.dat", "blue") << std::endl;
   } else if (fileType == "gr" && !pgh) {
-    std::cout << "GRETINA mode3 file WITH global headers -- GlobalRaw.dat";
+    std::cout << "\t\t" << PrintOutput("GRETINA mode3 file WITH global headers -- GlobalRaw.dat", "blue") << std::endl;
   } else if (fileType == "m") {
-    std::cout << "merged GRETINA mode3 + auxiliary WITH global headers -- Merged.dat";
+    std::cout << "\t\t" << PrintOutput("merged GRETINA mode3 + auxiliary WITH global headers -- Merged.dat", "blue") << std::endl;
   } else if (fileType == "m2") {
-    std::cout << "merged GRETINA mode2 + auxiliary WITH global headers -- Merged.Mode2.dat";
+    std::cout << "\t\t" << PrintOutput("merged GRETINA mode2 + auxiliary WITH global headers -- Merged.Mode2.dat", "blue") << std::endl;
   }
   if (compressedFile) {
-    std::cout << ".gz " << std::endl;
+    std::cout << "\t\t" << PrintOutput(".gz ", "blue") << std::endl;
   }  else {
     std::cout << std::endl;
   }
   if (withTREE && withHISTOS ) {
-    std::cout << "     Will write out a ROOT tree and defined histograms." << std::endl;
+    std::cout << "\t\t" << PrintOutput("     Will write out a ROOT tree and defined histograms.", "blue") << std::endl;
   }
   if (withTREE && !withHISTOS) {
-    std::cout << "     Will write out a ROOT tree, but no histograms. " << std::endl;
+    std::cout << "\t\t" << PrintOutput("     Will write out a ROOT tree, but no histograms. ", "blue") << std::endl;
   }
   if (!withTREE && withHISTOS) {
-    std::cout << "     Will write out defined histograms, but no ROOT tree. " << std::endl;
+    std::cout << "\t\t" << PrintOutput("     Will write out defined histograms, but no ROOT tree. ", "blue") << std::endl;
   }
   if (!withTREE && !withHISTOS && !superPulse) {
-    std::cout << "     You aren't planning on writing histograms or a tree...are you sure you want to proceed? ('yes' or 'no')" << std::endl;
+    std::cout << "\t\t" << PrintOutput("     You aren't planning on writing histograms or a tree...are you sure you want to proceed? ('yes' or 'no')", "blue") << std::endl;
     char answer[50];
     std::cin >> answer;
     if (strcmp(answer, "yes") != 0) {
-      std::cout << "Aborting now. " << std::endl;
+      std::cout << "\t\t" << PrintOutput("Aborting now. ", "blue") << std::endl;
       return(-1);
     }
   }
   if (noHFC && suppressTS) {
-    std::cout << "     Will NOT use Dirk's GEB_HFC resorter code, and will ignore TS order errors. " << std::endl;
+    std::cout << "\t\t" << PrintOutput("     Will NOT use Dirk's GEB_HFC resorter code, and will ignore TS order errors. ", "blue") << std::endl;
   }
   if (noHFC && !suppressTS) {
-    std::cout << "     Will NOT use Dirk's GEB_HFC resorter code, and will print any observed TS order errors. " << std::endl;
+    std::cout << "\t\t" << PrintOutput("     Will NOT use Dirk's GEB_HFC resorter code, and will print any observed TS order errors. ", "blue") << std::endl;
   }
   if (!noHFC && suppressTS) {
-    std::cout << "     Will use Dirk's GEB_HFC resorter code, and will print any observed TS order errors. " << std::endl;
+    std::cout << "\t\t" << PrintOutput("     Will use Dirk's GEB_HFC resorter code, and will print any observed TS order errors. ", "blue") << std::endl;
   }
   if (!noHFC && !suppressTS) {
-    std::cout << "     Will use Dirk's GEB_HFC resorter code, and will ignore TS order errors. " << std::endl;
+    std::cout << "\t\t" << PrintOutput("     Will use Dirk's GEB_HFC resorter code, and will ignore TS order errors. ", "blue") << std::endl;
   }
   if (doTRACK) {
-    std::cout << "     Will try really hard to do tracking, using Torben's code. " << std::endl;
+    std::cout << "\t\t" << PrintOutput("     Will try really hard to do tracking, using Torben's code. ", "blue") << std::endl;
   }
   if (withWAVE) {
-    std::cout << "     Will do some waveform analysis on GRETINA waveforms, as specified with flags in Unpack.h. " << std::endl;
+    std::cout << "\t\t" << PrintOutput("     Will do some waveform analysis on GRETINA waveforms, as specified with flags in Unpack.h. ", "blue") << std::endl;
   }
   if (outputON) {
-    std::cout << "     Will generate combined output data file with processed aux data where appropriate (i.e. mode9 S800Physics) " << std::endl;
+    std::cout << "\t\t" << PrintOutput("     Will generate combined output data file with processed aux data where appropriate (i.e. mode9 S800Physics) ", "blue") << std::endl;
   }
   return(1);
 }
@@ -700,46 +699,45 @@ void counterVariables::ResetRunCounters() {
 
 void counterVariables::PrintRunStatistics(Int_t pgh, Int_t withWAVE, Int_t superPulse,
 					  Int_t sort2and3) {
-  printf("-----------------------------------------------------------\n");
-  if (!pgh) {
-    printf(" Run Statistics:\n");
-    printf(" GRETINA-related data...\n");
+  std::cout << PrintOutput("\t\t-----------------------------------------------------------\n", "blue");
+  if(!pgh) {
+    std::cout << PrintOutput("\t\tRun Statistics:\n", "blue");
+    std::cout << PrintOutput("\t\t GRETINA-related data...\n", "blue");
     if (headerType[TRACK] > 0)
-      printf("  Mode1 GRETINA headers:      %d\n", headerType[TRACK]);
+      std::cout << PrintOutput("\t\t  Mode1 GRETINA headers: ", "blue") << headerType[TRACK] << std::endl;
     if (headerType[DECOMP] > 0)
-      printf("  Mode2 GRETINA headers:      %d\n", headerType[DECOMP]);
+      std::cout << PrintOutput("\t\t  Mode2 GRETINA headers: ", "blue") << headerType[DECOMP] << std::endl;
     if (headerType[RAW] > 0)
-      printf("  Mode3 GRETINA headers:      %d\n", headerType[RAW]);
+      std::cout << PrintOutput("\t\t  Mode3 GRETINA headers: ", "blue") << headerType[RAW] << std::endl;
     if (headerType[G4SIM] > 0)
-      printf("  Simulation GRETINA headers: %d\n", headerType[G4SIM]);
-
+      std::cout << PrintOutput("\t\t  Simulation GRETINA headers: ", "blue") << headerType[G4SIM] << std::endl;
     if (headerType[GRETSCALER] > 0)
-      printf("  Scaler GRETINA headers:     %d\n", headerType[GRETSCALER]);
+      std::cout << PrintOutput("\t\t  Scaler GRETINA headers: ", "blue") << headerType[GRETSCALER] << std::endl;
     if (headerType[BANK88] > 0)
-      printf("  Bank88 GRETINA headers:     %d\n", headerType[BANK88]);
+      std::cout << PrintOutput("\t\t  Bank88 GRETINA headers: ", "blue") << headerType[BANK88] << std::endl;
 
-    printf("\n Auxiliary detectors...\n");
+    std::cout << PrintOutput("\n\t\t Auxiliary detectors...\n", "blue");
     if (headerType[BGS] > 0)
-      printf("  BGS headers:           %d\n", headerType[BGS]);
+      std::cout << PrintOutput("\t\t  BGS headers: ", "blue") << headerType[BGS] << std::endl;
     if (headerType[CHICO] > 0)
-      printf("  CHICO headers:         %d\n", headerType[CHICO]);
+      std::cout << PrintOutput("\t\t  CHICO headers: ", "blue") << headerType[CHICO] << std::endl;
     if (headerType[PWALL] > 0)
-      printf("  PhosWall headers:      %d\n", headerType[PWALL]);
+      std::cout << PrintOutput("\t\t  PhosWall headers: ", "blue") << headerType[PWALL] << std::endl;
     if (headerType[PWALLAUX] > 0)
-      printf("  PhosWall Aux. headers: %d\n", headerType[PWALL]);
+      std::cout << PrintOutput("\t\t  PhosWall Aux. headers: ", "blue") << headerType[PWALL] << std::endl;
     if (headerType[S800] > 0)
-      printf("  S800 headers:          %d\n", headerType[S800]);
+      std::cout << PrintOutput("\t\t  S800 headers: ", "blue") << headerType[S800] << std::endl;
     if (headerType[S800PHYSICS] > 0)
-      printf("  S800Physics headers:   %d\n", headerType[S800PHYSICS]);
+      std::cout << PrintOutput("\t\t  S800Physics headers: ", "blue") << headerType[S800PHYSICS] << std::endl;
     if (headerType[S800AUX] > 0 || headerType[S800AUX_TS] > 0)
-      printf("  S800 Aux. headers:     %d\n", (headerType[S800AUX]+headerType[S800AUX_TS]));
+      std::cout << PrintOutput("\t\t  S800 Aux. headers: ", "blue") << (headerType[S800AUX]+headerType[S800AUX_TS]) << std::endl;
     if (headerType[LENDA] > 0)
-      printf("  LENDA headers:   %d\n", headerType[LENDA]);
+      std::cout << PrintOutput("\t\t  LENDA headers: ", "blue") << headerType[LENDA] << std::endl;
     if (headerType[GODDESS] > 0)
-      printf("  GODDESS headers: %d\n", headerType[GODDESS]);
+      std::cout << PrintOutput("\t\t  GODDESS headers: ", "blue") << headerType[GODDESS] << std::endl;
   }
-  printf("\n TS errors:   %d\n", TSerrors);
-  printf("\n\n Run time (from TS): %0.3f seconds\n", (TSLast - TSFirst)*1e-8);
+  std::cout << PrintOutput("\n\t\t TS errors: ", "blue") << TSerrors << std::endl;
+  std::cout << PrintOutput("\n\n\t\t Run time (from TS): ", "blue") << (TSLast - TSFirst)*1e-8 << PrintOutput(" seconds\n", "blue");
 
   if (sort2and3) {
     std::cout << std::endl << "Mode2 + 3 Analysis concerns..." << std::endl;
@@ -894,8 +892,7 @@ void counterVariables::PrintRunStatistics(Int_t pgh, Int_t withWAVE, Int_t super
     std::cout << "  ---------------------------" << std::endl;
   }
 
-  std::cout << "--------------------------------------------------" << std::endl;
-
+  std::cout << PrintOutput("\t\t--------------------------------------------------\n", "blue");
 }
 
 void counterVariables::Increment(Int_t bytes) {

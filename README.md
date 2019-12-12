@@ -55,7 +55,9 @@ The main setup for the GODDESS Unpacker lies in config.json. Currently, the conf
   "BB10Threshold": 200,
   "QQQThreshold": 200,
   "SX3Threshold": 200,
-  "ICTrackingThreshold": 200
+  "ICTrackingThreshold": 200,
+  "unpackGRETINA": true,
+  "mergeTrees": true
 }
 ```
 
@@ -106,6 +108,14 @@ The main setup for the GODDESS Unpacker lies in config.json. Currently, the conf
 *   ICTrackingThreshold
 
         ADC threshold for IC tracking. Shouldn't really matter if it's low enough. The highest wire hit in terms of ADC value is recorded.
+
+*   unpackGRETINA
+
+        Boolean on whether to unpack the GRETINA data for each run
+
+*   mergeTrees
+
+        Boolean on whether to merge the ORRUBA and GRETINA trees. Must set 'unpackGRETINA' to true.
 
 ## Output <a name="output"></a>
 
@@ -312,7 +322,7 @@ Current TTree structure in Run####_combined.root:
 
 *   foundGRETINA : foundGRETINA/O
 
-        0 if did not find GRETINA timestamp within 1000, 1 if found GRETINA timestamp within 1000 (bool)
+        Boolean if ORRUBA timestamp and GRETINA timestamp are within 1000 (bool)
 
 *   xtalsMul  : xtalsMul/I
 

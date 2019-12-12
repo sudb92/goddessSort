@@ -24,29 +24,29 @@ HFC::HFC(int num, FILE* out) {
 void HFC::init(int num, FILE* out) {
   m_evt=0;
   m_file = out;
-  
+
   if(num > 200)
     m_memdepth = num;
   else
     m_memdepth = 200;
-  
+
   m_discarded=0;
 }
 
 // We assume that the latest item to be added is actually
-// pretty late according its timestamp.  
+// pretty late according its timestamp.
 
 bool HFC::insert(HFC_item* hfc) {
 #define HFCITEMISDEEP 100
   int cts=0;
-  
+
   list<HFC_item*>::iterator HFC_it = m_HFClist.end();
   list<HFC_item*>::iterator HFC_it2 = m_HFClist.begin();
-  
+
   HFC_it--;
-  
+
   while(HFC_it != m_HFClist.begin() &&
-	(*HFC_it)->geb.timestamp >= 
+	(*HFC_it)->geb.timestamp >=
 	hfc->geb.timestamp ) {
     HFC_it--;
     cts++;
@@ -54,20 +54,20 @@ bool HFC::insert(HFC_item* hfc) {
        (m_HFClast_it != m_HFClist.begin()))
       {
 	// It can happen that a chunck of data comes
-	// with very 'old' timestamps. For first item of 
+	// with very 'old' timestamps. For first item of
 	// those chunks we need to dig through the list,
-	// but for the other the location in the list 
+	// but for the other the location in the list
 	// where this one was put might be a much better
 	// starting point.
 	cts++;
 	if((*m_HFClast_it)->geb.timestamp < hfc->geb.timestamp) {
 	  if((hfc->geb.timestamp-(*m_HFClast_it)->geb.timestamp) <
 	     ((*HFC_it)->geb.timestamp - hfc->geb.timestamp)) {
-	    // our iterator for last event is closer to current 
+	    // our iterator for last event is closer to current
 	    // event AND last iterator TS is < hfc.TS.
 	    // We need to go up in list.
 	    HFC_it=m_HFClast_it;
-	    while((*HFC_it)->geb.timestamp < 
+	    while((*HFC_it)->geb.timestamp <
 		  hfc->geb.timestamp) {
 	      HFC_it++;
 	      cts++;
@@ -76,7 +76,7 @@ bool HFC::insert(HFC_item* hfc) {
 	    break;
 	  } else {
 	    // no luck this time, we need to iterate through
-	    // the hole thing (list)  
+	    // the hole thing (list)
 	  }
 	} else {
 	  if(((*m_HFClast_it)->geb.timestamp - hfc->geb.timestamp) <
@@ -88,11 +88,11 @@ bool HFC::insert(HFC_item* hfc) {
 	    // no luck.....
 	  }
 	}
-      } 
+      }
   } /* while */
 
   HFC_it++;
-  
+
   if (((*HFC_it2)->geb.timestamp) > hfc->geb.timestamp) {
     m_HFClist.push_front(hfc);
   } else {
@@ -100,7 +100,7 @@ bool HFC::insert(HFC_item* hfc) {
   }
 
   // m_HFClast_it=m_HFClist.insert(HFC_it, hfc);
-  
+
   return true;
 }
 
@@ -110,13 +110,13 @@ bool HFC::add(long long TS, int type, int length, BYTE* data) {
   geb.timestamp = TS;
   geb.type = type;
   geb.length = length;
-  
+
   return add(geb, data);
 }
 
 bool HFC::add(gebData aGeb, BYTE* data) {
   m_evt++;
-  
+
   // first we make our 'private' copy
   HFC_item* hfc;
   hfc = (HFC_item*) new HFC_item;
@@ -124,13 +124,13 @@ bool HFC::add(gebData aGeb, BYTE* data) {
 
   hfc->data = (BYTE*) new BYTE [hfc->geb.length * sizeof(BYTE)];
   memcpy(hfc->data, data, hfc->geb.length * sizeof(BYTE));
-  
+
   // now storing the pointer in HFC_list
 
   // You DON'T want to use
   // (m_HFClist.size() >= m_memdepth)
   // as it performs O(n)
-  
+
   // cout << hfc->geb.timestamp << endl;
 
   if(m_evt >= m_memdepth) {
@@ -141,14 +141,14 @@ bool HFC::add(gebData aGeb, BYTE* data) {
   } else {
     return insert(hfc);
   }
-}  
+}
 
 bool HFC::addToFullList(HFC_item* hfc) {
   list<HFC_item*>::iterator HFC_it = m_HFClist.begin();
-  
+
   if(((*HFC_it)->geb).timestamp > (hfc->geb).timestamp) {
     m_discarded++;
-    
+
     // cout << "Start of list " << ((*HFC_it)->geb).timestamp;
     // HFC_it = m_HFClist.end();
     // cout << ", end of list " << ((*HFC_it)->geb).timestamp << endl;
@@ -157,7 +157,7 @@ bool HFC::addToFullList(HFC_item* hfc) {
     if(0) {
       cerr << "HFC::addToFullList has major problem"
 	   << endl
-	   << "current timestamp item " 
+	   << "current timestamp item "
 	   << dec << hfc->geb.timestamp << endl
 	   << "oldest timestamp in list "
 	   << (*HFC_it)->geb.timestamp << dec << endl
@@ -165,10 +165,10 @@ bool HFC::addToFullList(HFC_item* hfc) {
 	   << endl << endl;
       cin.get();
     }
-    
+
     return false;
   }
-  
+
 
 
   // okay, write 'oldest' event from list and get rid of it
@@ -178,10 +178,10 @@ bool HFC::addToFullList(HFC_item* hfc) {
   delete (*HFC_it);
   // and remove the pointer from list
   HFC_it = m_HFClist.erase(HFC_it);
-  
+
   // and now we add the new item
   insert(hfc);
-  
+
   return true;
 }
 
@@ -191,13 +191,13 @@ bool HFC::writeItem(HFC_item* hfc) {
     fwrite(hfc->data, sizeof(BYTE), hfc->geb.length, m_file);
     fflush(stdout);
   }
-  
+
   return true;
 }
 
 void HFC::flush() {
   list<HFC_item*>::iterator HFC_it = m_HFClist.begin();
-  
+
   while(HFC_it != m_HFClist.end()) {
     writeItem(*HFC_it);
     delete (*HFC_it)->data;
@@ -207,14 +207,14 @@ void HFC::flush() {
 }
 
 void HFC::printstatus() {
-  cerr << "Status of HFC object:" 
+  cerr << "\t\tStatus of HFC object:"
        << endl
-       << "Event memory depth: " << m_memdepth 
+       << "\t\tEvent memory depth: " << m_memdepth
        << endl
-       << "Events processed:   " << m_evt
+       << "\t\tEvents processed:   " << m_evt
        << endl;
   if(m_discarded)
-    cerr << "Events discarded:   " << m_discarded 
+    cerr << "\t\tEvents discarded:   " << m_discarded
     	 << "  (increase mem depth!)"
     	 << endl;
 }

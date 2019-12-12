@@ -17,6 +17,7 @@
 #include "Defines.h"
 #include "GRETINA.h"
 #include "SortingStructures.h"
+#include "Utilities.h"
 
 #include <stdio.h>
 #include <stdlib.h>

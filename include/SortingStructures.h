@@ -2,8 +2,10 @@
 #define SortingStructures_h
 
 #include "Defines.h"
+#include "Utilities.h"
 
 #include <stdint.h>
+#include <stdlib.h>
 #include <vector>
 
 #include <TH1F.h>

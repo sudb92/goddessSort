@@ -10,5 +10,7 @@
   "BB10Threshold": 200,
   "QQQThreshold": 200,
   "SX3Threshold": 200,
-  "ICTrackingThreshold": 200
+  "ICTrackingThreshold": 200,
+  "unpackGRETINA": true,
+  "mergeTrees": true
 }

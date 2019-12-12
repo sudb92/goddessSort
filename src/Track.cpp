@@ -264,11 +264,11 @@ Int_t TrackCtrl::ReadChatFile(TString fileName) {
 
   if ((fp = fopen(fileName.Data(), "r")) == NULL) {
     std::cout << ALERTTEXT;
-    printf("TRACK: Error: Could not open chat file <%s>\n", fileName.Data());
+    std::cout << PrintOutput("\t\tTRACK: Error: Could not open chat file: ", "red") << fileName.Data() << std::endl;
     std::cout << RESET_COLOR; fflush(stdout);
     exit(0);
   }
-  printf("TRACK: Opened chat file <%s>\n\n", fileName.Data());
+  std::cout << "\t\t" << PrintOutput("TRACK: Opened chat file: ", "blue") << fileName.Data() << std::endl;
   fflush(stdout);
 
   /* Read content and act */
@@ -294,7 +294,7 @@ Int_t TrackCtrl::ReadChatFile(TString fileName) {
       nret = sscanf(str, "%s %i %i %s", str1, &ndet, &i2, str2);
       if (nret == 3) {
 	/* Set the option */
-	printf("TRACK: ndet == %i, simple\n", ndet);
+  std::cout << "\t\t" << PrintOutput("TRACK: ndet == ", "blue") << ndet << PrintOutput(", simple", "blue") << std::endl;
 	trackOps[ndet] = i2;
 	i1 = trackOpt(trackOps[ndet]);
 	if (i1 != 0) {
@@ -367,11 +367,11 @@ Int_t TrackCtrl::ReadChatFile(TString fileName) {
     } else if ((p = strstr(str, "useCCEnergy")) != NULL) {
       CheckNumArgs(nret, 1, str);
       useCCEnergy = 1;
-      printf("TRACK: useCCEnergy = %i\n", useCCEnergy);
+      std::cout << "\t\t" << PrintOutput("TRACK: useCCEnergy = ", "blue") << useCCEnergy << std::endl;
     } else if ((p = strstr (str, "useSegEnergy")) != NULL) {
       CheckNumArgs(nret, 1, str);
       useSegEnergy = 1;
-      printf ("TRACK: useSegEnergy=%i\n", useSegEnergy);
+      std::cout << "\t\t" << PrintOutput("TRACK: useSegEnergy=", "blue") << useSegEnergy << std::endl;
     } else if ((p = strstr (str, "enabled")) != NULL) {
       nret = sscanf(str, "%s %s", str1, str2);
       CheckNumArgs(nret, 2, str);
@@ -400,16 +400,16 @@ Int_t TrackCtrl::ReadChatFile(TString fileName) {
       CheckNumArgs(nret, 4, str);
 
       markSingleHitRange = 1;
-      printf ("TRACK: marksinglehitrange = %i\n", markSingleHitRange);
-      printf ("TRACK: singlehits outside range will be assigned FOM of %f\n", singleHitRangeFOM);
-      printf ("TRACK: distToCrystal= %f (will be added)\n", distToCrystal);
+      std::cout << "\t\t" << PrintOutput("TRACK: marksinglehitrange = ", "blue") << markSingleHitRange << std::endl;
+      std::cout << "\t\t" << PrintOutput("TRACK: singlehits outside range will be assigned FOM of ", "blue") << singleHitRangeFOM << std::endl;
+      std::cout << "\t\t" << PrintOutput("TRACK: distToCrystal = ", "blue") << distToCrystal << PrintOutput(" (will be added)", "blue") << std::endl;
 
-      for (i = 0; i < i1; i++) {
-	fscanf (fp, "%f %f\n", &r1, &r2);
-	i2 = (int) (r1 * 1000 + 0.5);     /* now keV */
-	printf ("TRACK:  --> Max range at %6i keV ", i2);  fflush(stdout);
-	singleHitRange[i2] = r2 + distToCrystal;
-	printf ("is %4.2f cm\n", singleHitRange[i2]); fflush (stdout);
+      for(i = 0; i < i1; i++) {
+        fscanf(fp, "%f %f\n", &r1, &r2);
+        i2 = (int) (r1 * 1000 + 0.5);     /* now keV */
+        printf("\t\tTRACK:  --> Max range at %6i keV ", i2); fflush(stdout);
+        singleHitRange[i2] = r2 + distToCrystal;
+        printf("is %4.2f cm\n", singleHitRange[i2]); fflush (stdout);
       }
 
       /* Interpolate for the rest */
@@ -504,9 +504,9 @@ Int_t TrackCtrl::ReadChatFile(TString fileName) {
     } else if ((p = strstr (str, "clusterangle")) != NULL) {
       nret = sscanf(str, "%s %i %f", str1, &i1, &r1);
       CheckNumArgs(nret, 3, str);
-      if (i1 >= MAXSHELLHITS) {
-	printf("TRACK: Error: max number of interaction points are %i\n", MAXSHELLHITS);
-	exit(1);
+      if(i1 >= MAXSHELLHITS) {
+        std::cout << PrintOutput("\t\tTRACK: Error: max number of interaction points are ", "red") << MAXSHELLHITS << std::endl;
+        exit(1);
       }
       alpha[i1] = r1;
       alpha[i1] *= TMath::DegToRad();
@@ -515,9 +515,9 @@ Int_t TrackCtrl::ReadChatFile(TString fileName) {
     } else {
       /***** Chat script error point *****/
       std::cout << ALERTTEXT;
-      printf("TRACK: line %2.2i in chat script, option: %s \n  -- not understood\n", nn, str);
-      printf("TRACK: %i\n", str[0]);
-      printf("TRACK: Aborting...\n");
+      printf("\t\tTRACK: line %2.2i in chat script, option: %s \n  -- not understood\n", nn, str);
+      std::cout << PrintOutput("\t\tTRACK: ", "blue") << str[0] << std::endl;
+      std::cout << PrintOutput("\t\tTRACK: Aborting...\n", "blue");
       std::cout << RESET_COLOR;  fflush(stdout);
       exit(0);
     }
@@ -530,8 +530,8 @@ Int_t TrackCtrl::ReadChatFile(TString fileName) {
 
   /* Done */
   fclose(fp);
-  printf("TRACK: Chat file <%s> closed\n", fileName.Data());
-  printf("TRACK:   --> processed %i track instructions and %i lines\n", nni, nn);
+  std::cout << PrintOutput("\t\tTRACK: Chat file ", "blue") << fileName.Data() << PrintOutput(" closed\n", "blue");
+  std::cout << PrintOutput("\t\tTRACK:   --> processed ", "blue") << nni << PrintOutput(" track instructions and ", "blue") << nn << PrintOutput(" lines\n", "blue");
   printf("\n");
   fflush(stdout);
 
@@ -564,7 +564,7 @@ Int_t TrackCtrl::ReadChatFile(TString fileName) {
     }
   }
 
-  printf("TRACK: Chat file initialization complete. \n");
+  std::cout << PrintOutput("\t\tTRACK: Chat file initialization complete. ", "blue") << std::endl;
 
   return (0);
 }
@@ -650,14 +650,14 @@ Int_t TrackCtrl::strDecomp(char *str, Int_t dim, Int_t *yy) {
 }
 
 void TrackCtrl::PrintPartial() {
-  printf("\nTRACK: ---------------------------------------\n");
-  printf("TRACK: Tracking parameters (incomplete list):\n");
-  printf("TRACK: \n");
-  printf("TRACK: Alpha =  %f\n", alpha[2]);
-  printf("TRACK: FOM jump = %f\n", FOMJump);
-  printf("TRACK: FOM good enough = %f\n", FOMGoodEnough);
-  printf("TRACK: nPrint = %i\n", nPrint);
-  printf("TRACK: ---------------------------------------\n\n");
+  std::cout << PrintOutput("\n\t\tTRACK: ---------------------------------------\n", "blue");
+  std::cout << PrintOutput("\t\tTRACK: Tracking parameters (incomplete list):\n", "blue");
+  std::cout << PrintOutput("\t\tTRACK: \n", "blue");
+  std::cout << PrintOutput("\t\tTRACK: Alpha = ", "blue") << alpha[2] << std::endl;
+  std::cout << PrintOutput("\t\tTRACK: FOM jump = ", "blue") << FOMJump << std::endl;
+  std::cout << PrintOutput("\t\tTRACK: FOM good enough = ", "blue") << FOMGoodEnough << std::endl;
+  std::cout << PrintOutput("\t\tTRACK: nPrint = ", "blue") << nPrint << std::endl;
+  std::cout << PrintOutput("\t\tTRACK: ---------------------------------------\n\n", "blue");
 }
 
 Int_t TrackCtrl::trackOpt(Int_t i) {
@@ -929,14 +929,13 @@ void Track::Initialize() {
     }
 
     /* Faculty function lookup */
-    printf("\nTRACK: Faculty function being calculated.....");
+    std::cout << "\n\t\t" << PrintOutput("TRACK: Faculty function being calculated.....", "blue");
     faculty[0] = 1;
     faculty[1] = 1;
     for (Int_t i=2; i<MAXFACULTY; i++) {
       faculty[i] = (long long) i * faculty[i-1];
     }
-    printf("Done.\n\n");
-
+    std::cout << PrintOutput("Done.\n", "blue") << std::endl;
   }
 
   ctrl.ReadChatFile("track.chat");
@@ -946,7 +945,7 @@ void Track::Initialize() {
     /* Sanity checks */
     if (ctrl.useCCEnergy == 1 && ctrl.useSegEnergy == 1) {
       std::cout << ALERTTEXT;
-      printf("TRACK: Error: only one of ctrl.useCCEnergy and ctrl.useSegEnergy can be true\n");
+      std::cout << "\t\t" << PrintOutput("TRACK: Error: only one of ctrl.useCCEnergy and ctrl.useSegEnergy can be true", "red") << std::endl;
       std::cout << RESET_COLOR;  fflush(stdout);
       exit(1);
     }
@@ -1049,9 +1048,10 @@ Int_t Track::trackEvent() {
       if (clust[i].valid) {
 	if (clust[i].tracked) {
 	  if (clust[i].FOM > MAXFOM) {
-	    printf("TRACK: ERROR: FOM makes no sense = %f\n", clust[i].FOM);
-	    printf("TRACK: iCluster = %i\n", i);
-	    printf("TRACK: ctrl.trackOps[nDet] = %i\n", ctrl.trackOps[clust[i].nDet]);
+      std::cout << PrintOutput("\t\tTRACK: ERROR: FOM makes no sense = ", "red") << clust[i].FOM << std::endl;
+      std::cout << PrintOutput("\t\tTRACK: iCluster = ", "red") << i << std::endl;
+      std::cout << PrintOutput("\t\tTRACK: ctrl.trackOps[nDet] = ", "red") << ctrl.trackOps[clust[i].nDet] << std::endl;
+      std::cout << std::endl;
 	  }
 	}
       }
@@ -1059,7 +1059,7 @@ Int_t Track::trackEvent() {
   } /* Loop over clusters */
 
   if (DEBUG) {
-    printf("TRACK: DEBUG: After firstTracking\n");
+    std::cout << PrintOutput("\t\tTRACK: DEBUG: After firstTracking\n", "yellow");
     PrintValidClusters();
     std::cin.get();
   }

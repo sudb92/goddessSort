@@ -181,29 +181,27 @@ Int_t OpenInputFile(FILE** inf, controlVariables* ctrl, TString runNumber) {
 
     if (ctrl->analyze2AND3) {
 
-      if (ctrl->compressedFile) {
-	std::cout << "Apologies -- multiple file analysis at present is not possible with compressed files. " << std::endl;
-	return(-1);
-      } else if (ctrl->compressedFileB) {
-	std::cout << "Apologies -- multiple file analysis at present is not possible with compressed files. " << std::endl;
-	return(-1);
-      } else {
-	ctrl->fileName = "./MergeArbFiles -f1 " + ctrl->fileName + " -f2 " + ctrl->fileName2 + " -fOut pipe";
-	std::cout << ctrl->fileName.Data() << std::endl;
-	*inf = popen(ctrl->fileName.Data(), "r");
-      }
+        if(ctrl->compressedFile) {
+            std::cout << PrintOutput("\t\tApologies -- multiple file analysis at present is not possible with compressed files.\n", "red");
+            return(-1);
+        } else if(ctrl->compressedFileB) {
+            std::cout << PrintOutput("\t\tApologies -- multiple file analysis at present is not possible with compressed files.\n", "red");
+            return(-1);
+        } else {
+            ctrl->fileName = "./MergeArbFiles -f1 " + ctrl->fileName + " -f2 " + ctrl->fileName2 + " -fOut pipe";
+            std::cout << "\t\t" << ctrl->fileName.Data() << std::endl;
+            *inf = popen(ctrl->fileName.Data(), "r");
+        }
     }
 
   }
 
-  if (!*inf) {
-
-    printf("Cannot open: %s \n", ctrl->fileName.Data());
+  if(!*inf) {
+    std::cout << PrintOutput("\t\tCannot open: ", "red") << ctrl->fileName.Data() << std::endl;
     return(2);
-
   } else {
 
-    printf("Opened: %s \n", ctrl->fileName.Data());
+    std::cout << PrintOutput("\t\tOpened: ", "blue") << ctrl->fileName.Data() << std::endl;
 
     if (ctrl->fileType != "f" && ctrl->fileType != "f1" && ctrl->fileType != "f2") {
       ctrl->outfileName = (ctrl->directory + "Run" + runNumber + "/Run" + runNumber +

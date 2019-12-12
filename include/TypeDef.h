@@ -18,6 +18,8 @@ typedef struct fileListStruct {
     std::string gretinaPath;
     std::string combinedPath;
     bool copyCuts;
+    bool unpackGRETINA;
+    bool mergeTrees;
 } fileListStruct;
 
 // Detector structures
@@ -133,5 +135,9 @@ typedef struct out4Mario {
     short wf[37][300];
 } out4Mario;
 
+typedef struct AllFolderPath {
+    std::string runName;
+    int run;
+} AllFolderPath;
 
 #endif // TypeDef_h
