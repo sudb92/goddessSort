@@ -1,7 +1,5 @@
 # GODDESSSort
 
-#### GODDESS unpacker for people who can't code good and want to do other things good too.
-
 In its current form, all of your runs should be in separate folders (e.g. Run030, Run031, etc.) and should include a .ldf file from ORRUBA and the corresponding GRETINA files (Digest.dat, Global.dat, etc.).
 
 ### Table of contents
