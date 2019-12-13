@@ -278,6 +278,9 @@ void Unpack::CombineReader(fileListStruct run) {
     // Set GRETINA branches in Combined tree
     bool foundGRETINA;
     Int_t xtalsMul;
+    Float_t xtals_xlab[128];
+    Float_t xtals_ylab[128];
+    Float_t xtals_zlab[128];
     Float_t xtals_cc[128];
     Float_t xtals_edop[128];
     Float_t xtals_edopMaxInt[128];
@@ -291,6 +294,9 @@ void Unpack::CombineReader(fileListStruct run) {
     tree_Combined->Branch("foundGRETINA", &foundGRETINA);
 
     tree_Combined->Branch("xtalsMul", &xtalsMul, "xtalsMul/I");
+    tree_Combined->Branch("xtals_xlab", &xtals_xlab, "xtals_xlab[xtalsMul]/F");
+    tree_Combined->Branch("xtals_ylab", &xtals_ylab, "xtals_ylab[xtalsMul]/F");
+    tree_Combined->Branch("xtals_zlab", &xtals_zlab, "xtals_zlab[xtalsMul]/F");
     tree_Combined->Branch("xtals_cc", &xtals_cc, "xtals_cc[xtalsMul]/F");
     tree_Combined->Branch("xtals_edop", &xtals_edop, "xtals_edop[xtalsMul]/F");
     tree_Combined->Branch("xtals_edopMaxInt", &xtals_edopMaxInt, "xtals_edopMaxInt[xtalsMul]/F");
@@ -361,6 +367,9 @@ void Unpack::CombineReader(fileListStruct run) {
             foundGRETINA = true;
             tree_GRETINA->GetEntry(matchedEvent.gretinaNumber);
             for(auto g2Event: g2->xtals) {
+                xtals_xlab[xtalsMul] = g2Event.maxIntPtXYZLab().X();
+                xtals_ylab[xtalsMul] = g2Event.maxIntPtXYZLab().Y();
+                xtals_zlab[xtalsMul] = g2Event.maxIntPtXYZLab().Z();
                 xtals_cc[xtalsMul] = g2Event.cc;
                 xtals_edop[xtalsMul] = g2Event.edop;
                 xtals_edopMaxInt[xtalsMul] = g2Event.edop_maxInt;

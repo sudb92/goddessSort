@@ -368,6 +368,18 @@ Current TTree structure in Run####_combined.root:
 
         Number of gammas detected (int)
 
+*   xtals_xlab : xtals_xlab[xtalsMul]/F
+
+        X position of gamma hit in lab frame (float array of length xtalsMul) (I think?)
+
+*   xtals_ylab : xtals_ylab[xtalsMul]/F
+
+        Y position of gamma hit in lab frame (float array of length xtalsMul) (I think?)
+
+*   xtals_zlab : xtals_zlab[xtalsMul]/F
+
+        Z position of gamma hit in lab frame (float array of length xtalsMul) (I think?)
+
 *   xtals_cc  : xtals_cc[xtalsMul]/F
 
         Gamma energy (keV) (float array of length xtalsMul)
