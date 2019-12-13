@@ -202,7 +202,7 @@ Current TTree structure in Run####_combined.root:
 
 *   QQQ5Upstream : QQQ5Upstream[QQQ5Mul]/B
 
-        True of QQQ5 hit was upstream from the target (bool array of length QQQ5Mul)
+        True if QQQ5 hit was upstream from the target (bool array of length QQQ5Mul)
 
 *   QQQ5Det   : QQQ5Det[QQQ5Mul]/I
 
@@ -230,7 +230,7 @@ Current TTree structure in Run####_combined.root:
 
 *   QQQ5RingEnergy : QQQ5RingEnergy[QQQ5Mul]/F
 
-        (float array of length QQQ5Mul)
+        Energy of hit in ring if proper calibration for detector was given (float array of length QQQ5Mul)
 
 *   QQQ5SectorADC : QQQ5SectorADC[QQQ5Mul]/I
 
@@ -238,7 +238,7 @@ Current TTree structure in Run####_combined.root:
 
 *   QQQ5SectorEnergy : QQQ5SectorEnergy[QQQ5Mul]/F
 
-        (float array of length QQQ5Mul)
+        Energy of hit in sector if proper calibration for detector was given (float array of length QQQ5Mul)
 
 *   QQQ5Angle : QQQ5Angle[QQQ5Mul]/F
 
@@ -250,51 +250,59 @@ Current TTree structure in Run####_combined.root:
 
 *   SX3Upstream : SX3Upstream[SX3Mul]/B
 
-        (bool array of length SX3Mul)
+        True if SuperX3 hit was upstream from the target (bool array of length SX3Mul)
 
 *   SX3Det    : SX3Det[SX3Mul]/I
 
-        (int array of length SX3Mul)
+        Detector number of SuperX3 hit (int array of length SX3Mul)
 
 *   SX3Sector : SX3Sector[SX3Mul]/I
 
-        (int array of length SX3Mul)
+        Sector number (back side) of SuperX3 hit in detector number 'SX3Det' (int array of length SX3Mul)
 
 *   SX3SectorChannel : SX3SectorChannel[SX3Mul]/I
 
-        (int array of length SX3Mul)
+        Channel number of hit for sector (int array of length SX3Mul)
 
 *   SX3SectorADC : SX3SectorADC[SX3Mul]/I
 
-        (int array of length SX3Mul)
+        ADC value of hit in sector (int array of length SX3Mul)
 
 *   SX3SectorEnergy : SX3SectorEnergy[SX3Mul]/F
 
-        (float array of length SX3Mul)
+        Energy of hit in sector if proper calibration for detector was given (float array of length SX3Mul)
 
 *   SX3Strip  : SX3Strip[SX3Mul]/I
 
-        (int array of length SX3Mul)
+        Strip number of SuperX3 hit in detector number 'SX3Det' (int array of length SX3Mul)
 
 *   SX3StripLeftChannel : SX3StripLeftChannel[SX3Mul]/I
 
-        (int array of length SX3Mul)
+        Channel number of 'left' side of strip number of SuperX3 hit (int array of length SX3Mul)
+
+        Note that 'left' and 'right' may not be correct (direction corresponds to beam axis)
 
 *   SX3StripRightChannel : SX3StripRightChannel[SX3Mul]/I
 
-        (int array of length SX3Mul)
+        Channel number of 'right' side of strip number of SuperX3 hit (int array of length SX3Mul)
+
+        Note that 'left' and 'right' may not be correct (direction corresponds to beam axis)
 
 *   SX3StripLeftADC : SX3StripLeftADC[SX3Mul]/I
 
-        (int array of length SX3Mul)
+        ADC value of hit in 'left' side of strip (int array of length SX3Mul)
+
+        Note that 'left' and 'right' may not be correct (direction corresponds to beam axis)
 
 *   SX3StripRightADC : SX3StripRightADC[SX3Mul]/I
 
-        (int array of length SX3Mul)
+        ADC value of hit in 'right' side of strip (int array of length SX3Mul)
+
+        Note that 'left' and 'right' may not be correct (direction corresponds to beam axis)
 
 *   SX3StripEnergy : SX3StripEnergy[SX3Mul]/F
 
-        (float array of length SX3Mul)
+        Should be obsolete as SuperX3 calibration must be done first (gain match, etc.) (float array of length SX3Mul)
 
 *   icdE      : icdE/I
 
@@ -322,35 +330,35 @@ Current TTree structure in Run####_combined.root:
 
 *   icPositionWeightedX : icPositionWeightedX/F
 
-        (float)
+        Takes the top two wires in terms of ADC value and computes the position based off of the weight in the x plane of both wires (float)
 
 *   icPositionWeightedY : icPositionWeightedY/F
 
-        (float)
+        Takes the top two wires in terms of ADC value and computes the position based off of the weight in the y plane of both wires (float)
 
 *   tdcIC     : tdcIC/I
 
-        (int)
+        TDC value from ionization chamber signal (int)
 
 *   tdcGRETINA : tdcGRETINA/I
 
-        (int)
+        TDC value from GRETINA signal. Doesn't seem to have anything? (int)
 
 *   tdcRF     : tdcRF/I
 
-        (int)
+        TDC value from rf signal (int)
 
 *   tdcSilicon : tdcSilicon/I
 
-        (int)
+        TDC value from silicon signal (int)
 
 *   timeStamp : timeStamp/l
 
-        (unsigned long long)
+        Time stamp of the ORRUBA event (unsigned long long)
 
 *   GRETINATimeStamp : GRETINATimeStamp/l
 
-        (unsigned long long)
+        Time stamp of the GRETINA event from the Bank88 tree (unsigned long long)
 
 *   foundGRETINA : foundGRETINA/O
 
@@ -362,39 +370,39 @@ Current TTree structure in Run####_combined.root:
 
 *   xtals_cc  : xtals_cc[xtalsMul]/F
 
-        (float array of length xtalsMul)
+        Gamma energy (keV) (float array of length xtalsMul)
 
 *   xtals_edop : xtals_edop[xtalsMul]/F
 
-        (float array of length xtalsMul)
+        Doppler corrected (basic) gamma energy (keV) (float array of length xtalsMul)
 
 *   xtals_edopMaxInt : xtals_edopMaxInt[xtalsMul]/F
 
-        (float array of length xtalsMul)
+        Doppler corrected gamma energy using max energy int point (keV) (float array of length xtalsMul)
 
 *   xtals_edopSeg : xtals_edopSeg[xtalsMul]/F
 
-        (float array of length xtalsMul)
+        Doppler corrected (segment) gamma energy (keV) (float array of length xtalsMul)
 
 *   xtals_edopXtal : xtals_edopXtal[xtalsMul]/F
 
-        (float array of length xtalsMul)
+        Doppler corrected (xtal) gamma energy (keV) (float array of length xtalsMul)
 
 *   xtals_crystalNum : xtals_crystalNum[xtalsMul]/I
 
-        (int array of length xtalsMul)
+        Crystal number of hit (int array of length xtalsMul)
 
 *   xtals_quadNum : xtals_quadNum[xtalsMul]/I
 
-        (float array of length xtalsMul)
+        Quad number of hit (float array of length xtalsMul)
 
 *   xtals_t0  : xtals_t0[xtalsMul]/F
 
-        (float array of length xtalsMul)
+        t0. Not sure what this is.(float array of length xtalsMul)
 
 *   xtals_timestamp : xtals_timestamp[xtalsMul]/L
 
-        (long long array of length xtalsMul)
+        Time stamp from the xtals Branch in the g2 TTree (long long array of length xtalsMul)
 
 ## Figures <a name="figures"></a>
 
