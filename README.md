@@ -1,17 +1,41 @@
 # GODDESSSort
 
+#### GODDESS unpacker for people who can't code good and want to do other things good too.
+
 In its current form, all of your runs should be in separate folders (e.g. Run030, Run031, etc.) and should include a .ldf file from ORRUBA and the corresponding GRETINA files (Digest.dat, Global.dat, etc.).
 
 ### Table of contents
+[Requirements, Installation and Running](#installation)
+
 [Calibrations](#calibrations)
 
 [Configuration](#configuration)
 
 [Output](#output)
 
-[Example Analysis Script](#script)
+[Figures](#figures)
 
 [To Do](#todo)
+
+## Requirements, Installation, and Running <a name="installation"></a>
+
+#### Requirements
+*   ROOT v6.00 or higher and a C++11-compatible compiler: GCC 4.6, Clang 3.7 (libc++ 3.7
+
+#### Installation
+```bash
+git clone https://github.com/joshhooker/goddessSort.git
+cd goddessSort
+mkdir -p build && cd build
+cmake ..
+make
+```
+
+#### Running
+After installing, configure the calibrations and configuration described in [Calibration](#calibrations) and [Configuration](#configuration) as desired.
+```bash
+./goddessSort
+```
 
 ## Calibrations <a name="calibrations"></a>
 
@@ -33,11 +57,19 @@ Rings 32-35 correspond to the back sides:
 |      34     |         2        |
 |      35     |         3        |
 
+### QQQ5(Down/Up)Pedestals.dat
+
+Not currently used.
+
 ### SuperX3(Down/Up)Calibrations.dat
 Calibration files for the downstream (Down) or upstream (Up) SuperX3 detectors. In this configuration file, the columns are:
 
 | Det Id | Strip | Back | Intercept | Slope |
 |:------:|:-----:|:----:|:---------:|:-----:|
+
+### SuperX3(Down/Up)Pedestals.dat
+
+Not currently used.
 
 ## Configuration <a name="configuration"></a>
 
@@ -161,7 +193,7 @@ Current TTree structure in Run####_combined.root:
 
 *   BB10Energy : BB10Energy[BB10Mul]/F
 
-        (float array of length BB10Mul)
+        Energy value of hit from calibration file (float array of length BB10Mul)
 
 
 *   QQQ5Mul   : QQQ5Mul/I
@@ -170,31 +202,31 @@ Current TTree structure in Run####_combined.root:
 
 *   QQQ5Upstream : QQQ5Upstream[QQQ5Mul]/B
 
-        (bool array of length QQQ5Mul)
+        True of QQQ5 hit was upstream from the target (bool array of length QQQ5Mul)
 
 *   QQQ5Det   : QQQ5Det[QQQ5Mul]/I
 
-        (int array of length QQQ5Mul)
+        Detector number of QQQ5 hit (int array of length QQQ5Mul)
 
 *   QQQ5Ring  : QQQ5Ring[QQQ5Mul]/I
 
-        (int array of length QQQ5Mul)
+        Ring number of QQQ5 hit in detector number 'QQQ5Det' (int array of length QQQ5Mul)
 
 *   QQQ5RingChannel : QQQ5RingChannel[QQQ5Mul]/I
 
-        (int array of length QQQ5Mul)
+        Channel number of hit for rings (int array of length QQQ5Mul)
 
 *   QQQ5Sector : QQQ5Sector[QQQ5Mul]/I
 
-        (int array of length QQQ5Mul)
+        Sector number of QQQ5 hit in detector number 'QQQ5Det'(int array of length QQQ5Mul)
 
 *   QQQ5SectorChannel : QQQ5SectorChannel[QQQ5Mul]/I
 
-        (int array of length QQQ5Mul)
+        Channel number of hit for sectors (int array of length QQQ5Mul)
 
 *   QQQ5RingADC : QQQ5RingADC[QQQ5Mul]/I
 
-        (int array of length QQQ5Mul)
+        ADC value of hit in ring (int array of length QQQ5Mul)
 
 *   QQQ5RingEnergy : QQQ5RingEnergy[QQQ5Mul]/F
 
@@ -202,7 +234,7 @@ Current TTree structure in Run####_combined.root:
 
 *   QQQ5SectorADC : QQQ5SectorADC[QQQ5Mul]/I
 
-        (int array of length QQQ5Mul)
+        ADC value of hit in sector (int array of length QQQ5Mul)
 
 *   QQQ5SectorEnergy : QQQ5SectorEnergy[QQQ5Mul]/F
 
@@ -210,7 +242,7 @@ Current TTree structure in Run####_combined.root:
 
 *   QQQ5Angle : QQQ5Angle[QQQ5Mul]/F
 
-        (float array of length QQQ5Mul)
+        Angle of hit corresponding to a beam hit at the center of the target (float array of length QQQ5Mul)
 
 *   SX3Mul    : SX3Mul/I
 
@@ -274,19 +306,19 @@ Current TTree structure in Run####_combined.root:
 
 *   icWireX   : icWireX/I
 
-        (int)
+        Wire number in x plane with highest ADC value (int)
 
 *   icWireY   : icWireY/I
 
-        (int)
+        Wire number in y plane with highest ADC value (int)
 
 *   icPositionX : icPositionX/F
 
-        (float)
+        Wire position in x plane with highest ADC value (float)
 
 *   icPositionY : icPositionY/F
 
-        (float)
+        Wire position in y plane with highest ADC value (float)
 
 *   icPositionWeightedX : icPositionWeightedX/F
 
@@ -364,7 +396,22 @@ Current TTree structure in Run####_combined.root:
 
         (long long array of length xtalsMul)
 
-## Example Analysis Script <a name="script"></a>
+## Figures <a name="figures"></a>
+
+The following is a comparison of the GODDESS headers vs number of good events in the raw .ldf file:
+
+![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "GODDESS Headers in Global.dat/Events in .ldf per Run")
+
+The following plots are taken from 30P(d, p) run #0255
+
+
+
+####
 
 ## To Do <a name="todo"></a>
 
+*   Finish Readme
+
+*   Add BB10 calibrations and pedestals
+
+*   Add SuperX3 down calibrations and pedestals
