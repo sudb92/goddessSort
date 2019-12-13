@@ -400,13 +400,13 @@ Current TTree structure in Run####_combined.root:
 
 The following is a comparison of the GODDESS headers vs number of good events in the raw .ldf file:
 
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "GODDESS Headers in Global.dat/Events in .ldf per Run")
+![alt text](https://github.com/joshhooker/goddessSort/blob/master/figures/Global_vs_ldf_GoddessEvents.png "GODDESS Headers in Global.dat/Events in .ldf per Run")
 
-The following plots are taken from 30P(d, p) run #0255
-
-
-
-####
+The following plots are taken from 30P(d, p) run #0255:
+*   Time stamp from ORRUBA - Time stamp from Bank88 tree in GRETINA data
+        ![alt text](https://github.com/joshhooker/goddessSort/blob/master/figures/30P_dp0255_TimeStamp_GRETINATimeStamp.png "ORRUBA Time Stamp - Bank88 Time Stamp")
+*   Time stamp from ORRUBA - Time stamp from g2 tree (xtals) in GRETINA data
+        ![alt text](https://github.com/joshhooker/goddessSort/blob/master/figures/30P_dp0255_TimeStamp_xtalsTimeStamp.png "ORRUBA Time Stamp - g2 Xtals Time Stamp")
 
 ## To Do <a name="todo"></a>
 
