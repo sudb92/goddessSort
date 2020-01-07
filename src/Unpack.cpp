@@ -19,6 +19,7 @@ Unpack::Unpack() {
     int numRuns = 0;
     for(auto run: fileList) {
         std::cout << PrintOutput(Form("Processing Run %s: \n", run.runNumber.c_str()), "green");
+
         auto* orruba = new UnpackORRUBA(run);
         bool orrubaCompleted = orruba->GetCompleted();
 
@@ -31,6 +32,8 @@ Unpack::Unpack() {
         if(orrubaCompleted && gretinaCompleted && run.mergeTrees) {
             CombineReader(run);
         }
+
+        // CombineReader(run);
     }
 
     std::cout << PrintOutput("************************************************", "yellow") << std::endl;
@@ -47,7 +50,7 @@ void Unpack::CombineReader(fileListStruct run) {
         return;
     }
     TTreeReader t_ORRUBA("data", f_ORRUBA);
-    Long64_t nentriesORRUBA = t_ORRUBA.GetEntries();
+    Long64_t nentriesORRUBA = t_ORRUBA.GetEntries(true);
     if(nentriesORRUBA == 0) {
         std::cout << PrintOutput("\t\tCould not open TTree 'data' in ORRBUA file", "red") << std::endl;
         return;
@@ -61,7 +64,7 @@ void Unpack::CombineReader(fileListStruct run) {
         return;
     }
     TTreeReader t_GRETINA("teb", f_GRETINA);
-    Long64_t nentriesGRETINA = t_GRETINA.GetEntries();
+    Long64_t nentriesGRETINA = t_GRETINA.GetEntries(true);
     if(nentriesGRETINA == 0) {
         std::cout << PrintOutput("\t\tCould not open TTree 'teb' in GRETINA file", "red") << std::endl;
         return;
@@ -73,16 +76,12 @@ void Unpack::CombineReader(fileListStruct run) {
     TTreeReaderValue<ULong64_t> orrubaTimeStamp(t_ORRUBA, "timeStamp");
     TTreeReaderValue<Long64_t> gretinaTimeStamp(t_GRETINA, "timestamp");
 
-    Long64_t orrubaTimeStamps[nentriesORRUBA];
-    Long64_t gretinaTimeStamps[nentriesGRETINA];
-
     std::vector<std::pair<Int_t, Long64_t> > orrubaTimeStamps_;
     std::vector<std::pair<Int_t, Long64_t> > gretinaTimeStamps_;
 
     // Loop through ORRUBA events and get the timestamps
     Int_t i = 0;
     while(t_ORRUBA.Next()) {
-        orrubaTimeStamps[i] = *orrubaTimeStamp;
         orrubaTimeStamps_.push_back(std::make_pair(i, *orrubaTimeStamp));
         i++;
     }
@@ -90,7 +89,6 @@ void Unpack::CombineReader(fileListStruct run) {
     // Loop through the GRETINA events and get the timestamps (using Bank88 branch)
     i = 0;
     while(t_GRETINA.Next()) {
-        gretinaTimeStamps[i] = *gretinaTimeStamp;
         gretinaTimeStamps_.push_back(std::make_pair(i, *gretinaTimeStamp));
         i++;
     }
@@ -126,6 +124,7 @@ void Unpack::CombineReader(fileListStruct run) {
         // Don't do it for every event as it will slow it down too much. Every 1000 seems to work well
         if((i % 1000 == 0) && found) gretinaTimeStamps_.erase(gretinaTimeStamps_.begin(), gretinaTimeStamps_.begin() + found_index);
     }
+
     std::cout << PrintOutput("\t\tMatched ORRUBA and GRETINA time stamps", "blue") << std::endl;
 
     // Reset ORRUBA and GRETINA TTreeReaders

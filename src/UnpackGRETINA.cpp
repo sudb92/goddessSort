@@ -8,8 +8,8 @@ UnpackGRETINA::UnpackGRETINA(fileListStruct run) {
     std::string commandString = "./unpackGRETINA -f " + globalPath + " -dopplerSimple -track -rootName " + run.gretinaPath;
 
     const char *command = commandString.c_str();
-    system(command);
+    int systemSuccess = system(command);
 
-    completed = true;
+    if(systemSuccess != -1) completed = true;
 }
 
