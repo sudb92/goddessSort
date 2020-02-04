@@ -33,6 +33,7 @@ Unpack::Unpack() {
             CombineReader(run);
         }
 
+        // For debugging merge
         // CombineReader(run);
     }
 
@@ -102,19 +103,34 @@ void Unpack::CombineReader(fileListStruct run) {
         int found_index = 0;
         Long64_t orrubaTime = orrubaTimeStamps_[i].second;
         Bool_t found = false;
+
+        std::cout << "ORRUBA Event: " << orrubaTime << std::endl;
+
+        size_t best_j;
+        Long64_t closestTime = 100000;
+        Long64_t gretinaTime;
         for(size_t j = 0; j < gretinaTimeStamps_.size(); j++) {
-            if(fabs(orrubaTime - gretinaTimeStamps_[j].second) < 1000) {
-                found_j = gretinaTimeStamps_[j].first;
+            size_t timeDiff = fabs(orrubaTime - gretinaTimeStamps_[j].second);
+
+            if((timeDiff < 1000) && (timeDiff < closestTime)) {
+                closestTime = fabs(orrubaTime - gretinaTimeStamps_[j].second);
+                gretinaTime = gretinaTimeStamps_[j].second;
+                best_j = gretinaTimeStamps_[j].first;
                 found_index = j;
-                matchedEvents hit = {i, found_j, orrubaTime, gretinaTimeStamps_[j].second};
-                matchedEvents_.push_back(hit);
                 found = true;
-                break;
             }
+
+            if(timeDiff > 2000 && found) break;
+            if(timeDiff > 20000 && (gretinaTimeStamps_[j].second > orrubaTime)) break;
         }
 
+        // Record ORRUBA + GRETINA timestamps
+        if(found) {
+            matchedEvents hit = {i, best_j, orrubaTime, gretinaTime};
+            matchedEvents_.push_back(hit);
+        }
         // Record ORRUBA hits that do not have a GRETINA timestamp
-        if(!found) {
+        else {
             matchedEvents hit = {i, 0, orrubaTime, 0};
             matchedEvents_.push_back(hit);
         }
