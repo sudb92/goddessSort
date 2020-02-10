@@ -104,8 +104,6 @@ void Unpack::CombineReader(fileListStruct run) {
         Long64_t orrubaTime = orrubaTimeStamps_[i].second;
         Bool_t found = false;
 
-        std::cout << "ORRUBA Event: " << orrubaTime << std::endl;
-
         size_t best_j;
         Long64_t closestTime = 100000;
         Long64_t gretinaTime;
