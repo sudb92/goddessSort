@@ -157,11 +157,9 @@ void Unpack::CombineReader(fileListStruct run) {
     std::string *RunNumber = 0;
     int BB10Mul, BB10Det[128], BB10Strip[128], BB10Channel[128], BB10ADC[128];
     float BB10Energy[128];
-    int QQQ5Mul, QQQ5Det[128], QQQ5Ring[128], QQQ5RingChannel[128], QQQ5Sector[128], QQQ5SectorChannel[128], QQQ5RingADC[128], QQQ5SectorADC[128];
-    bool QQQ5Upstream[128];
+    int QQQ5Mul, QQQ5Upstream[128], QQQ5Det[128], QQQ5Ring[128], QQQ5RingChannel[128], QQQ5Sector[128], QQQ5SectorChannel[128], QQQ5RingADC[128], QQQ5SectorADC[128];
     float QQQ5RingEnergy[128], QQQ5SectorEnergy[128], QQQ5Angle[128];
-    int SX3Mul, SX3Det[128], SX3Sector[128], SX3SectorChannel[128], SX3SectorADC[128], SX3Strip[128], SX3StripLeftChannel[128], SX3StripRightChannel[128], SX3StripLeftADC[128], SX3StripRightADC[128];
-    bool SX3Upstream[128];
+    int SX3Mul, SX3Upstream[128], SX3Det[128], SX3Sector[128], SX3SectorChannel[128], SX3SectorADC[128], SX3Strip[128], SX3StripLeftChannel[128], SX3StripRightChannel[128], SX3StripLeftADC[128], SX3StripRightADC[128];
     float SX3SectorEnergy[128], SX3StripEnergy[128];
     int ICdE, ICE, ICWireX, ICWireY;
     float ICPositionX, ICPositionY, ICPositionWeightedX, ICPositionWeightedY;
@@ -224,11 +222,9 @@ void Unpack::CombineReader(fileListStruct run) {
     std::string fRunNumber;
     int fBB10Mul, fBB10Det[128], fBB10Strip[128], fBB10Channel[128], fBB10ADC[128];
     float fBB10Energy[128];
-    int fQQQ5Mul, fQQQ5Det[128], fQQQ5Ring[128], fQQQ5RingChannel[128], fQQQ5Sector[128], fQQQ5SectorChannel[128], fQQQ5RingADC[128], fQQQ5SectorADC[128];
-    bool fQQQ5Upstream[128];
+    int fQQQ5Mul, fQQQ5Upstream[128], fQQQ5Det[128], fQQQ5Ring[128], fQQQ5RingChannel[128], fQQQ5Sector[128], fQQQ5SectorChannel[128], fQQQ5RingADC[128], fQQQ5SectorADC[128];
     float fQQQ5RingEnergy[128], fQQQ5SectorEnergy[128], fQQQ5Angle[128];
-    int fSX3Mul, fSX3Det[128], fSX3Sector[128], fSX3SectorChannel[128], fSX3SectorADC[128], fSX3Strip[128], fSX3StripLeftChannel[128], fSX3StripRightChannel[128], fSX3StripLeftADC[128], fSX3StripRightADC[128];
-    bool fSX3Upstream[128];
+    int fSX3Mul, fSX3Upstream[128], fSX3Det[128], fSX3Sector[128], fSX3SectorChannel[128], fSX3SectorADC[128], fSX3Strip[128], fSX3StripLeftChannel[128], fSX3StripRightChannel[128], fSX3StripLeftADC[128], fSX3StripRightADC[128];
     float fSX3SectorEnergy[128], fSX3StripEnergy[128];
     int fICdE, fICE, fICWireX, fICWireY;
     float fICPositionX, fICPositionY, fICPositionWeightedX, fICPositionWeightedY;
@@ -245,7 +241,7 @@ void Unpack::CombineReader(fileListStruct run) {
     tree_Combined->Branch("BB10Energy",  &fBB10Energy,  "BB10Energy[BB10Mul]/F");
 
     tree_Combined->Branch("QQQ5Mul",           &fQQQ5Mul,           "QQQ5Mul/I");
-    tree_Combined->Branch("QQQ5Upstream",      &fQQQ5Upstream,      "QQQ5Upstream[QQQ5Mul]/B");
+    tree_Combined->Branch("QQQ5Upstream",      &fQQQ5Upstream,      "QQQ5Upstream[QQQ5Mul]/I");
     tree_Combined->Branch("QQQ5Det",           &fQQQ5Det,           "QQQ5Det[QQQ5Mul]/I");
     tree_Combined->Branch("QQQ5Ring",          &fQQQ5Ring,          "QQQ5Ring[QQQ5Mul]/I");
     tree_Combined->Branch("QQQ5RingChannel",   &fQQQ5RingChannel,   "QQQ5RingChannel[QQQ5Mul]/I");
@@ -258,7 +254,7 @@ void Unpack::CombineReader(fileListStruct run) {
     tree_Combined->Branch("QQQ5Angle",         &fQQQ5Angle,         "QQQ5Angle[QQQ5Mul]/F");
 
     tree_Combined->Branch("SX3Mul",               &fSX3Mul,               "SX3Mul/I");
-    tree_Combined->Branch("SX3Upstream",          &fSX3Upstream,          "SX3Upstream[SX3Mul]/B");
+    tree_Combined->Branch("SX3Upstream",          &fSX3Upstream,          "SX3Upstream[SX3Mul]/I");
     tree_Combined->Branch("SX3Det",               &fSX3Det,               "SX3Det[SX3Mul]/I");
     tree_Combined->Branch("SX3Sector",            &fSX3Sector,            "SX3Sector[SX3Mul]/I");
     tree_Combined->Branch("SX3SectorChannel",     &fSX3SectorChannel,     "SX3SectorChannel[SX3Mul]/I");

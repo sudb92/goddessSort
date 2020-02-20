@@ -44,7 +44,7 @@ UnpackORRUBA::UnpackORRUBA(fileListStruct run) {
 
     // QQQ5 Detectors
     tree->Branch("QQQ5Mul",           &fQQQ5Mul,           "QQQ5Mul/I");
-    tree->Branch("QQQ5Upstream",      &fQQQ5Upstream,      "QQQ5Upstream[QQQ5Mul]/B");
+    tree->Branch("QQQ5Upstream",      &fQQQ5Upstream,      "QQQ5Upstream[QQQ5Mul]/I");
     tree->Branch("QQQ5Det",           &fQQQ5Det,           "QQQ5Det[QQQ5Mul]/I");
     tree->Branch("QQQ5Ring",          &fQQQ5Ring,          "QQQ5Ring[QQQ5Mul]/I");
     tree->Branch("QQQ5RingChannel",   &fQQQ5RingChannel,   "QQQ5RingChannel[QQQ5Mul]/I");
@@ -58,7 +58,7 @@ UnpackORRUBA::UnpackORRUBA(fileListStruct run) {
 
     // Super X3 Detectors
     tree->Branch("SX3Mul",               &fSX3Mul,               "SX3Mul/I");
-    tree->Branch("SX3Upstream",          &fSX3Upstream,          "SX3Upstream[SX3Mul]/B");
+    tree->Branch("SX3Upstream",          &fSX3Upstream,          "SX3Upstream[SX3Mul]/I");
     tree->Branch("SX3Det",               &fSX3Det,               "SX3Det[SX3Mul]/I");
     tree->Branch("SX3Sector",            &fSX3Sector,            "SX3Sector[SX3Mul]/I");
     tree->Branch("SX3SectorChannel",     &fSX3SectorChannel,     "SX3SectorChannel[SX3Mul]/I");

@@ -58,7 +58,7 @@ private:
 
     // QQQ5 Detectors
     int fQQQ5Mul;
-    bool fQQQ5Upstream[256];
+    int fQQQ5Upstream[256];
     int fQQQ5Det[256];
     int fQQQ5Ring[256];
     int fQQQ5RingChannel[256];
@@ -72,7 +72,7 @@ private:
 
     // Super X3 Detectors
     int fSX3Mul;
-    bool fSX3Upstream[256];
+    int fSX3Upstream[256];
     int fSX3Det[256];
     int fSX3Sector[256];
     int fSX3SectorChannel[256];
