@@ -405,7 +405,7 @@ Int_t TrackCtrl::ReadChatFile(TString fileName) {
       std::cout << "\t\t" << PrintOutput("TRACK: distToCrystal = ", "blue") << distToCrystal << PrintOutput(" (will be added)", "blue") << std::endl;
 
       for(i = 0; i < i1; i++) {
-        fscanf(fp, "%f %f\n", &r1, &r2);
+        int _rd = fscanf(fp, "%f %f\n", &r1, &r2);
         i2 = (int) (r1 * 1000 + 0.5);     /* now keV */
         printf("\t\tTRACK:  --> Max range at %6i keV ", i2); fflush(stdout);
         singleHitRange[i2] = r2 + distToCrystal;

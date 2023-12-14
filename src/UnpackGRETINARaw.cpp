@@ -165,6 +165,7 @@ int main(int argc, char *argv[]) {
     }
 
     TStopwatch timer;
+    Int_t builtEvents = 0;
 
     /* Loop over each run given at the command line. */
     if(ctrl->fileType == "f1" || ctrl->fileType == "f2" ||
@@ -217,6 +218,8 @@ int main(int argc, char *argv[]) {
             Int_t timeToOptimize = 0;
             Int_t atSTARTFile2 = 1; Int_t BonusMode3 = 0;
 
+            Int_t mode2Count = 0; // Used to count number of mode 2 headers
+
             /********************************************************/
             /*  THE MAIN EVENT -- SORTING LOOP                      */
             /********************************************************/
@@ -227,6 +230,8 @@ int main(int argc, char *argv[]) {
             }
 
             while(siz && !gotsignal) {
+
+                if (gHeader.type == 1) { mode2Count++; }
 
                 if(cnt->TSFirst == 0 && gHeader.timestamp > 0) {cnt->TSFirst = gHeader.timestamp;}
                 cnt->TSLast = gHeader.timestamp;
@@ -283,6 +288,7 @@ int main(int argc, char *argv[]) {
                                 }
                             }
                         } else { /* Time difference is big...old event should be closed. */
+                            builtEvents++;
 
                             /* We need to be careful of tracelengths in superPulse analysis... */
                             if(ctrl->superPulse) {
@@ -291,7 +297,9 @@ int main(int argc, char *argv[]) {
                                 }
                             }
 
-                            if(ctrl->gateTree) {} else {
+                            if(ctrl->gateTree) {
+
+                            } else {
                                 Int_t evtOK = ProcessEvent(currTS, ctrl, cnt);
                                 if (evtOK < 0) { raise(SIGINT); }
                             }
@@ -314,7 +322,7 @@ int main(int argc, char *argv[]) {
                     }
                 } /* End of !ctrl->noEB */
 
-                if(cnt->bytes_read_since_last_time > 2*1024*1024) {
+                if(cnt->bytes_read_since_last_time > 100*1024*1024) { //update every 100 MB
                     if(cnt->bytes_read > 1024*1024*1024) {
                         std::cerr << "\t\tProcessing " << (Float_t)cnt->bytes_read/(1024.*1024.*1024.) << " GB         " <<"\r";
                     } else {
@@ -325,6 +333,7 @@ int main(int argc, char *argv[]) {
                 }
 
                 siz = fread(&gHeader, sizeof(struct globalHeader), 1, inf);
+
 
             } /* End of "while we still have data and no interrupt signal" */
 
@@ -349,6 +358,15 @@ int main(int argc, char *argv[]) {
             //        << "MB/s -- File size was " << cnt->bytes_read/(1024*1024) << " MB \n" << std::endl;
 
             cnt->PrintRunStatistics(ctrl->pgh, ctrl->withWAVE, ctrl->superPulse, ctrl->analyze2AND3);
+
+            // Write stats to unpack log file
+            std::ofstream logFile("../test.log",std::ofstream::out);
+            logFile << "Mode2 Headers 1:" << '\t' << mode2Count << std::endl;
+            logFile << "Mode2 Headers 2:" << '\t' << cnt->headerType[DECOMP] << std::endl;
+            logFile << "Tree Writes:" << '\t' << cnt->treeWrites << std::endl;
+            logFile << "Built Events:" << '\t' << builtEvents << std::endl;
+            logFile.close();
+
             cnt->ResetRunCounters();
 
             if(ctrl->withTREE) {
@@ -546,7 +564,7 @@ void GetData(FILE* inf, controlVariables* ctrl, counterVariables* cnt,
 
 void ReadMario(FILE* inf) {
     out4Mario mario;
-    fread(&mario, 1, sizeof(struct out4Mario), inf);
+    int _rd = fread(&mario, 1, sizeof(struct out4Mario), inf);
     std::cout << mario.ccEnergy << std::endl;
     for(Int_t i = 0; i < 36; i++) {
         std::cout << mario.segEnergy[i] << std::endl;

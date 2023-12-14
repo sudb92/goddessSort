@@ -17,7 +17,7 @@ ClassImp(g1OUT);
 ClassImp(GRETINAVariables);
 
 /**************************************************************/
-/* rotationMatrix class functions *****************************/
+/************** rotationMatrix class functions ****************/
 /**************************************************************/
 
 /*! Loads the rotation matrix that maps from crystal coordinates
@@ -1273,9 +1273,9 @@ void GRETINAVariables::InitializeGRETINAVariables(TString inputFilename) {
       retVal = fgets(line, 100, in); /* # of quads identified */
       sscanf(line, "%d", &num);
       for (int i=0; i<num; i++) {
-	retVal = fgets(line, 300, in);
-	sscanf(line, "%d %d", &intvalue[0], &intvalue[1]);
-	hole[intvalue[0]-1] = intvalue[1];
+        retVal = fgets(line, 300, in);
+        sscanf(line, "%d %d", &intvalue[0], &intvalue[1]);
+        hole[intvalue[0]-1] = intvalue[1];
       }
     }
     if (strncmp(line, "Electronics Order", 17) == 0) {
@@ -1807,6 +1807,7 @@ Int_t GRETINA::analyzeMode2(g2CrystalEvent *g2) {
 
   if (g2->intpts.size() > 0) {
     g2->doppler = getDopplerSimple(g2->maxIntPtXYZLab(), var.beta);
+    //g2->doppler = getDopplerSimple(g2->maxIntPtXYZLab(), 0.1317); //Change the value of beta if you know
 
     if ( var.segCenter[0][1][g2->maxIntPtSegNum()]  < 0.0 ) {
         gtYpos = var.segCenter[0][1][g2->maxIntPtSegNum()] - GTPosOffsetY1;

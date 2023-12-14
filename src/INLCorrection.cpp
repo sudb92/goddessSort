@@ -195,7 +195,7 @@ void INLCorrection::ReadRawINL() {
                 std::cerr << "Skipping it and moving on the next one... " << std::endl;
             } else {
                 std::cout << "Reading INL corrections from " << inlName.Data() << ". " << std::endl;
-                fread(inl[i][j*10], sizeof(inl), 1, inlIn);
+                int _rd = fread(inl[i][j*10], sizeof(inl), 1, inlIn);
                 fclose(inlIn);
             }
 

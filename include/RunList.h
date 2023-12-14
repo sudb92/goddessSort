@@ -12,7 +12,7 @@
 #include <sys/types.h>
 #include <vector>
 
-auto predRunList = [] (const AllFolderPath& lhs, const AllFolderPath& rhs) {return lhs.run < rhs.run;};
+static auto predRunList = [] (const AllFolderPath& lhs, const AllFolderPath& rhs) {return lhs.run < rhs.run;};
 
 class RunList {
 public:
@@ -36,7 +36,9 @@ private:
     std::string cutPrefix;
     bool useAllFolders;
     std::vector<std::string> listNumbers;
+    bool unpackORRUBA;
     bool unpackGRETINA;
+    bool withTracked;
     bool mergeTrees;
 };
 

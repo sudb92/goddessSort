@@ -3,3 +3,8 @@
 build/
 cmake-build-debug/
 src/hfc/GEB_HFC
+./data/*
+./output/*
+*.dat
+*.root
+*.o

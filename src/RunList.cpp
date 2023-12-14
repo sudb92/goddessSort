@@ -22,7 +22,9 @@ RunList::RunList() {
         runNumbers.push_back(config["runs"][i].asString());
     }
 
+    unpackORRUBA = config["unpackORRUBA"].asBool();
     unpackGRETINA = config["unpackGRETINA"].asBool();
+    withTracked = config["withTracked"].asBool();
     mergeTrees = config["mergeTrees"].asBool();
 
     if(!useAllFolders) CompileListOfRuns();
@@ -35,17 +37,24 @@ void RunList::CompileListOfRuns() {
     listOfRuns.clear();
     for(auto run: runNumbers) {
         std::string ldfPath = pathToFolders + pathPrefix + run + '/' + ldfPrefix + run + ".ldf";
-        std::string rootPath = outputPath + pathPrefix + run + ".root";
+        std::string rootPathRaw = outputPath + pathPrefix + run + "_orruba_raw.root";
         std::string preCutPath = pathToFolders + pathPrefix + run + '/' + cutPrefix + run + ".root";
         std::string cutPath = outputPath + cutPrefix + run + ".root";
-        std::string globalPath = pathToFolders + pathPrefix + run + "/Global.dat";
+        std::string globalPath;
+        if (withTracked) {
+            globalPath = pathToFolders + pathPrefix + run + "/GlobalwTracked.dat";
+        }
+        else {
+            globalPath = pathToFolders + pathPrefix + run + "/Global.dat";
+        }
         std::string gretinaPath = outputPath + pathPrefix + run + "_gretina.root";
         std::string combinedPath = outputPath + pathPrefix + run + "_combined.root";
 
-        fileListStruct indFile = {pathToFolders, outputPath, ldfPath, rootPath, run, preCutPath, cutPath, globalPath, gretinaPath, combinedPath, copyCuts, unpackGRETINA, mergeTrees};
+        fileListStruct indFile = {pathToFolders, outputPath, ldfPath, rootPathRaw, run, preCutPath, cutPath, globalPath, gretinaPath, combinedPath, copyCuts, unpackORRUBA,unpackGRETINA, withTracked, mergeTrees};
         listOfRuns.push_back(indFile);
     }
 }
+
 
 void RunList::GetAllRuns() {
     std::vector<std::string> allFolders_;
@@ -73,14 +82,20 @@ void RunList::GetAllRuns() {
     listOfRuns.clear();
     for(auto run: runFolders_) {
         std::string ldfPath = pathToFolders + pathPrefix + run.runName + '/' + ldfPrefix + run.runName + ".ldf";
-        std::string rootPath = outputPath + pathPrefix + run.runName + ".root";
+        std::string rootPathRaw = outputPath + ldfPrefix + run.runName + "_raw.root";
         std::string preCutPath = pathToFolders + pathPrefix + run.runName + '/' + cutPrefix + run.runName + ".root";
         std::string cutPath = outputPath + cutPrefix + run.runName + ".root";
-        std::string globalPath = pathToFolders + pathPrefix + run.runName + "/Global.dat";
+        std::string globalPath;
+        if (withTracked) {
+            globalPath = pathToFolders + pathPrefix + run.runName + "/GlobalwTracked.dat";
+        }
+        else {
+            globalPath = pathToFolders + pathPrefix + run.runName + "/Global.dat";
+        }
         std::string gretinaPath = outputPath + pathPrefix + run.runName + "_gretina.root";
         std::string combinedPath = outputPath + pathPrefix + run.runName + "_combined.root";
 
-        fileListStruct indFile = {pathToFolders, outputPath, ldfPath, rootPath, run.runName, preCutPath, cutPath, globalPath, gretinaPath, combinedPath, copyCuts, unpackGRETINA, mergeTrees};
+        fileListStruct indFile = {pathToFolders, outputPath, ldfPath, rootPathRaw, run.runName, preCutPath, cutPath, globalPath, gretinaPath, combinedPath, copyCuts, unpackGRETINA, mergeTrees};
         listOfRuns.push_back(indFile);
     }
 }

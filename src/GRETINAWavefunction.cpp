@@ -8,6 +8,7 @@
 #include "GRETINAWavefunction.h"
 #include "TMath.h"
 
+
 ClassImp(GRETINAWF);
 
 /****************************************************/
@@ -719,8 +720,8 @@ Float_t GRETINAWF::RadfordEnergy(Int_t id, Int_t cNum, Int_t chNum) {
   
   UInt_t ui=0, uj=0;
 
-  vector<Double_t> pzCorr;
-  vector<Double_t> trap;
+  std::vector<Double_t> pzCorr;
+  std::vector<Double_t> trap;
   Float_t pz = 0.0;
 
   Float_t sum = 0.0;
@@ -917,9 +918,9 @@ Float_t GRETINAWF::FPGAFilter(Int_t id, Int_t cNum, Int_t chNum) {
   Double_t averagebaseline = 0;
   Double_t pzSum = 0;
   
-  vector<Double_t> wave;
-  vector<Double_t> pz;
-  vector<Double_t> trap;
+  std::vector<Double_t> wave;
+  std::vector<Double_t> pz;
+  std::vector<Double_t> trap;
   
   for (UInt_t uj=0; uj<20; uj++) {
     baseline[uj] = waveform2Out[cNum][chNum][uj];

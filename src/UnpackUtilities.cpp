@@ -2,199 +2,200 @@
 
 Int_t OpenInputFile(FILE** inf, controlVariables* ctrl, TString runNumber) {
 
-  if (ctrl->fileType != "f" && ctrl->fileType != "f1" && ctrl->fileType != "f2")  {
+    if (ctrl->fileType != "f" && ctrl->fileType != "f1" && ctrl->fileType != "f2")  {
 
-    if (!ctrl->analyze2AND3) {
-      if (!ctrl->directory.EndsWith("/")) { ctrl->directory = ctrl->directory + "/"; }
+        if (!ctrl->analyze2AND3) {
+            if (!ctrl->directory.EndsWith("/")) { ctrl->directory = ctrl->directory + "/"; }
 
-      if (ctrl->fileType == "g") {
-	ctrl->fileName = ctrl->directory + "Run" + runNumber + "/Global.dat";
-      } else if (ctrl->fileType == "gr") {
-	ctrl->fileName = ctrl->directory + "Run" + runNumber + "/GlobalRaw.dat";
-      } else if (ctrl->fileType == "m") {
-	ctrl->fileName = ctrl->directory + "Run" + runNumber + "/Merged.dat";
-      } else if (ctrl->fileType == "m2") {
-	ctrl->fileName = ctrl->directory + "Run" + runNumber + "/Merged.Mode2.dat";
-      } else {
-	std::cerr << "WHAT???" << std::endl;
-	return 0;
-      }
+            if (ctrl->fileType == "g") {
+                ctrl->fileName = ctrl->directory + "Run" + runNumber + "/Global.dat";
+            } else if (ctrl->fileType == "gr") {
+                ctrl->fileName = ctrl->directory + "Run" + runNumber + "/GlobalRaw.dat";
+            } else if (ctrl->fileType == "m") {
+                ctrl->fileName = ctrl->directory + "Run" + runNumber + "/Merged.dat";
+            } else if (ctrl->fileType == "m2") {
+                ctrl->fileName = ctrl->directory + "Run" + runNumber + "/Merged.Mode2.dat";
+            } else {
+                std::cerr << "WHAT???" << std::endl;
+                return 0;
+            }
 
-      if (ctrl->compressedFile) {
+            if (ctrl->compressedFile) {
 
-	if (ctrl->noHFC) {
-	  if (!ctrl->fileName.EndsWith(".gz") && !ctrl->fileName.EndsWith(".gzip")) {
-	    ctrl->fileName = ctrl->fileName + ".gz";
-	  }
-	  *inf = fopen(ctrl->fileName.Data(), "r");
-	  if (*inf) {
-	    fclose(*inf);
-	    ctrl->fileName = "zcat " + ctrl->fileName;
-	    *inf = popen(ctrl->fileName.Data(), "r");
-	  }
+                if (ctrl->noHFC) {
+                    if (!ctrl->fileName.EndsWith(".gz") && !ctrl->fileName.EndsWith(".gzip")) {
+                        ctrl->fileName = ctrl->fileName + ".gz";
+                    }
+                    *inf = fopen(ctrl->fileName.Data(), "r");
+                    if (*inf) {
+                        fclose(*inf);
+                        ctrl->fileName = "zcat " + ctrl->fileName;
+                        *inf = popen(ctrl->fileName.Data(), "r");
+                    }
 
-	} else if (!ctrl->noHFC) {
+                } else if (!ctrl->noHFC) {
 
-	  if (!ctrl->fileName.EndsWith(".gz") && !ctrl->fileName.EndsWith(".gzip")) {
-	    ctrl->fileName = ctrl->fileName + ".gz";
-	  }
-	  *inf = fopen(ctrl->fileName.Data(), "r");
-	  if (*inf) {
-	    fclose(*inf);
-	    ctrl->fileName = "./GEB_HFC -z -p " + ctrl->fileName;
-	    *inf = popen(ctrl->fileName.Data(), "r");
-	  }
-	}
+                    if (!ctrl->fileName.EndsWith(".gz") && !ctrl->fileName.EndsWith(".gzip")) {
+                        ctrl->fileName = ctrl->fileName + ".gz";
+                    }
+                    *inf = fopen(ctrl->fileName.Data(), "r");
+                    if (*inf) {
+                        fclose(*inf);
+                        ctrl->fileName = "./GEB_HFC -z -p " + ctrl->fileName;
+                        *inf = popen(ctrl->fileName.Data(), "r");
+                    }
+                }
 
-      } else if (ctrl->compressedFileB) {
+            } else if (ctrl->compressedFileB) {
 
-	if (ctrl->noHFC) {
-	  if (!ctrl->fileName.EndsWith(".bz2")) {
-	    ctrl->fileName = ctrl->fileName + ".bz2";
-	  }
-	  *inf = fopen(ctrl->fileName.Data(), "r");
-	  if (*inf) {
-	    fclose(*inf);
-	    ctrl->fileName = "bzcat " + ctrl->fileName;
-	    *inf = popen(ctrl->fileName.Data(), "r");
-	  }
+                if (ctrl->noHFC) {
+                    if (!ctrl->fileName.EndsWith(".bz2")) {
+                        ctrl->fileName = ctrl->fileName + ".bz2";
+                    }
+                    *inf = fopen(ctrl->fileName.Data(), "r");
+                    if (*inf) {
+                        fclose(*inf);
+                        ctrl->fileName = "bzcat " + ctrl->fileName;
+                        *inf = popen(ctrl->fileName.Data(), "r");
+                    }
 
-	} else if (!ctrl->noHFC) {
+                } else if (!ctrl->noHFC) {
 
-	  if (!ctrl->fileName.EndsWith(".bz2")) {
-	    ctrl->fileName = ctrl->fileName + ".bz2";
-	  }
-	  *inf = fopen(ctrl->fileName.Data(), "r");
-	  if (*inf) {
-	    ctrl->fileName = "./GEB_HFC -bz -p " + ctrl->fileName;
-	    *inf = popen(ctrl->fileName.Data(), "r");
-	  }
-	}
+                    if (!ctrl->fileName.EndsWith(".bz2")) {
+                        ctrl->fileName = ctrl->fileName + ".bz2";
+                    }
+                    *inf = fopen(ctrl->fileName.Data(), "r");
+                    if (*inf) {
+                        ctrl->fileName = "./GEB_HFC -bz -p " + ctrl->fileName;
+                        *inf = popen(ctrl->fileName.Data(), "r");
+                    }
+                }
 
-      } else if (ctrl->noHFC) {
+            } else if (ctrl->noHFC) {
 
-	*inf = fopen(ctrl->fileName.Data(), "r");
+                *inf = fopen(ctrl->fileName.Data(), "r");
 
-      } else {
+            } else {
 
-	*inf = fopen(ctrl->fileName.Data(), "r");
-	if (*inf) {
-	  ctrl->fileName = "./GEB_HFC -p " + ctrl->fileName;
-	  *inf = popen(ctrl->fileName.Data(), "r");
-	}
-      }
+                *inf = fopen(ctrl->fileName.Data(), "r");
+                if (*inf) {
+                    ctrl->fileName = "./GEB_HFC -p " + ctrl->fileName;
+                    *inf = popen(ctrl->fileName.Data(), "r");
+                }
+            }
 
-    } else if (ctrl->analyze2AND3) {
+        } else if (ctrl->analyze2AND3) {
 
-      if (!ctrl->directory.EndsWith("/")) { ctrl->directory = ctrl->directory + "/"; }
+            if (!ctrl->directory.EndsWith("/")) { ctrl->directory = ctrl->directory + "/"; }
 
-      ctrl->fileName = ctrl->directory + "Run" + runNumber + "/GlobalRaw.dat"; /* Mode3 data */
-      ctrl->fileName2 = ctrl->directory + "Run" + runNumber + "/Global.dat"; /* Mode2 data */
+            ctrl->fileName = ctrl->directory + "Run" + runNumber + "/GlobalRaw.dat"; /* Mode3 data */
+            ctrl->fileName2 = ctrl->directory + "Run" + runNumber + "/Global.dat"; /* Mode2 data */
 
-      ctrl->fileName = "./MergeArbFiles -f1 " + ctrl->fileName + " -f2 " + ctrl->fileName2 + " -fOut pipe";
-
-      std::cout << ctrl->fileName.Data() << std::endl;
-
-      *inf = popen(ctrl->fileName.Data(), "r");
-    }
-
-  } else if (ctrl->fileType == "f" || ctrl->fileType == "f1" || ctrl->fileType == "f2") {
-
-    if (ctrl->compressedFile) {
-
-      if (!ctrl->analyze2AND3) {
-	if (ctrl->noHFC) {
-	  if (!ctrl->fileName.EndsWith(".gz") && !ctrl->fileName.EndsWith(".gzip")) {
-	    ctrl->fileName = ctrl->fileName + ".gz";
-	  }
-	  *inf = fopen(ctrl->fileName.Data(), "r");
-	  if (*inf) {
-	    fclose(*inf);
-	    ctrl->fileName = "zcat " + ctrl->fileName;
-	    *inf = NULL;
-	    *inf = popen(ctrl->fileName.Data(), "r");
-	  }
-
-	} else if (!ctrl->noHFC) {
-
-	  if (!ctrl->fileName.EndsWith(".gz") && !ctrl->fileName.EndsWith(".gzip")) {
-	    ctrl->fileName = ctrl->fileName + ".gz";
-	  }
-	  *inf = fopen(ctrl->fileName.Data(), "r");
-	  if (*inf) {
-	    fclose(*inf);
-	    ctrl->fileName = "./GEB_HFC -z -p " + ctrl->fileName;
-	    *inf = popen(ctrl->fileName.Data(), "r");
-	  }
-	}
-      } else {
-	std::cout << "Apologies -- multiple file analysis at present is not possible with compressed files. " << std::endl;
-	return(-1);
-      }
-
-    } else if (ctrl->compressedFileB) {
-
-      if (!ctrl->analyze2AND3) {
-	if (ctrl->noHFC) {
-	  if (!ctrl->fileName.EndsWith(".bz2")) {
-	    ctrl->fileName = ctrl->fileName + ".bz2";
-	  }
-	  *inf = fopen(ctrl->fileName.Data(), "r");
-	  if (*inf) {
-	    fclose(*inf);
-	    ctrl->fileName = "bzcat " + ctrl->fileName;
-	    *inf = popen(ctrl->fileName.Data(), "r");
-	  }
-
-	} else if (!ctrl->noHFC) {
-
-	  if (!ctrl->fileName.EndsWith(".bz2")) {
-	    ctrl->fileName = ctrl->fileName + ".bz2";
-	  }
-	  *inf = fopen(ctrl->fileName.Data(), "r");
-	  if (*inf) {
-	    ctrl->fileName = "./GEB_HFC -bz -p " + ctrl->fileName;
-	    *inf = popen(ctrl->fileName.Data(), "r");
-	  }
-	}
-      } else {
-	std::cout << "Apologies -- multiple file analysis at present is not possible with compressed files. " << std::endl;
-	return(-1);
-      }
-    } else if (ctrl->noHFC) {
-
-      if (!ctrl->analyze2AND3) {
-	*inf = fopen(ctrl->fileName.Data(), "r");
-      }
-
-    } else {
-
-      if (!ctrl->analyze2AND3) {
-	*inf = fopen(ctrl->fileName.Data(), "r");
-	if (*inf) {
-	  ctrl->fileName = "./GEB_HFC -p " + ctrl->fileName;
-	  *inf = popen(ctrl->fileName.Data(), "r");
-	}
-      }
-
-    }
-
-    if (ctrl->analyze2AND3) {
-
-        if(ctrl->compressedFile) {
-            std::cout << PrintOutput("\t\tApologies -- multiple file analysis at present is not possible with compressed files.\n", "red");
-            return(-1);
-        } else if(ctrl->compressedFileB) {
-            std::cout << PrintOutput("\t\tApologies -- multiple file analysis at present is not possible with compressed files.\n", "red");
-            return(-1);
-        } else {
             ctrl->fileName = "./MergeArbFiles -f1 " + ctrl->fileName + " -f2 " + ctrl->fileName2 + " -fOut pipe";
-            std::cout << "\t\t" << ctrl->fileName.Data() << std::endl;
+
+            std::cout << ctrl->fileName.Data() << std::endl;
+
             *inf = popen(ctrl->fileName.Data(), "r");
         }
-    }
 
-  }
+    } else if (ctrl->fileType == "f" || ctrl->fileType == "f1" || ctrl->fileType == "f2") {
+
+        if (ctrl->compressedFile) {
+
+            if (!ctrl->analyze2AND3) {
+                if (ctrl->noHFC) {
+                    if (!ctrl->fileName.EndsWith(".gz") && !ctrl->fileName.EndsWith(".gzip")) {
+                        ctrl->fileName = ctrl->fileName + ".gz";
+                    }
+                    *inf = fopen(ctrl->fileName.Data(), "r");
+                    if (*inf) {
+                        fclose(*inf);
+                        ctrl->fileName = "zcat " + ctrl->fileName;
+                        *inf = NULL;
+                        *inf = popen(ctrl->fileName.Data(), "r");
+                    }
+
+                } else if (!ctrl->noHFC) {
+                    if (!ctrl->fileName.EndsWith(".gz") && !ctrl->fileName.EndsWith(".gzip")) {
+                        ctrl->fileName = ctrl->fileName + ".gz";
+                    }
+                    *inf = fopen(ctrl->fileName.Data(), "r");
+                    if (*inf) {
+                        fclose(*inf);
+                        ctrl->fileName = "./GEB_HFC -z -p " + ctrl->fileName;
+                        *inf = popen(ctrl->fileName.Data(), "r");
+                    }
+                }
+            } else {
+                std::cout << "Apologies -- multiple file analysis at present is not possible with compressed files. " << std::endl;
+                return(-1);
+            }
+
+        } else if (ctrl->compressedFileB) {
+
+            if (!ctrl->analyze2AND3) {
+                if (ctrl->noHFC) {
+                  if (!ctrl->fileName.EndsWith(".bz2")) {
+                    ctrl->fileName = ctrl->fileName + ".bz2";
+                  }
+                  *inf = fopen(ctrl->fileName.Data(), "r");
+                  if (*inf) {
+                    fclose(*inf);
+                    ctrl->fileName = "bzcat " + ctrl->fileName;
+                    *inf = popen(ctrl->fileName.Data(), "r");
+                  }
+
+                } else if (!ctrl->noHFC) {
+
+                  if (!ctrl->fileName.EndsWith(".bz2")) {
+                    ctrl->fileName = ctrl->fileName + ".bz2";
+                  }
+                  *inf = fopen(ctrl->fileName.Data(), "r");
+                  if (*inf) {
+                    ctrl->fileName = "./GEB_HFC -bz -p " + ctrl->fileName;
+                    *inf = popen(ctrl->fileName.Data(), "r");
+                  }
+                }
+            } else {
+                
+                std::cout << "Apologies -- multiple file analysis at present is not possible with compressed files. " << std::endl;
+                return(-1);
+                
+            }
+        } else if (ctrl->noHFC) {
+
+            if (!ctrl->analyze2AND3) {
+                *inf = fopen(ctrl->fileName.Data(), "r");
+            }
+
+        } else {
+
+            if (!ctrl->analyze2AND3) {
+                *inf = fopen(ctrl->fileName.Data(), "r");
+                if (*inf) {
+                    ctrl->fileName = "./GEB_HFC -p " + ctrl->fileName;
+                    *inf = popen(ctrl->fileName.Data(), "r");
+                }
+            }
+
+        }
+
+        if (ctrl->analyze2AND3) {
+
+            if(ctrl->compressedFile) {
+                std::cout << PrintOutput("\t\tApologies -- multiple file analysis at present is not possible with compressed files.\n", "red");
+                return(-1);
+            } else if(ctrl->compressedFileB) {
+                std::cout << PrintOutput("\t\tApologies -- multiple file analysis at present is not possible with compressed files.\n", "red");
+                return(-1);
+            } else {
+                ctrl->fileName = "./MergeArbFiles -f1 " + ctrl->fileName + " -f2 " + ctrl->fileName2 + " -fOut pipe";
+                std::cout << "\t\t" << ctrl->fileName.Data() << std::endl;
+                *inf = popen(ctrl->fileName.Data(), "r");
+            }
+        }
+
+    }
 
   if(!*inf) {
     std::cout << PrintOutput("\t\tCannot open: ", "red") << ctrl->fileName.Data() << std::endl;
@@ -239,10 +240,10 @@ int ProcessEvent(Float_t currTS, controlVariables* ctrl, counterVariables* cnt) 
     if (ctrl->doTRACK) {
       Int_t error = gret->fillShell2Track();
       if (error != 8) {
-	gret->track.findTargetPos();
-	Int_t trackStatus;
-	trackStatus = gret->track.trackEvent();
-	gret->fillMode1(trackStatus);
+        gret->track.findTargetPos();
+        Int_t trackStatus;
+        trackStatus = gret->track.trackEvent();
+        gret->fillMode1(trackStatus);
       }
     }
   }

@@ -1,16 +1,14 @@
 #ifndef TypeDef_h
 #define TypeDef_h
-
 #include <cassert>
 #include <string>
-
-#include <Rtypes.h>
+#include "Rtypes.h"
 
 typedef struct fileListStruct {
     std::string pathToFolder;
     std::string outputPath;
     std::string ldfPath;
-    std::string rootPath;
+    std::string rootPathRaw;
     std::string runNumber;
     std::string preCutPath;
     std::string cutPath;
@@ -18,7 +16,9 @@ typedef struct fileListStruct {
     std::string gretinaPath;
     std::string combinedPath;
     bool copyCuts;
+    bool unpackORRUBA;
     bool unpackGRETINA;
+    bool withTracked;
     bool mergeTrees;
 } fileListStruct;
 
@@ -31,13 +31,14 @@ typedef struct BB10Hit {
     int adc;
 } BB10Hit;
 
-typedef struct BB10Detector {
-    int channel;
-    int detector;
-    int strip;
-    int adc;
-    float energy;
-} BB10Detector;
+typedef struct BB10DetRaw {
+    int Mul;
+    int DetMul[12]={};
+    int Det[256];
+    int Strip[256];
+    int Channel[256];
+    int ADC[256];
+} BB10DetRaw;
 
 typedef struct QQQ5Ring {
     int channel;
@@ -53,19 +54,24 @@ typedef struct QQQ5Sector {
     int adc;
 } QQQ5Sector;
 
-typedef struct QQQ5Detector {
+typedef struct QQQ5DetRaw {
     bool upstream;
-    int detector;
-    int ring;
-    int ringChannel;
-    int sector;
-    int sectorChannel;
-    int ringEnergyADC;
-    float ringEnergy;
-    int sectorEnergyADC;
-    float sectorEnergy;
-    float angle;
-} QQQ5Detector;
+    bool dE;
+
+    int RingMul;
+    int DetRingMul[4]={}; // The number of rings hit in each detector
+    int DetRing[128]; // The detector for each ring hit in event (ordered by detector)
+    int Ring[128]; // The ring number for each ring hit in event (ordered by detector)
+    int RingChannel[128]; // The channel number for each ring hit in event (ordered by detector)
+    int RingADC[128]; // ADC value for each ring hit in event (ordered by detector)
+
+    int SectorMul;
+    int DetSectorMul[4]={};
+    int DetSector[128];
+    int Sector[128];
+    int SectorChannel[128];
+    int SectorADC[128];
+} QQQ5DetRaw;
 
 typedef struct SuperX3Back {
     int channel;
@@ -82,29 +88,30 @@ typedef struct SuperX3Front {
     int adc;
 } SuperX3Front;
 
-typedef struct SuperX3FrontMatched {
-    int detector;
-    int strip;
-    int stripLeftChannel;
-    int stripLeftADC;
-    int stripRightChannel;
-    int stripRightADC;
-} SuperX3FrontMatched;
-
-typedef struct SuperX3Detector {
+typedef struct SX3DetRaw {
     bool upstream;
-    int detector;
-    int sector;
-    int sectorChannel;
-    int sectorADC;
-    float sectorEnergy;
-    int strip;
-    int stripLeftChannel;
-    int stripLeftADC;
-    int stripRightChannel;
-    int stripRightADC;
-    float stripEnergy;
-} SuperX3Detector;
+    int LeftMul;
+    int RightMul;
+    int DetLeftMul[12]={}; // Left multiplicity for each detector
+    int DetRightMul[12]={}; // Right multiplicity for each detector
+    int DetLeft[128]; // Detector for each left hit
+    int DetRight[128]; // Detector for each right hit
+    int LeftStrip[128]; // Strip for each left hit
+    int RightStrip[128]; // Strip for each right hit
+    int LeftChannel[128]; // Channel for each left hit
+    int RightChannel[128];
+    int LeftADC[128]; // ADC for each right hit
+    int RightADC[128];
+
+    int BackMul;
+    int DetBackMul[12]={}; // Back multiplicity for each detector
+    int DetBack[128]; // Detector for each back hit
+    int BackSector[128]; // Sector for each back hit
+    int BackChannel[128]; // Channel for each back hit
+    int BackADC[128]; // ADC for each back hit
+} SX3DetRaw;
+
+
 
 typedef struct ICTracking{
     bool x;

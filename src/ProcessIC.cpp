@@ -1,4 +1,6 @@
 #include "ProcessIC.h"
+#include <algorithm>
+
 
 void SortICTrack(std::vector<ICTracking>& IC_) {
     std::sort(IC_.begin(), IC_.end(), pred);

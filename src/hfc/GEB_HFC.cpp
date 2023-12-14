@@ -12,7 +12,7 @@
 #include "global.h"
 #include "HFC.h"
 
-#define SQR(x)         ((x)*(x))
+#define SQR(x)  ((x)*(x))
 
 using namespace std;
 
@@ -47,21 +47,21 @@ void swapbytes(char* a, char *b)
 
 // Mode 3 data is high endian format
 void HEtoLE(char* cBuf, int bytes) {
-  for(int i=0; i<bytes; i+=2) 
+  for(int i=0; i<bytes; i+=2)
     swapbytes((cBuf+i), (cBuf+ i+1));
-} 
+}
 
 void Mode3Event(char* cBuf, int len, Mode3event* mode3) {
   // Welcome in the 16 bit world
   UINT16* wBuf= (UINT16*)cBuf;
-  
+
   // digitizer saves in high endian format
   // we're low endian
   HEtoLE(cBuf, len);
-  
+
   // length now in units of 16bit words
   len/=2;
-  
+
   // 1st & 2nd word are 0xaaaa
   if((*wBuf != 0xaaaa) && (*(wBuf+1) != 0xaaaa)) {
     cerr << "0xAAAA header missing" << endl;
@@ -73,7 +73,7 @@ void Mode3Event(char* cBuf, int len, Mode3event* mode3) {
   // Digitizer reports length in 32bit units
   // we convert in 16bit. Furthermore the length
   // doesn't account for the two 0xAAAA words
-  
+
   mode3->length = (*wBuf & 0x07ff) * 2 + 2;
   if(mode3->length != len) {
     cerr << "inconsistent mode3 buffer length "
@@ -82,11 +82,11 @@ void Mode3Event(char* cBuf, int len, Mode3event* mode3) {
 	 <<endl;
     return;
   }
-  
+
   // also board id encoded (=GA ?)
   mode3->board_id = *wBuf >> 11;
   wBuf++;
-  
+
   // 4th word
   mode3->chn_id = *wBuf & 0x000f;
   mode3->module = *wBuf >> 4;
@@ -99,13 +99,13 @@ void Mode3Event(char* cBuf, int len, Mode3event* mode3) {
   mode3->LED_ts += ((long long) *(wBuf+0)) << 16;
   mode3->LED_ts += ((long long) *(wBuf+1)) << 0 ;
   wBuf+=2; //point 7th
-  
+
   // 7th is low 16bit energy
   // 10th upper 8bit, 9th bit sign
   mode3->en = (int) *(wBuf+3) & 0x00ff;
   mode3->en = mode3->en << 16;
   mode3->en += *wBuf;
-  
+
   mode3->en_sign = *(wBuf+3) & 0x0100;
   mode3->pileup  = (*(wBuf+3) & 0x8000) >> 15;
   wBuf+=2; //point 9th
@@ -116,27 +116,27 @@ void Mode3Event(char* cBuf, int len, Mode3event* mode3) {
   mode3->CFD_ts += ((long long) *(wBuf+3)) << 16;
   mode3->CFD_ts += ((long long) *(wBuf+0)) << 0 ;
   wBuf+=4; //point 13th
-  
+
   // 13th, 14th CFD point 1
   mode3->CFD_1 = (int) *(wBuf+1) << 16;
   mode3->CFD_1 += (int) *wBuf;
   wBuf+=2; //point 15th
-  
+
   // 15th, 16th CFD point 2
   mode3->CFD_2 = (int) *(wBuf+1) << 16;
   mode3->CFD_2 += (int) *wBuf;
   wBuf+=2; //point 17th
-  
+
   // wBuf points at 1st trace element now
-  mode3->trace_len = mode3->length - 16; 
-  
+  mode3->trace_len = mode3->length - 16;
+
   for(int i=0; i<mode3->trace_len/2; i++) {
 #define OFFSET 512;
     mode3->trace[2*i+1]  =-(INT16)(*(wBuf+1)) + OFFSET;
     mode3->trace[2*i+0]=-(INT16)(*(wBuf+0)) + OFFSET;
     wBuf+=2;
   }
-  
+
   cerr << hex
        << " LED: 0x" << mode3->LED_ts
        << " CFD: 0x" << mode3->CFD_ts
@@ -144,7 +144,7 @@ void Mode3Event(char* cBuf, int len, Mode3event* mode3) {
 }
 
 void BrowseData(gebData header) {
-  cerr << "type:" << header.type 
+  cerr << "type:" << header.type
        << " len: " << header.length
        << " ts: 0x" << hex << header.timestamp << dec
        << endl;
@@ -156,11 +156,11 @@ int HFC_mode3(BYTE* cBuf, HFC* hfc_list) {
 
   long long mode3_ts;
   int mode3_len;
- 
+
   // 15th and 16th byte is ts high (and endian)
   mode3_ts = ((long long) cBuf[14]) << 40;
   mode3_ts += ((long long) cBuf[15]) << 32;
-  // 9th, 10th ts middle 
+  // 9th, 10th ts middle
   mode3_ts += ((long long) cBuf[8]) << 24;
   mode3_ts += ((long long) cBuf[9]) << 16;
   // 11th, 12th ts 'low'
@@ -174,7 +174,7 @@ int HFC_mode3(BYTE* cBuf, HFC* hfc_list) {
   mode3_len *= 4; // convert into bytes
 
   hfc_list->add(mode3_ts, 2, mode3_len+4, cBuf);
-  
+
   return (mode3_len + 4); // 0xaaaa 0xaaaa not counted in mode3_len
 }
 
@@ -190,7 +190,7 @@ int main(int argc, char** argv) {
 	 << "in proper sequence" << endl;
     exit(0);
   }
-  
+
   bool pipeflag = false;
   bool zipflag = false;
   bool bzipflag = false;
@@ -219,7 +219,7 @@ int main(int argc, char** argv) {
   } else {
     out = fopen("HFC.dat", "wb");
   }
-  
+
   if (!zipflag && !bzipflag) {
     in = fopen(filename.c_str(), "rb");
     if (!in) {
@@ -257,7 +257,7 @@ int main(int argc, char** argv) {
 	cout << "HFC: opened file " << zfilename.c_str() << endl;
     }
   }
-  
+
   long long totread = 0;
   int read;
   int EvtCount=0;
@@ -265,9 +265,9 @@ int main(int argc, char** argv) {
   gebData aGeb;
   HFC hfc_list(50*8192, out);
   // 972: strange mode 2 with mem depth 40*8192 needed
-  
+
   bool success=true;
-	    
+
   while (fread(&aGeb, sizeof(struct gebData), 1, in)==1 && !gotsignal) {
 
    read = fread(cBuf, sizeof(char), aGeb.length, in);
@@ -281,9 +281,9 @@ int main(int argc, char** argv) {
       }
       break;
     }
-    
+
     EvtCount++;
-		
+
     if((EvtCount % 200)==0 && !pipeflag) {
       cerr << "Event " << EvtCount
 	   << " read:" << read
@@ -291,16 +291,16 @@ int main(int argc, char** argv) {
 	   << " Mb \r";
       cerr.flush();
     }
-    
+
 #if(0)
-    cerr << "Event:" << EvtCount 
+    cerr << "Event:" << EvtCount
 	 << " #data:" << read
 	 << " geb:" << sizeof(struct gebData)
 	 << " total bytes read: " << totread
 	 << " (0x" << hex << totread << dec << ")"
 	 << endl;
-#endif	
-    
+#endif
+
     switch(aGeb.type) {
     case 1: // Mode 2, so far always GEB, 1 event, GEB, 1 event,....
       if(!hfc_list.add(aGeb, cBuf) && success) {
@@ -311,7 +311,7 @@ int main(int argc, char** argv) {
 	  }
       }
       break;
-      
+
     case 2: // Mode 3 (raw)
       {
 	int nBytes = aGeb.length;
@@ -320,10 +320,10 @@ int main(int argc, char** argv) {
 	while(nBytes) {
 	  int nread;
 	  nread = HFC_mode3(data, &hfc_list);
-	  
+
 	  data+=nread;
 	  nBytes -=nread;
-	  
+
 	  if(nBytes < 0) {
 	    if (!pipeflag) {
 	      cerr << "HFC: nBytes negative!!"
@@ -335,7 +335,7 @@ int main(int argc, char** argv) {
 	}
       }
       break;
-      
+
     case 3: // Mode 1
       if(!hfc_list.add(aGeb, cBuf) && success) {
 	success = false;
@@ -345,10 +345,10 @@ int main(int argc, char** argv) {
 	}
       }
       break;
-      
+
     case 4: // BGS
       break;
-      
+
     case 5: // S800 event
       if(!hfc_list.add(aGeb, cBuf) && success) {
 	success = false;
@@ -358,7 +358,7 @@ int main(int argc, char** argv) {
 	}
       }
       break;
-      
+
     case 6: // S800 scaler etc.
       if(!hfc_list.add(aGeb, cBuf) && success) {
 	success = false;
@@ -368,7 +368,7 @@ int main(int argc, char** argv) {
 	}
       }
       break;
-      
+
     case 7: // GRETINA scaler data - not yet implemented
       if(!hfc_list.add(aGeb, cBuf) && success) {
 	success = false;
@@ -376,9 +376,9 @@ int main(int argc, char** argv) {
 	  cerr << "HFC: adding event in HFC failed"
 	       << endl;
 	}
-      }	
+      }
       break;
-      
+
     case 8: // card 29
       if(!hfc_list.add(aGeb, cBuf) && success) {
 	success = false;
@@ -388,7 +388,7 @@ int main(int argc, char** argv) {
 	}
       }
       break;
-      
+
     case 9: // S800 physics event
       if(!hfc_list.add(aGeb, cBuf) && success) {
 	success = false;
@@ -398,7 +398,7 @@ int main(int argc, char** argv) {
 	}
       }
       break;
-      
+
     case 10: // S800 timestamped non-event (i.e. scaler) data
       if(!hfc_list.add(aGeb, cBuf) && success) {
 	success = false;
@@ -489,7 +489,7 @@ int main(int argc, char** argv) {
 	}
       }
       break;
-      
+
     default:
       {
 	if (!pipeflag) {
@@ -498,25 +498,25 @@ int main(int argc, char** argv) {
 	}
       }
       break;
-      
+
     }
-    
+
   }
-  
+
   if (!pipeflag) {
     cerr << "HFC: calling flush" << endl; cerr.flush();
   }
   hfc_list.flush();
   hfc_list.printstatus();
-  
+
   if (!pipeflag) {
     cerr << "HFC: closing files" << endl; cerr.flush();
   }
   fclose(in);
   fclose(out);
   if (!pipeflag) {
-    cerr << "HFC: done" << endl; cerr.flush(); 
+    cerr << "HFC: done" << endl; cerr.flush();
   }
 }
 
-	 
+

@@ -1,7 +1,6 @@
 #ifndef ProcessIC_h
 #define ProcessIC_h
 
-#include "Calibrations.h"
 #include "TypeDef.h"
 
 auto pred = [] (const ICTracking& lhs, const ICTracking& rhs) {return lhs.adc > rhs.adc;};

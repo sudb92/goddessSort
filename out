@@ -1,0 +1,8 @@
+[1;33mRunning GODDESS sort[0m
+[1;33mReading RunList[0m
+[1;33mNumber of files to be sort = [0m1
+[1;32mProcessing Run 123: 
+[0m[1;33m	Combining ORRUBA and GRETINA trees based on timestamp:[0m
+[1;34m		Opening ORRUBA file: [0m./output/123_orruba_raw.root
+[1;34m		Opening GRETINA file: [0m./output/123_gretina.root
+[1;33m			Total ORRUBA Entries: [0m16179676[1;33m; Total GRETINA Entries: [0m16187110
