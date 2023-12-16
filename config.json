@@ -7,14 +7,14 @@
  "copyCuts": false,
  "cutPrefix": "",
  "useAllFolders": false,
- "runs": ["123"],
+ "runs": ["149"],
  "_runs": ["001"],
  "BB10Threshold": 50,
  "QQQThreshold": 50,
  "SX3Threshold": 50,
  "ICTrackingThreshold": 50,
- "unpackGRETINA": false,
+ "unpackGRETINA": true,
  "unpackORRUBA": false,
  "withTracked": false,
- "mergeTrees": true
+ "mergeTrees": false
 }

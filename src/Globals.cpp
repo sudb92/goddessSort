@@ -25,3 +25,6 @@ Track *track;
 TTree *teb;
 TTree *wave;
 TTree *scaler;
+
+S800Full *s800;
+S800Scaler *s800Scaler;

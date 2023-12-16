@@ -59,8 +59,12 @@
 /* Tracking... */
 #include "Track.h"
 
-#include "Tree.h"
+/*S800-specific header files*/
+#include "S800Parameters.h"
+#include "S800Definitions.h"
+#include "S800Functions.h"
 
+#include "Tree.h"
 #include "Utilities.h"
 
 #define DEBUG2AND3 0
@@ -143,6 +147,22 @@ int main(int argc, char *argv[]) {
         gret->var.ReadGeCalFile("gretinaCalibrations/gCalibration.dat");
     }
     std::cout << std::endl;
+//added by SB -start- 14Dec23
+  s800 = new S800Full();
+  s800->Initialize();
+
+  if (ctrl->s800File) {
+    ctrl->SetS800Controls(ctrl->s800ControlFile);
+    s800->InitializeS800Variables(ctrl->s800VariableFile);
+  } else { s800->InitializeS800Variables("s800Calibrations/s800.set"); }
+  
+  s800->fp.ic.BuildLookUp();
+  s800->fp.track.map.LoadInverseMap(s800->fp.track.map.mapFilename);
+  s800->fp.crdc1.calc.CheckBadPads();
+  s800->fp.crdc2.calc.CheckBadPads();
+  s800->fp.crdc1.pad.BuildLookUp();
+  s800->fp.crdc2.pad.BuildLookUp();
+//added by SB -end-
 
 
     FILE *inf;
@@ -163,6 +183,35 @@ int main(int argc, char *argv[]) {
             }
         }
     }
+
+  /* Here, read in ROOT gates (PID gates) that will be used to make 
+     filtered files, or just cut the crap we don't need out of the 
+     ROOT trees. */
+  TCutG *incomingBeam = new TCutG();
+  TCutG *outgoingBeam = new TCutG();
+
+  TCutG *incomingAll = new TCutG("incomingAll", 4);
+  incomingAll->SetVarX("tof.xfp");
+  incomingAll->SetVarY("tof.obj");
+  incomingAll->SetPoint(0, -100000, 100000);
+  incomingAll->SetPoint(1, 100000, 100000);
+  incomingAll->SetPoint(2, 100000, -100000);
+  incomingAll->SetPoint(3, -100000, -100000);
+  
+  TCutG *outgoingAll = new TCutG("outgoingAll", 4);
+  outgoingAll->SetVarX("tof.obje1");
+  outgoingAll->SetVarY("fp.ic.de");
+  outgoingAll->SetPoint(0, -100000, 100000);
+  outgoingAll->SetPoint(1, -100000, -100000);
+  outgoingAll->SetPoint(2, 100000, -100000);
+  outgoingAll->SetPoint(3, 100000, 100000);
+
+  incomingBeam = incomingAll;
+  outgoingBeam = outgoingAll;
+
+  /* For now, include the user gates here...eventually we need to pull this
+     out of the compiled code.  I need to think about this one... */
+#include "ROOTGates.var"
 
     TStopwatch timer;
     Int_t builtEvents = 0;
@@ -185,6 +234,12 @@ int main(int argc, char *argv[]) {
             Int_t fileOK = OpenInputFile(&inf, ctrl, runNumber);
             if(fileOK != 0) {exit(2);}
 
+      if (ctrl->fileType != "f") {
+	TString runVariableFileName = ctrl->directory + "Run" + runNumber + "/Run" + runNumber + ".var";
+	cout << "Looking for run variable file " << runVariableFileName.Data() << endl;
+	s800->UpdateS800RunVariables(runVariableFileName);
+      }
+
             /* Open output file, set up tree and/or histograms. */
             TFile *fout_root = NULL;
             if(ctrl->withTREE || ctrl->withHISTOS) {
@@ -199,10 +254,11 @@ int main(int argc, char *argv[]) {
 
             if(ctrl->withTREE) {
                 InitializeTree();
+                InitializeTreeS800(ctrl);
             }
 
             // teb->SetMaxTreeSize(1000000000LL); /* Max tree size is 1GB */
-
+            UInt_t counter = 0;
             std::cout << PrintOutput("\t\t********************************************************\n\n", "blue");
 
             /* Reset variables needed for unpacking, histogramming, etc. */
@@ -298,14 +354,20 @@ int main(int argc, char *argv[]) {
                             }
 
                             if(ctrl->gateTree) {
-
+		                        Int_t pidOK = CheckS800PIDGates(incomingBeam, outgoingBeam);
+		                        if (pidOK) { 
+		                          int evtOK = ProcessEvent(currTS, ctrl, cnt);
+		                          if (evtOK < 0) { raise(SIGINT); }
+		                        }
                             } else {
                                 Int_t evtOK = ProcessEvent(currTS, ctrl, cnt);
                                 if (evtOK < 0) { raise(SIGINT); }
                             }
 
                             /* Check on gate conditions...do we write filtered output? */
-                            if(ctrl->outputON) {} // S800 crap
+                            if(ctrl->outputON) {
+                        		Int_t writeOK = CheckS800PIDGates(incomingBeam, outgoingBeam);
+                            } // S800 crap
                             ResetEvent(ctrl, cnt);
                             cnt->event = 0.0;
 
@@ -342,10 +404,17 @@ int main(int argc, char *argv[]) {
                 gret->sp.MakeSuperPulses();
             }
 
-            if(ctrl->outputON) {} // S800 crap
+            if(ctrl->outputON) {
+                Int_t writeOK = CheckS800PIDGates(incomingBeam, outgoingBeam);
+                if (writeOK) { 
+                }
+            } // S800 crap
 
             /* Write the last event... */
-            if(ctrl->gateTree) {} else {
+            if(ctrl->gateTree) {
+                Int_t pidOK = CheckS800PIDGates(incomingBeam, outgoingBeam);
+                if (pidOK && ctrl->withTREE) { teb->Fill();  cnt->treeWrites++; }	
+            } else {
                 if(ctrl->withTREE) {teb->Fill();  cnt->treeWrites++;}
             }
 
@@ -469,20 +538,42 @@ void GetData(FILE* inf, controlVariables* ctrl, counterVariables* cnt,
             break;
 
         case S800:
-            SkipData(inf, junk);  cnt->Increment(gHeader.length);
-            break;
-
-        case S800AUX:
-            SkipData(inf, junk);  cnt->Increment(gHeader.length);
-            break;
-
+        { s800->getAndProcessS800(inf, gHeader.length);  cnt->Increment(gHeader.length); }
+        break;
+/*        case S800AUX:
+        {
+          Bool_t scalerPacket = s800Scaler->getAndProcessS800Aux(inf, gHeader.length, gHeader.timestamp);
+          //if (scalerPacket && ctrl->withTREE);// {  scaler->Fill();  }
+          cnt->Increment(gHeader.length);
+        }
+        break;
         case S800AUX_TS:
-            SkipData(inf, junk);  cnt->Increment(gHeader.length);
-            break;
-
+        {
+          Bool_t scalerPacket = s800Scaler->getAndProcessS800Aux(inf, gHeader.length, gHeader.timestamp);
+          //if (scalerPacket && ctrl->withTREE);// {  scaler->Fill();  }
+          cnt->Increment(gHeader.length);
+        }
+        break;
         case S800PHYSICS:
-            SkipData(inf, junk);  cnt->Increment(gHeader.length);
-            break;
+        {
+          s800->phys.Reset();
+          s800->getPhysics(inf);
+          cnt->Increment(gHeader.length);
+        }
+        break; 
+  case S800:
+    { SkipData(inf, junk);  cnt->Increment(gHeader.length); }
+    break;*/
+  case S800AUX:
+    { SkipData(inf, junk);  cnt->Increment(gHeader.length); }
+    break;
+  case S800AUX_TS:
+    { SkipData(inf, junk);  cnt->Increment(gHeader.length); }
+    break;
+  case S800PHYSICS:
+    { SkipData(inf, junk);  cnt->Increment(gHeader.length); }
+    break;
+
 
         case BANK88:
             if(cnt->headerType[BANK88] == 0 && ctrl->withTREE) {
@@ -600,7 +691,11 @@ void PrintHelpInformation() {
     printf("                       -superPulse <lowE> <highE> <detMapFile directory> <XtalkFile>\n");
     printf("                               (turns off tree and histograms, builds superpulse .spn files)\n");
     printf("                       -noSeg (DISABLE segment analysis, i.e. segment summing; default is ON \n");
+    printf("                       -s800File (define the s800 control file; without default is s800.set\n                                  for S800 parameters, and NO s800 included in ROOT tree)\n");
+
     printf("                       -track (do tracking, such as it is -- options specified in track.chat)\n");
+    printf("                       -outputON (write output file, with S800Physics, gated on PID)\n");
+
     printf("                       -zip (compressed data file, will append .gz to filename)\n");
     printf("                       -bzip (compressed data file, will append .bz2 to filename)\n");
     printf("                       -withHistos (turn ON histograms, as defined in Histos.h, default is OFF)\n");

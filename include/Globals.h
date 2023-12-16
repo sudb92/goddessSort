@@ -5,6 +5,8 @@
 #include "GRETINA.h"
 #include "GRETINAWavefunction.h"
 #include "Track.h"
+#include "S800Parameters.h"
+#include "S800Definitions.h"
 
 #include <TTree.h>
 
@@ -33,5 +35,8 @@ extern Track *track;
 extern TTree *teb;
 extern TTree *wave;
 extern TTree *scaler;
+
+extern S800Full *s800;
+extern S800Scaler *s800Scaler;
 
 #endif // Globals_h

@@ -4,7 +4,6 @@
     TTree *tt = (TTree*)(f->Get("dataRaw"));
     gStyle->SetHistFillStyle(1001);
     gStyle->SetHistFillColor(kGreen-3);
-//    gStyle->SetOptLogy(kTRUE);
     double lowlim = 1.0; // set the least number to be present in each adc for there to be an 'event' worthy of multiplicity
 
     TCanvas *c = new TCanvas();
