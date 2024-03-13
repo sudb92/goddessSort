@@ -53,7 +53,7 @@ Debug: $(GRETINA_LIB) $(GRET_EXE) $(HFC_EXE) $(SORT_OBJ) $(S800_LIB) $(SORT_EXE)
 $(GRET_EXE): $(GRET_SRC)  $(GRETINA_LIB) $(S800_LIB)
 	@echo "Linking main executable"
 	$(CXX)  $(CXXFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS) $(PROF_FLAG)
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/sud/Desktop/Software/goddessSort/
+    #export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/sud/Desktop/Software/goddessSort/
 
 # Create library
 $(GRETINA_LIB): GRETINADict.cxx $(LIB_SRC)

@@ -6,7 +6,7 @@
 
     std::unique_ptr<TFile> f(TFile::Open("cal149.root"));
     std::unique_ptr<TTree> tt_ref(f->Get<TTree>("ctr"));
-    std::unique_ptr<TFile> f2(TFile::Open("../output/149_gretina.root"));
+    std::unique_ptr<TFile> f2(TFile::Open("../data/Run149/Run149.root"));
     std::unique_ptr<TTree> tt(f2->Get<TTree>("teb"));
     std::unique_ptr<TCanvas> c(new TCanvas());
     std::unique_ptr<TFile> f3(TFile::Open("testCut3.root"));
@@ -35,16 +35,16 @@
     h1->SetTitle("red: dt(s800,gt) ref, blue: dt(s800,gt) goddessSort");
     tt->Draw("dt>>dt_gts800_goddessSort(400,-200,600)","dt>-200 && dt<600 && fp.ic.de>0","histosame");
     auto c4 = c->cd(4);
-    tt->Draw("(xtals.edop)>>gspectrum(4000,0,8000)","dt>100 && dt<200 && fp.ic.de>0","histo");
-    tt->Draw("(xtals.edop)>>gspectrum_gated(4000,0,8000)","dt>100 && dt<200 && CUTG ","goff");
-    tt->Draw("(xtals.edop)>>gspectrum_gated_bg(4000,0,8000)","dt>200 && dt<300 && CUTG ","goff");
+    tt->Draw("(xtals.cc)>>gspectrum(4000,0,8000)","dt>100 && dt<200 && fp.ic.de>0","histo");
+    tt->Draw("(xtals.cc)>>gspectrum_gated(4000,0,8000)","dt>100 && dt<200 && CUTG ","goff");
+    tt->Draw("(xtals.cc)>>gspectrum_gated_bg(4000,0,8000)","dt>200 && dt<300 && CUTG ","goff");
     TH1* h2 = (TH1*)(gDirectory->Get("gspectrum_gated"));
     TH1* h2bg = (TH1*)(gDirectory->Get("gspectrum_gated_bg"));
     h2->SetLineColor(kGreen);
     h2->Add(h2bg,-1.0);
 
     h2->Draw("histosame");
-    h2bg->SetLineColor(kRed);
+    //h2bg->SetLineColor(kRed);
     //h2bg->Draw("histosame");
     c4->SetLogy();
     c->SaveAs("test149_15Dec23.root");

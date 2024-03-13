@@ -4,13 +4,15 @@
     gStyle->SetTitle("");
     gSystem->Load("../libGRETINA.so");
 
-    TFile *f = new TFile("../output/123_combined_fast.root");
+    TFile *f = new TFile("../output/167_combined_old.root");
     TTree *gtree = (TTree*)(f->Get("mergtree"));
-    TFile *f2 = new TFile("../output/123_combined.root");
+    TFile *f2 = new TFile("../output/167_combined_new.root");
     TTree *gtree_old = (TTree*)(f2->Get("mergtree"));
 
     gtree->Print();
     gtree_old->Print();
+    std::cout << gtree->GetEntries() << " " << gtree_old->GetEntries() << std::endl;
+
     gtree->Draw("(GRETINATimeStamp - timeStamp)>>t_new(1000,-1000,1000)","foundGRETINA==1","goff");
     gtree_old->Draw("(GRETINATimeStamp - timeStamp)>>t_old(1000,-1000,1000)","foundGRETINA==1","goff");
 
@@ -20,7 +22,7 @@
     ho->SetLineColor(kBlack);
     hn->SetTitle("fast");
     ho->SetTitle("comp");
-//    hn->Add(ho,-1);
+//    ho->Add(hn,-1.0);
 
     TCanvas *c = new TCanvas();
     c->ToggleEditor();

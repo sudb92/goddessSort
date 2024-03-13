@@ -506,7 +506,7 @@ class S800Track : public TObject {
 /*                 if crdc.x < de_x0tilt, otherwise unchanged */
 /*       After this, linear calibration is applied to de.     */
 /*                                                            */
-/**************************************************************/  
+/**************************************************************/
 
 class S800FpIonChamber : public TObject {
  private:

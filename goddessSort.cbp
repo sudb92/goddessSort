@@ -46,168 +46,69 @@
 		<Unit filename="config.json">
 			<Option target="Debug" />
 		</Unit>
-		<Unit filename="include/Calibrations.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/Defines.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/GRETINA.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/GRETINAWavefunction.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/Globals.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/Histos.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/INLCorrection.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/LinkDefGRETINA.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/LinkDefTrack.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/ProcessBB10.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/ProcessIC.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/ProcessQQQ5.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/ProcessSX3.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/RunList.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/SortingStructures.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/Track.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/Tree.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/TypeDef.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/Unpack.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/UnpackGRETINA.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/UnpackGRETINARaw.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/UnpackORRUBA.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/UnpackUtilities.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/Utilities.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/colors.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/json/json-forwards.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="include/json/json.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/Calibrations.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/G3Waveform.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/GRETINA.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/GRETINAWavefunction.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/Globals.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/Histos.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/INLCorrection.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/ProcessBB10.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/ProcessIC.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/ProcessQQQ5.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/ProcessSX3.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/RunList.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/SortingStructures.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/SuperPulse.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/Track.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/Unpack.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/UnpackGRETINA.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/UnpackGRETINARaw.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/UnpackORRUBA.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/UnpackUtilities.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/Unpack_original.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/Utilities.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/hfc/GEB_HFC.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/hfc/HFC.cpp">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/hfc/HFC.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/hfc/global.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="src/jsoncpp.cpp">
-			<Option target="Debug" />
-		</Unit>
+		<Unit filename="include/Calibrations.h" />
+		<Unit filename="include/Defines.h" />
+		<Unit filename="include/GRETINA.h" />
+		<Unit filename="include/GRETINAWavefunction.h" />
+		<Unit filename="include/Globals.h" />
+		<Unit filename="include/Histos.h" />
+		<Unit filename="include/INLCorrection.h" />
+		<Unit filename="include/LinkDefGRETINA.h" />
+		<Unit filename="include/LinkDefS800.h" />
+		<Unit filename="include/LinkDefTrack.h" />
+		<Unit filename="include/ProcessBB10.h" />
+		<Unit filename="include/ProcessIC.h" />
+		<Unit filename="include/ProcessQQQ5.h" />
+		<Unit filename="include/ProcessSX3.h" />
+		<Unit filename="include/RunList.h" />
+		<Unit filename="include/S800Definitions.h" />
+		<Unit filename="include/S800Dict.h" />
+		<Unit filename="include/S800Functions.h" />
+		<Unit filename="include/S800Parameters.h" />
+		<Unit filename="include/S800Physics.h" />
+		<Unit filename="include/SortingStructures.h" />
+		<Unit filename="include/Track.h" />
+		<Unit filename="include/Tree.h" />
+		<Unit filename="include/TypeDef.h" />
+		<Unit filename="include/Unpack.h" />
+		<Unit filename="include/UnpackGRETINA.h" />
+		<Unit filename="include/UnpackGRETINARaw.h" />
+		<Unit filename="include/UnpackORRUBA.h" />
+		<Unit filename="include/UnpackUtilities.h" />
+		<Unit filename="include/Utilities.h" />
+		<Unit filename="include/colors.h" />
+		<Unit filename="include/json/json-forwards.h" />
+		<Unit filename="include/json/json.h" />
+		<Unit filename="src/Calibrations.cpp" />
+		<Unit filename="src/G3Waveform.cpp" />
+		<Unit filename="src/GRETINA.cpp" />
+		<Unit filename="src/GRETINAWavefunction.cpp" />
+		<Unit filename="src/Globals.cpp" />
+		<Unit filename="src/Histos.cpp" />
+		<Unit filename="src/INLCorrection.cpp" />
+		<Unit filename="src/ProcessBB10.cpp" />
+		<Unit filename="src/ProcessIC.cpp" />
+		<Unit filename="src/ProcessQQQ5.cpp" />
+		<Unit filename="src/ProcessSX3.cpp" />
+		<Unit filename="src/RunList.cpp" />
+		<Unit filename="src/S800Functions.cpp" />
+		<Unit filename="src/S800Parameters.cpp" />
+		<Unit filename="src/S800Physics.cpp" />
+		<Unit filename="src/SortingStructures.cpp" />
+		<Unit filename="src/SuperPulse.cpp" />
+		<Unit filename="src/Track.cpp" />
+		<Unit filename="src/Unpack.cpp" />
+		<Unit filename="src/UnpackGRETINA.cpp" />
+		<Unit filename="src/UnpackGRETINARaw.cpp" />
+		<Unit filename="src/UnpackORRUBA.cpp" />
+		<Unit filename="src/UnpackUtilities.cpp" />
+		<Unit filename="src/Unpack_original.cpp" />
+		<Unit filename="src/Utilities.cpp" />
+		<Unit filename="src/hfc/GEB_HFC.cpp" />
+		<Unit filename="src/hfc/HFC.cpp" />
+		<Unit filename="src/hfc/HFC.h" />
+		<Unit filename="src/hfc/global.h" />
+		<Unit filename="src/jsoncpp.cpp" />
 		<Extensions>
 			<code_completion>
 				<search_path add="/opt/root-6.28.06/bin/" />

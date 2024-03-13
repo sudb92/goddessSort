@@ -12,7 +12,6 @@ int main(int argc, char *argv[]) {
 Unpack::Unpack() {
     int StartClock = clock();
     std::cout << PrintOutput("Running GODDESS sort", "yellow") << std::endl;
-
     std::cout << PrintOutput("Reading RunList", "yellow") << std::endl;
     auto* runList = new RunList();
     auto fileList = runList->GetListOfRuns();
@@ -42,8 +41,8 @@ Unpack::Unpack() {
         }
 
         if (orrubaCompleted && gretinaCompleted && run.mergeTrees) {
-//            CombineReader(run); //original
-              CombineReader2(run); // SB, Sept 2023
+            CombineReader(run); //original
+//              CombineReader2(run); // SB, Sept 2023
 //              CombineReaderCompare(run); // Compares the results from the two methods above, writes to disk using the original approach
         }
     }
@@ -713,9 +712,7 @@ void Unpack::CombineReaderCompare(fileListStruct run) {
 
     // SC: Declare timing variables that are used in event building
     Long64_t timeThreshold, timeFoundBreak, timeNotFoundBreak;
-
     std::cout << PrintOutput("\tCombining ORRUBA and GRETINA trees based on timestamp:", "yellow") << std::endl;
-
     std::cout << PrintOutput("\t\tOpening ORRUBA file: ", "blue") << run.rootPathRaw.c_str() << std::endl;
     auto f_ORRUBA = TFile::Open(Form("%s", run.rootPathRaw.c_str()));
     if(!f_ORRUBA) {
@@ -771,7 +768,6 @@ void Unpack::CombineReaderCompare(fileListStruct run) {
             break;
         }
     }
-
 
     auto cp1 = std::chrono::high_resolution_clock::now();
     auto dur = std::chrono::duration_cast<std::chrono::microseconds>(cp1-start);
@@ -935,19 +931,20 @@ void Unpack::CombineReaderCompare(fileListStruct run) {
     for(int i=0; i<matchedEvents_.size(); i++){
         //assert(matchedEvents2_.at(i).orrubaNumber==matchedEvents_.at(i).orrubaNumber);
         //assert(matchedEvents2_.at(i).gretinaNumber==matchedEvents_.at(i).gretinaNumber);
-        if(matchedEvents2_.at(i).orrubaNumber!=matchedEvents_.at(i).orrubaNumber ||
+
+/*        if(matchedEvents2_.at(i).orrubaNumber!=matchedEvents_.at(i).orrubaNumber ||
            matchedEvents2_.at(i).gretinaNumber!=matchedEvents_.at(i).gretinaNumber ||
            matchedEvents2_.at(i).orrubaTimeStamp!=matchedEvents_.at(i).orrubaTimeStamp ||
-           matchedEvents2_.at(i).gretinaTimeStamp!=matchedEvents_.at(i).gretinaTimeStamp ){
+           matchedEvents2_.at(i).gretinaTimeStamp!=matchedEvents_.at(i).gretinaTimeStamp )*/{
 
-            badcount +=1;
-            std::cout
-            << matchedEvents2_.at(i).orrubaNumber << " " << matchedEvents_.at(i).orrubaNumber << " "
-            << matchedEvents2_.at(i).gretinaNumber << " " << matchedEvents_.at(i).gretinaNumber << " "
-            << matchedEvents2_.at(i).orrubaTimeStamp << " " << matchedEvents_.at(i).orrubaTimeStamp << " "
-            << matchedEvents2_.at(i).gretinaTimeStamp << " " << matchedEvents_.at(i).gretinaTimeStamp <<
-            std::endl;
-           }
+        badcount +=1;
+        std::cerr
+        << matchedEvents2_.at(i).orrubaNumber << " " << matchedEvents_.at(i).orrubaNumber << " "
+        << matchedEvents2_.at(i).gretinaNumber << " " << matchedEvents_.at(i).gretinaNumber << " "
+        << matchedEvents2_.at(i).orrubaTimeStamp << " " << matchedEvents_.at(i).orrubaTimeStamp << " "
+        << matchedEvents2_.at(i).gretinaTimeStamp << " " << matchedEvents_.at(i).gretinaTimeStamp <<
+        std::endl;
+        }
     }
 
     std::cout << " new:"<< matchedEvents2_.size() << " orig:" << matchedEvents_.size() << " badcount:" << badcount <<std::endl;

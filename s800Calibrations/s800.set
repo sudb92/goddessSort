@@ -532,8 +532,8 @@ etc/invmap108.inv
 anglea -0.0017349
 angleb 0.0056773
 brho 2.93069
-mass 38.000
-charge 14.000
+mass 42.000
+charge 16.000
 order 2.000
 zfp 0.000
 gecorr 0.000

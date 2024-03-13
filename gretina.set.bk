@@ -1,11 +1,11 @@
 GRETINA
 Doppler Correction
 bbeta 0.360
-ATAcor 0.0
-BTAcor 0.0
+ATAcor 0.204
+BTAcor -0.168
 targetX 0.0
 targetY 0.0
-targetZ 0.0
+targetZ -12.7
 # radial corrections => crystal# factor
 28
 1 1.05

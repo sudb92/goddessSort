@@ -9,7 +9,8 @@ UnpackGRETINA::UnpackGRETINA(fileListStruct run) {
 
     std::cout << globalPath << std::endl;
     std::cout << run.gretinaPath << std::endl;
-    std::string commandString = "./unpackGRETINA -f " + globalPath + " -noHFC -suppressTS -rootName " + run.gretinaPath;
+    //std::string commandString = "./unpackGRETINA -f " + globalPath + " -noHFC -suppressTS -rootName " + run.gretinaPath;
+    std::string commandString = "./unpackGRETINA -f " + globalPath + " -rootName " + run.gretinaPath;
 
     const char *command = commandString.c_str();
     int systemSuccess = system(command);

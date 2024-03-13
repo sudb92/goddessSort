@@ -417,7 +417,7 @@ UShort_t* S800FpCrdcPads::UnpackRawDataFast(UShort_t *p) {
     SubLen--;
     begin = (data & 0x7FC0) >> 6;
     previous = begin;
-    maxsample = begin+S800_FP_CRDC_MAX_WIDTH;
+    maxsample = begin+S800_FP_CRDC_MAX_WIDTH;//this is 32
   }
 
   while (SubLen > 0) {

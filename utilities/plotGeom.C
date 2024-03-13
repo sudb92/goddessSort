@@ -10,7 +10,7 @@ void plotGeom()
     gStyle->SetTitle("");
     gStyle->SetCanvasPreferGL(1);
     int limit = 12;
-    TFile *f = new TFile("../output/123_combined.root");
+    TFile *f = new TFile("../output/000_combined_sb.root");
     TTree *gtree = (TTree*)(f->Get("mergtree"));
 
     gtree->Print();
