@@ -41,8 +41,8 @@ Unpack::Unpack() {
         }
 
         if (orrubaCompleted && gretinaCompleted && run.mergeTrees) {
-            CombineReader(run); //original
-//              CombineReader2(run); // SB, Sept 2023
+//            CombineReader(run); //original
+              CombineReader2(run); // SB, Sept 2023
 //              CombineReaderCompare(run); // Compares the results from the two methods above, writes to disk using the original approach
         }
     }
