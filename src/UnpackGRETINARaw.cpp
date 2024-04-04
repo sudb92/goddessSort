@@ -246,6 +246,7 @@ int main(int argc, char *argv[]) {
                 fout_root = new TFile(ctrl->outfileName.Data(), "RECREATE");
                 fout_root->SetCompressionAlgorithm(1);
                 fout_root->SetCompressionLevel(2);
+//                fout_root->SetCompressionLevel(ROOT::RCompressionSetting::ELevel::kUncompressed);
                 std::cout << PrintOutput("\t\tOutput file: ", "blue") << ctrl->outfileName << PrintOutput(" (compression ", "blue") <<
                              fout_root->GetCompressionLevel() << PrintOutput(")\n", "blue");
             } else {

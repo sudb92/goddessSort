@@ -113,7 +113,8 @@ goddessSort: src/Unpack.cpp include/Unpack.h include/GRETINA.h \
  /opt/root-6.28.06/include/TNotifyLink.h \
  /opt/root-6.28.06/include/TError.h \
  /opt/root-6.28.06/include/TTreeReaderValue.h \
- /opt/root-6.28.06/include/TTreeReaderValue.h
+ /opt/root-6.28.06/include/TTreeReaderValue.h \
+ /opt/root-6.28.06/include/Compression.h
 include/Unpack.h:
 include/GRETINA.h:
 include/colors.h:
@@ -271,3 +272,4 @@ include/Calibrations.h:
 /opt/root-6.28.06/include/TError.h:
 /opt/root-6.28.06/include/TTreeReaderValue.h:
 /opt/root-6.28.06/include/TTreeReaderValue.h:
+/opt/root-6.28.06/include/Compression.h:

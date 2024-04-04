@@ -58,6 +58,8 @@ UnpackORRUBA::UnpackORRUBA(fileListStruct run) {
     received_sigint=false;
     //Create and open Root file to store raw data in. Check for success.
     TFile *outputFileRaw = new TFile(run.rootPathRaw.c_str(), "recreate");
+    //outputFileRaw->SetCompressionLevel(ROOT::RCompressionSetting::ELevel::kUncompressed);
+
     ASSERT_WITH_MESSAGE(outputFileRaw->IsOpen(), Form("Root output file did not open: %s", run.rootPathRaw.c_str()));
 
     //Setup Trees

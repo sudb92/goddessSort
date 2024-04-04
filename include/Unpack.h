@@ -30,6 +30,8 @@
 #include <TTreeReader.h>
 #include <TTreeReaderValue.h>
 
+#include <Compression.h>
+
 class Unpack {
 public:
     Unpack();

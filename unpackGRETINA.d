@@ -113,7 +113,8 @@ unpackGRETINA: src/S800Functions.cpp include/S800Functions.h \
  /opt/root-6.28.06/include/TNotifyLink.h \
  /opt/root-6.28.06/include/TError.h \
  /opt/root-6.28.06/include/TTreeReaderValue.h \
- /opt/root-6.28.06/include/TTreeReaderValue.h include/Globals.h \
+ /opt/root-6.28.06/include/TTreeReaderValue.h \
+ /opt/root-6.28.06/include/Compression.h include/Globals.h \
  include/GRETINAWavefunction.h include/S800Parameters.h \
  include/S800Definitions.h
 include/S800Functions.h:
@@ -274,6 +275,7 @@ include/Calibrations.h:
 /opt/root-6.28.06/include/TError.h:
 /opt/root-6.28.06/include/TTreeReaderValue.h:
 /opt/root-6.28.06/include/TTreeReaderValue.h:
+/opt/root-6.28.06/include/Compression.h:
 include/Globals.h:
 include/GRETINAWavefunction.h:
 include/S800Parameters.h:

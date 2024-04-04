@@ -9,7 +9,7 @@ INC_DIR := include
 LIB_DIR := lib
 BIN_DIR := .
 
-CXXFLAGS := -g -fPIC -I$(INC_DIR) -MMD -MP 
+CXXFLAGS := -g -fPIC -I$(INC_DIR) -MMD -MP -O2
 ROOTCFLAGS :=  `root-config --cflags`
 LDFLAGS := `root-config --ldflags`
 LDLIBS := `root-config --libs`
@@ -33,7 +33,9 @@ S800_LIB_SRC := $(SRC_DIR)/S800Parameters.cpp $(SRC_DIR)/S800Functions.cpp $(BIN
 
 GRETINA_LIB = $(BIN_DIR)/libGRETINA.so
 
-GRETINA_LD_FLAG = -L$(BIN_DIR)/ -lGRETINA -Wl,-rpath $(BIN_DIR)/
+GRETINA_LD_FLAG = -L$(BIN_DIR)/ -Wl,-rpath $(BIN_DIR)/ -lGRETINA
+
+S800_LD_FLAG = -L$(BIN_DIR)/ -Wl,-rpath $(BIN_DIR)/ -lS800
 
 HFC_EXE := $(BIN_DIR)/GEB_HFC
 
@@ -45,24 +47,23 @@ JSON_INC = $(INC_DIR)/json
 
 .PHONY: all clean
 
-all: $(GRETINA_LIB) $(GRET_EXE) $(HFC_EXE) $(SORT_OBJ) $(S800_LIB) $(SORT_EXE) 
+all: $(GRETINA_LIB) $(S800_LIB) $(GRET_EXE) $(HFC_EXE) $(SORT_OBJ) $(SORT_EXE) 
 
-Debug: $(GRETINA_LIB) $(GRET_EXE) $(HFC_EXE) $(SORT_OBJ) $(S800_LIB) $(SORT_EXE)
+Debug: $(GRETINA_LIB) $(S800_LIB) $(GRET_EXE) $(HFC_EXE) $(SORT_OBJ) $(SORT_EXE)
 
 #The main unpack executable should be built by the library and the extra files
-$(GRET_EXE): $(GRET_SRC)  $(GRETINA_LIB) $(S800_LIB)
-	@echo "Linking main executable"
-	$(CXX)  $(CXXFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS) $(PROF_FLAG)
-    #export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/sud/Desktop/Software/goddessSort/
+$(GRET_EXE): $(GRET_SRC)
+	@printf "\nLinking unpackGRETINA\n"
+	$(CXX)  $(CXXFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS) $(PROF_FLAG) $(GRETINA_LD_FLAG) $(S800_LD_FLAG)
 
 # Create library
 $(GRETINA_LIB): GRETINADict.cxx $(LIB_SRC)
-	@echo "Linking GRETINA Library"
+	@printf "\nLinking GRETINA Library\n"
 	$(CXX) -shared -o $@ $(CXXFLAGS) $(LDFLAGS) $^ $(LDLIBS) $(PROF_FLAG)
 
 # Create dictionary
 $(BIN_DIR)/GRETINADict.cxx: $(DICT_H) $(INC_DIR)/LinkDefGRETINA.h
-	@echo "Generating GRETINA dictionary $@"
+	@printf "\nGenerating GRETINA dictionary $@\n"
 #	rootcling -f $@ -rml $(GRETINA_LIB) -rmf libGRETINADict.rootmap $^ $(PROF_FLAG)
 	rootcling -f $@ -rmf libGRETINADict.rootmap $^ $(PROF_FLAG)
 
@@ -71,18 +72,18 @@ $(HFC_EXE):
 	cd src/hfc && $(MAKE)
 
 $(S800_LIB): $(S800_LIB_SRC)
-	@echo "Linking S800 Library"
+	@printf "\nLinking S800 Library\n"
 	$(CXX) -shared -o $@ $(CXXFLAGS) $(LDFLAGS) $^ $(LDLIBS) $(PROF_FLAG)
 
 $(BIN_DIR)/S800Dict.cxx : $(INC_DIR)/S800Parameters.h $(INC_DIR)/LinkDefS800.h
-	@echo "Generating s800 dictionary $@"
+	@printf "\nGenerating s800 dictionary $@\n"
 #	rootcling -f $@ -rml $(S800_LIB) -rmf libGRETINADict.rootmap $^ $(PROF_FLAG)
 	rootcling -f $@ -rmf libGRETINADict.rootmap $^ $(PROF_FLAG)
 
 
 $(SORT_EXE): $(SORT_SRC)
-	@echo "Building goddessSort executable"
-	$(CXX) -o $@ $(CXXFLAGS) -I$(JSON_INC) $(LDFLAGS) $(GRETINA_LD_FLAG) $^ $(GRETINA_LIB) $(S800_LIB) $(LDLIBS) $(PROF_FLAG)
+	@printf "\nBuilding goddessSort executable\n"
+	$(CXX) -o $@ $(CXXFLAGS) -I$(JSON_INC) $(LDFLAGS) $^ $(LDLIBS) $(PROF_FLAG) $(GRETINA_LD_FLAG)
 
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CXX) -c $(CXXFLAGS) -I$(JSON_INC) $^ -o $@ $(PROF_FLAG)

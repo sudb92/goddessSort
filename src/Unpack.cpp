@@ -742,6 +742,11 @@ void Unpack::CombineReaderCompare(fileListStruct run) {
     // g2 branch in GRETINA tree holds mode 2 data
     tree_GRETINA->SetBranchAddress("g2", &g2);
 
+    //S800 crap goes here
+    tree_GRETINA->SetBranchAddress("g2", &g2);
+
+
+
     std::cout << PrintOutput("\t\t\tTotal ORRUBA Entries: ", "yellow") << nentriesORRUBA << PrintOutput("; Total GRETINA Entries: ", "yellow") << nentriesGRETINA << std::endl;
 
     TTreeReaderValue<ULong64_t> orrubaTimeStamp(t_ORRUBA, "timeStamp");
@@ -1631,6 +1636,8 @@ void Unpack::CombineReader2(fileListStruct run) {
 
     // Create Combined TTree
     TFile* f_Combined = new TFile(run.combinedPath.c_str(), "recreate");
+    //f_Combined->SetCompressionLevel(ROOT::RCompressionSetting::ELevel::kUncompressed);
+
     TTree* tree_Combined = new TTree("mergtree", "Combined ORRUBA and GRETINA data");
 
     // Set branch address if file contains tracked data
